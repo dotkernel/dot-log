@@ -1,7 +1,7 @@
 <?php
 /**
  * @copyright: DotKernel
- * @library: dotkernel/dot-frontend
+ * @library: dotkernel/dot-log
  * @author: n3vrax
  * Date: 1/11/2017
  * Time: 8:44 PM
@@ -35,7 +35,9 @@ class ConfigProvider
     public function getDependencies()
     {
         return [
-
+            'abstract_factories' => [
+                LoggerAbstractServiceFactory::class,
+            ]
         ];
     }
 }
