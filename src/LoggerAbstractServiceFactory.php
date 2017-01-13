@@ -23,6 +23,23 @@ class LoggerAbstractServiceFactory extends \Zend\Log\LoggerAbstractServiceFactor
     protected $configKey = 'dot_log';
 
     /**
+     * @param ContainerInterface $services
+     * @return array
+     */
+    protected function getConfig(ContainerInterface $services)
+    {
+        parent::getConfig($services);
+
+        if (!empty($this->config)
+            && isset($this->config['service'])
+            && is_array($this->config['service'])) {
+            $this->config = $this->config['service'];
+        }
+
+        return $this->config;
+    }
+
+    /**
      * @param array $config
      * @param ContainerInterface $services
      */

@@ -2,81 +2,85 @@
 
 return [
     'dot_log' => [
-        //define log services here
 
-        //example 1 - stream logger
-        'stream_logger' => [
-            'writers' => [
-                'name' => 'stream',
-                'priority' => \Zend\Log\Logger::DEBUG,
-                'options' => [
-                    'stream' => 'php://output',
-                    'formatter' => [
-                        'name' => 'MyFormatter',
-                    ],
-                    'filters' => [
-                        [
-                            'name' => 'MyFilter',
+        'service' => [
+            //define log services here
+
+            //example 1 - stream logger
+            'stream_logger' => [
+                'writers' => [
+                    'name' => 'stream',
+                    'priority' => \Zend\Log\Logger::DEBUG,
+                    'options' => [
+                        'stream' => 'php://output',
+                        'formatter' => [
+                            'name' => 'MyFormatter',
+                        ],
+                        'filters' => [
+                            [
+                                'name' => 'MyFilter',
+                            ],
                         ],
                     ],
                 ],
             ],
-        ],
 
-        //example 2 - db logger
-        'db_logger' => [
-            'writers' => [
-                'name' => 'db',
-                'priority' => \Zend\Log\Logger::INFO,
-                'options' => [
-                    //service name of the database adapter
-                    'db' => 'database',
-                    'table' => 'log_table',
+            //example 2 - db logger
+            'db_logger' => [
+                'writers' => [
+                    'name' => 'db',
+                    'priority' => \Zend\Log\Logger::INFO,
+                    'options' => [
+                        //service name of the database adapter
+                        'db' => 'database',
+                        'table' => 'log_table',
 
-                    //optional, column map
-                    'column' => [
-                        'timestamp' => 'date',
-                        'priority' => 'type',
-                        'message' => 'event',
-                    ],
+                        //optional, column map
+                        'column' => [
+                            'timestamp' => 'date',
+                            'priority' => 'type',
+                            'message' => 'event',
+                        ],
 
-                    //optional, separator
-                    'separator' => '-',
+                        //optional, separator
+                        'separator' => '-',
 
-                    'formatter' => [
-                        'name' => 'MyFormatter',
-                    ],
+                        'formatter' => [
+                            'name' => 'MyFormatter',
+                        ],
 
-                    'filters' => [
-                        [
-                            'name' => 'MyFilter',
+                        'filters' => [
+                            [
+                                'name' => 'MyFilter',
+                            ]
                         ]
+                    ],
+                ],
+            ],
+
+            //example 3 - mail logger using a mail service from dot-mail library
+            'mail_logger' => [
+                'writers' => [
+                    'name' => 'mail',
+                    'priority' => \Zend\Log\Logger::ERR,
+                    'options' => [
+                        'mail_service' => 'dot-mail.mail-service.service_name',
+
+                        'subject_prepend_text' => '',
+
+                        'formatter' => [
+                            'name' => 'MyFormatter',
+                        ],
+
+                        'filters' => [
+                            [
+                                'name' => 'MyFilter'
+                            ],
+                        ],
                     ]
                 ],
             ],
-        ],
 
-        //example 3 - mail logger using a mail service from dot-mail library
-        'mail_logger' => [
-            'writers' => [
-                'name' => 'mail',
-                'priority' => \Zend\Log\Logger::ERR,
-                'options' => [
-                    'mail_service' => 'dot-mail.mail-service.service_name',
-
-                    'subject_prepend_text' => '',
-
-                    'formatter' => [
-                        'name' => 'MyFormatter',
-                    ],
-
-                    'filters' => [
-                        [
-                            'name' => 'MyFilter'
-                        ],
-                    ],
-                ]
-            ],
         ],
     ],
 ];
