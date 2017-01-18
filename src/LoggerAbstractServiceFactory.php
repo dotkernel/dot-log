@@ -19,7 +19,7 @@ use Zend\Log\Writer\Mail;
  */
 class LoggerAbstractServiceFactory extends \Zend\Log\LoggerAbstractServiceFactory
 {
-    /** @var string  */
+    /** @var string */
     protected $configKey = 'dot_log';
 
     /**
@@ -32,7 +32,8 @@ class LoggerAbstractServiceFactory extends \Zend\Log\LoggerAbstractServiceFactor
 
         if (!empty($this->config)
             && isset($this->config['service'])
-            && is_array($this->config['service'])) {
+            && is_array($this->config['service'])
+        ) {
             $this->config = $this->config['service'];
         }
 
