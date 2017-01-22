@@ -40,7 +40,7 @@ class ConfigProvider
 
                 'writer_manager' => [],
 
-                'service' => [],
+                'loggers' => [],
 
             ],
         ];

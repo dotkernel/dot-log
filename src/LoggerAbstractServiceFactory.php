@@ -19,8 +19,31 @@ use Zend\Log\Writer\Mail;
  */
 class LoggerAbstractServiceFactory extends \Zend\Log\LoggerAbstractServiceFactory
 {
+    const PREFIX = 'dot-log';
+
     /** @var string */
     protected $configKey = 'dot_log';
+
+    /** @var string  */
+    protected $subConfigKey = 'loggers';
+
+    /**
+     * @param ContainerInterface $container
+     * @param string $requestedName
+     * @return bool
+     */
+    public function canCreate(ContainerInterface $container, $requestedName)
+    {
+        $parts = explode('.', $requestedName);
+        if (count($parts) !== 2) {
+            return false;
+        }
+        if ($parts[0] !== static::PREFIX) {
+            return false;
+        }
+
+        return parent::canCreate($container, $parts[1]);
+    }
 
     /**
      * @param ContainerInterface $services
@@ -31,10 +54,10 @@ class LoggerAbstractServiceFactory extends \Zend\Log\LoggerAbstractServiceFactor
         parent::getConfig($services);
 
         if (!empty($this->config)
-            && isset($this->config['service'])
-            && is_array($this->config['service'])
+            && isset($this->config[$this->subConfigKey])
+            && is_array($this->config[$this->subConfigKey])
         ) {
-            $this->config = $this->config['service'];
+            $this->config = $this->config[$this->subConfigKey];
         }
 
         return $this->config;
