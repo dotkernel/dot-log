@@ -11,6 +11,7 @@ namespace Dot\Log;
 
 use Dot\Log\Factory\FilterPluginManagerFactory;
 use Dot\Log\Factory\FormatterPluginManagerFactory;
+use Dot\Log\Factory\LoggerAbstractServiceFactory;
 use Dot\Log\Factory\ProcessorPluginManagerFactory;
 use Dot\Log\Factory\WriterPluginManagerFactory;
 use Zend\Log\FilterPluginManager;

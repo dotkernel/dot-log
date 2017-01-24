@@ -7,7 +7,7 @@
  * Time: 11:47 PM
  */
 
-namespace Dot\Log;
+namespace Dot\Log\Factory;
 
 use Dot\Mail\Service\MailServiceInterface;
 use Interop\Container\ContainerInterface;
