@@ -13,8 +13,12 @@ use Dot\Log\Factory\FilterPluginManagerFactory;
 use Dot\Log\Factory\FormatterPluginManagerFactory;
 use Dot\Log\Factory\ProcessorPluginManagerFactory;
 use Dot\Log\Factory\WriterPluginManagerFactory;
+use Zend\Log\FilterPluginManager;
+use Zend\Log\FormatterPluginManager;
 use Zend\Log\Logger;
 use Zend\Log\LoggerServiceFactory;
+use Zend\Log\ProcessorPluginManager;
+use Zend\Log\WriterPluginManager;
 
 /**
  * Class ConfigProvider
@@ -55,7 +59,12 @@ class ConfigProvider
             'abstract_factories' => [
                 LoggerAbstractServiceFactory::class,
             ],
-
+            'aliases' => [
+                FilterPluginManager::class => 'LogFilterManager',
+                FormatterPluginManager::class => 'LogFormatterManager',
+                ProcessorPluginManager::class => 'LogProcessorManager',
+                WriterPluginManager::class => 'LogWriterManager',
+            ],
             'factories' => [
                 Logger::class => LoggerServiceFactory::class,
                 'LogFilterManager' => FilterPluginManagerFactory::class,
