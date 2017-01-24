@@ -46,6 +46,18 @@ class LoggerAbstractServiceFactory extends \Zend\Log\LoggerAbstractServiceFactor
     }
 
     /**
+     * @param ContainerInterface $container
+     * @param string $requestedName
+     * @param array|null $options
+     * @return object|\Zend\Log\Logger
+     */
+    public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
+    {
+        $parts = explode('.', $requestedName);
+        return parent::__invoke($container, $parts[1], $options);
+    }
+
+    /**
      * @param ContainerInterface $services
      * @return array
      */
