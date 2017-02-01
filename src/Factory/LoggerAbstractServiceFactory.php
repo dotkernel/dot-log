@@ -7,6 +7,8 @@
  * Time: 11:47 PM
  */
 
+declare(strict_types = 1);
+
 namespace Dot\Log\Factory;
 
 use Dot\Mail\Service\MailServiceInterface;
@@ -24,7 +26,7 @@ class LoggerAbstractServiceFactory extends \Zend\Log\LoggerAbstractServiceFactor
     /** @var string */
     protected $configKey = 'dot_log';
 
-    /** @var string  */
+    /** @var string */
     protected $subConfigKey = 'loggers';
 
     /**
@@ -61,7 +63,7 @@ class LoggerAbstractServiceFactory extends \Zend\Log\LoggerAbstractServiceFactor
      * @param ContainerInterface $services
      * @return array
      */
-    protected function getConfig(ContainerInterface $services)
+    protected function getConfig(ContainerInterface $services): array
     {
         parent::getConfig($services);
 

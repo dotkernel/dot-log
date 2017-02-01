@@ -7,6 +7,8 @@
  * Time: 8:06 PM
  */
 
+declare(strict_types = 1);
+
 namespace Dot\Log\Factory;
 
 use Interop\Container\ContainerInterface;
