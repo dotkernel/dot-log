@@ -1,7 +1,7 @@
 {
   "name": "dotkernel/dot-log",
   "type": "library",
-  "description": "Log component for DotKernel",
+  "description": "DotKernel log component extending and customizing zend-log",
   "license": "MIT",
   "authors": [
     {
@@ -20,9 +20,7 @@
     "phpunit/phpunit": "^4.8",
     "squizlabs/php_codesniffer": "^2.3",
 
-    "dotkernel/dot-helpers": "dev-develop as 0.6.x-dev",
-    "dotkernel/dot-event": "dev-develop as 0.6.x-dev",
-    "dotkernel/dot-mail": "dev-develop as 0.6.x-dev"
+    "dotkernel/dot-mail": "~0.1"
   },
   "autoload": {
     "psr-4": {
@@ -36,7 +34,7 @@
   },
   "extra": {
     "branch-alias": {
-      "dev-master": "0.6-dev"
+      "dev-master": "1.1-dev"
     }
   }
 }
