@@ -1,2 +1,3 @@
 # dot-log
-Log component for DotKernel
+
+DotKernel log component extending and customizing [zend-log](https://github.com/zendframework/zend-log)

@@ -7,14 +7,21 @@
  * Time: 8:44 PM
  */
 
+declare(strict_types = 1);
+
 namespace Dot\Log;
 
 use Dot\Log\Factory\FilterPluginManagerFactory;
 use Dot\Log\Factory\FormatterPluginManagerFactory;
+use Dot\Log\Factory\LoggerAbstractServiceFactory;
 use Dot\Log\Factory\ProcessorPluginManagerFactory;
 use Dot\Log\Factory\WriterPluginManagerFactory;
+use Zend\Log\FilterPluginManager;
+use Zend\Log\FormatterPluginManager;
 use Zend\Log\Logger;
 use Zend\Log\LoggerServiceFactory;
+use Zend\Log\ProcessorPluginManager;
+use Zend\Log\WriterPluginManager;
 
 /**
  * Class ConfigProvider
@@ -25,7 +32,7 @@ class ConfigProvider
     /**
      * @return array
      */
-    public function __invoke()
+    public function __invoke(): array
     {
         return [
             'dependencies' => $this->getDependencies(),
@@ -40,7 +47,7 @@ class ConfigProvider
 
                 'writer_manager' => [],
 
-                'service' => [],
+                'loggers' => [],
 
             ],
         ];
@@ -49,13 +56,18 @@ class ConfigProvider
     /**
      * @return array
      */
-    public function getDependencies()
+    public function getDependencies(): array
     {
         return [
             'abstract_factories' => [
                 LoggerAbstractServiceFactory::class,
             ],
-
+            'aliases' => [
+                FilterPluginManager::class => 'LogFilterManager',
+                FormatterPluginManager::class => 'LogFormatterManager',
+                ProcessorPluginManager::class => 'LogProcessorManager',
+                WriterPluginManager::class => 'LogWriterManager',
+            ],
             'factories' => [
                 Logger::class => LoggerServiceFactory::class,
                 'LogFilterManager' => FilterPluginManagerFactory::class,
