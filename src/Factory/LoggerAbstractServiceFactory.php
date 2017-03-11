@@ -1,10 +1,8 @@
 <?php
 /**
- * @copyright: DotKernel
- * @library: dotkernel/dot-log
- * @author: n3vrax
- * Date: 1/12/2017
- * Time: 11:47 PM
+ * @see https://github.com/dotkernel/dot-log/ for the canonical source repository
+ * @copyright Copyright (c) 2017 Apidemia (https://www.apidemia.com)
+ * @license https://github.com/dotkernel/dot-log/blob/master/LICENSE.md MIT License
  */
 
 declare(strict_types = 1);

@@ -20,7 +20,7 @@
     "phpunit/phpunit": "^4.8",
     "squizlabs/php_codesniffer": "^2.3",
 
-    "dotkernel/dot-mail": "~0.1"
+    "dotkernel/dot-mail": "^0.1"
   },
   "autoload": {
     "psr-4": {
