@@ -9,7 +9,7 @@ declare(strict_types = 1);
 
 namespace Dot\Log\Factory;
 
-use Interop\Container\ContainerInterface;
+use Psr\Container\ContainerInterface;
 use Zend\Log\WriterPluginManager;
 
 /**
@@ -18,6 +18,10 @@ use Zend\Log\WriterPluginManager;
  */
 class WriterPluginManagerFactory
 {
+    /**
+     * @param ContainerInterface $container
+     * @return WriterPluginManager
+     */
     public function __invoke(ContainerInterface $container)
     {
         $config = $container->has('config')

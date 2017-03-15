@@ -9,7 +9,7 @@ declare(strict_types = 1);
 
 namespace Dot\Log\Factory;
 
-use Interop\Container\ContainerInterface;
+use Psr\Container\ContainerInterface;
 use Zend\Log\FilterPluginManager;
 
 /**
@@ -18,6 +18,10 @@ use Zend\Log\FilterPluginManager;
  */
 class FilterPluginManagerFactory
 {
+    /**
+     * @param ContainerInterface $container
+     * @return FilterPluginManager
+     */
     public function __invoke(ContainerInterface $container)
     {
         $config = $container->has('config')
