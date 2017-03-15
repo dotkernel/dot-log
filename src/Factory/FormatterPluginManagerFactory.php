@@ -9,7 +9,7 @@ declare(strict_types = 1);
 
 namespace Dot\Log\Factory;
 
-use Interop\Container\ContainerInterface;
+use Psr\Container\ContainerInterface;
 use Zend\Log\FormatterPluginManager;
 
 /**
@@ -18,6 +18,10 @@ use Zend\Log\FormatterPluginManager;
  */
 class FormatterPluginManagerFactory
 {
+    /**
+     * @param ContainerInterface $container
+     * @return FormatterPluginManager
+     */
     public function __invoke(ContainerInterface $container)
     {
         $config = $container->has('config')
