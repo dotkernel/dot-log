@@ -1,3 +1,22 @@
+## 1.1.1 - 2018-05-04
+
+### Changed
+* dependencies updates
+* using `dotkernel/dot-mail:^1.0`
+
+### Added
+* Nothing
+
+### Deprecated
+* Nothing
+
+### Removed
+* Nothing
+
+### Fixed
+* Nothing
+
+
 ## 1.1.0 - 2017-03-16
 
 ### Changed

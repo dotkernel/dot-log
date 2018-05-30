@@ -5,8 +5,8 @@
   "license": "MIT",
   "authors": [
     {
-      "name": "n3vrax",
-      "email": "tibi@apidemia.com"
+      "name": "DotKernel Team",
+      "email": "team@dotkernel.com"
     }
   ],
   "require": {
@@ -19,7 +19,7 @@
     "phpunit/phpunit": "^4.8",
     "squizlabs/php_codesniffer": "^2.3",
 
-    "dotkernel/dot-mail": "^0.1"
+    "dotkernel/dot-mail": "^1.0"
   },
   "autoload": {
     "psr-4": {
