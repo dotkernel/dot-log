@@ -246,5 +246,5 @@ Sources:
 * https://zendframework.github.io/zend-log/writers/
 * https://zendframework.github.io/zend-log/filters/
 
-Extracted from [this article](https://www.dotkernel.com/?p=3454&preview=true)
+Extracted from [this article](https://www.dotkernel.com/dotkernel/logging-with-dot-log-in-zend-expressive-and-dotkernel)
 
