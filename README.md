@@ -182,7 +182,7 @@ The following formats the message as JSON data:
 * Explicitly allows all the messages to be written
 * Formats the messages as JSON
 
-```
+```php
 <?php
 
 
@@ -222,11 +222,11 @@ return [
 Basic usage of the logger is illustraded below.
 
 The messages are written to see which logs are written and which are not written.
-```
+```php
 use Zend\Log\Logger;
 ```
 ...
-```
+```php
 $logger = $container->get('dot-log.my_logger');
 
 /** @var Logger $logger */
