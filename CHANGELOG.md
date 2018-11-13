@@ -1,3 +1,21 @@
+## 1.1.2 - 2018-11-13
+
+### Changed
+* nothing
+
+### Added
+* usage documentation
+
+### Deprecated
+* Nothing
+
+### Removed
+* Nothing
+
+### Fixed
+* Nothing
+
+
 ## 1.1.1 - 2018-05-04
 
 ### Changed
