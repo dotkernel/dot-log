@@ -10,7 +10,7 @@ declare(strict_types = 1);
 namespace Dot\Log\Factory;
 
 use Psr\Container\ContainerInterface;
-use Zend\Log\WriterPluginManager;
+use Laminas\Log\WriterPluginManager;
 
 /**
  * Class WriterPluginManagerFactory

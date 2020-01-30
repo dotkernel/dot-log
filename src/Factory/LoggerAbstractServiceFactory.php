@@ -11,13 +11,13 @@ namespace Dot\Log\Factory;
 
 use Dot\Mail\Service\MailServiceInterface;
 use Interop\Container\ContainerInterface;
-use Zend\Log\Writer\Mail;
+use Laminas\Log\Writer\Mail;
 
 /**
  * Class LoggerAbstractServiceFactory
  * @package Dot\Log
  */
-class LoggerAbstractServiceFactory extends \Zend\Log\LoggerAbstractServiceFactory
+class LoggerAbstractServiceFactory extends \Laminas\Log\LoggerAbstractServiceFactory
 {
     const PREFIX = 'dot-log';
 
@@ -49,7 +49,7 @@ class LoggerAbstractServiceFactory extends \Zend\Log\LoggerAbstractServiceFactor
      * @param ContainerInterface $container
      * @param string $requestedName
      * @param array|null $options
-     * @return object|\Zend\Log\Logger
+     * @return object|\Laminas\Log\Logger
      */
     public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
     {
@@ -91,7 +91,7 @@ class LoggerAbstractServiceFactory extends \Zend\Log\LoggerAbstractServiceFactor
             if (isset($writerConfig['name'])
                 && ('mail' === $writerConfig['name']
                     || Mail::class === $writerConfig['name']
-                    || 'zendlogwritermail' === $writerConfig['name']
+                    || 'laminaslogwritermail' === $writerConfig['name']
                 )
                 && isset($writerConfig['options']['mail_service'])
                 && is_string($writerConfig['options']['mail_service'])

@@ -14,12 +14,12 @@ use Dot\Log\Factory\FormatterPluginManagerFactory;
 use Dot\Log\Factory\LoggerAbstractServiceFactory;
 use Dot\Log\Factory\ProcessorPluginManagerFactory;
 use Dot\Log\Factory\WriterPluginManagerFactory;
-use Zend\Log\FilterPluginManager;
-use Zend\Log\FormatterPluginManager;
-use Zend\Log\Logger;
-use Zend\Log\LoggerServiceFactory;
-use Zend\Log\ProcessorPluginManager;
-use Zend\Log\WriterPluginManager;
+use Laminas\Log\FilterPluginManager;
+use Laminas\Log\FormatterPluginManager;
+use Laminas\Log\Logger;
+use Laminas\Log\LoggerServiceFactory;
+use Laminas\Log\ProcessorPluginManager;
+use Laminas\Log\WriterPluginManager;
 
 /**
  * Class ConfigProvider

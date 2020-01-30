@@ -10,7 +10,7 @@ declare(strict_types = 1);
 namespace Dot\Log\Factory;
 
 use Psr\Container\ContainerInterface;
-use Zend\Log\ProcessorPluginManager;
+use Laminas\Log\ProcessorPluginManager;
 
 /**
  * Class ProcessorPluginManagerFactory

@@ -10,7 +10,7 @@ return [
             'stream_logger' => [
                 'writers' => [
                     'name' => 'stream',
-                    'priority' => \Zend\Log\Logger::DEBUG,
+                    'priority' => \Laminas\Log\Logger::DEBUG,
                     'options' => [
                         'stream' => 'php://output',
                         'formatter' => [
@@ -29,7 +29,7 @@ return [
             'db_logger' => [
                 'writers' => [
                     'name' => 'db',
-                    'priority' => \Zend\Log\Logger::INFO,
+                    'priority' => \Laminas\Log\Logger::INFO,
                     'options' => [
                         //service name of the database adapter
                         'db' => 'database',
@@ -62,7 +62,7 @@ return [
             'mail_logger' => [
                 'writers' => [
                     'name' => 'mail',
-                    'priority' => \Zend\Log\Logger::ERR,
+                    'priority' => \Laminas\Log\Logger::ERR,
                     'options' => [
                         'mail_service' => 'dot-mail.mail-service.service_name',
 
