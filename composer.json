@@ -3,6 +3,14 @@
     "type": "library",
     "description": "DotKernel log component extending and customizing laminas-log",
     "license": "MIT",
+    "keywords": [
+      "log",
+      "logging",
+      "services",
+      "mezzio",
+      "laminas",
+      "laminas-log"
+    ],
     "authors": [
         {
             "name": "DotKernel Team",
