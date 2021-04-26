@@ -11,7 +11,16 @@ namespace Dot\Log\Factory;
 
 use Dot\Mail\Service\MailServiceInterface;
 use Interop\Container\ContainerInterface;
+use Laminas\Log\Logger;
 use Laminas\Log\Writer\Mail;
+
+use function count;
+use function date;
+use function explode;
+use function is_array;
+use function is_string;
+use function preg_match_all;
+use function str_replace;
 
 /**
  * Class LoggerAbstractServiceFactory
@@ -49,7 +58,7 @@ class LoggerAbstractServiceFactory extends \Laminas\Log\LoggerAbstractServiceFac
      * @param ContainerInterface $container
      * @param string $requestedName
      * @param array|null $options
-     * @return object|\Laminas\Log\Logger
+     * @return object|Logger
      */
     public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
     {
@@ -81,31 +90,46 @@ class LoggerAbstractServiceFactory extends \Laminas\Log\LoggerAbstractServiceFac
      */
     protected function processConfig(&$config, ContainerInterface $services)
     {
-        parent::processConfig($config, $services);
+        if (isset($config['writers'])) {
+            foreach ($config['writers'] as $index => $writerConfig) {
+                if (!empty($writerConfig['options']['stream'])) {
+                    $config['writers'][$index]['options']['stream'] = self::parseVariables(
+                        $writerConfig['options']['stream']
+                    );
+                }
+                if (isset($writerConfig['name'])
+                    && in_array($writerConfig['name'], ['mail', Mail::class, 'laminaslogwritermail'])
+                    && isset($writerConfig['options']['mail_service'])
+                    && is_string($writerConfig['options']['mail_service'])
+                    && $services->has($writerConfig['options']['mail_service'])
+                ) {
+                    /** @var MailServiceInterface $mailService */
+                    $mailService = $services->get($writerConfig[['options']['mail_service']]);
+                    $mail = $mailService->getMessage();
+                    $transport = $mailService->getTransport();
 
-        if (!isset($config['writers'])) {
-            return;
-        }
-
-        foreach ($config['writers'] as $index => $writerConfig) {
-            if (isset($writerConfig['name'])
-                && ('mail' === $writerConfig['name']
-                    || Mail::class === $writerConfig['name']
-                    || 'laminaslogwritermail' === $writerConfig['name']
-                )
-                && isset($writerConfig['options']['mail_service'])
-                && is_string($writerConfig['options']['mail_service'])
-                && $services->has($writerConfig['options']['mail_service'])
-            ) {
-                /** @var MailServiceInterface $mailService */
-                $mailService = $services->get($writerConfig[['options']['mail_service']]);
-                $mail = $mailService->getMessage();
-                $transport = $mailService->getTransport();
-
-                $config['writers'][$index]['options']['mail'] = $mail;
-                $config['writers'][$index]['options']['transport'] = $transport;
-                continue;
+                    $config['writers'][$index]['options']['mail'] = $mail;
+                    $config['writers'][$index]['options']['transport'] = $transport;
+                }
             }
         }
+
+        parent::processConfig($config, $services);
+    }
+
+    /**
+     * @param string $stream
+     * @return string
+     */
+    private static function parseVariables(string $stream): string
+    {
+        preg_match_all('/{([a-z])}/i', $stream, $matches);
+        if (!empty($matches[1])) {
+            foreach ($matches[1] as $match) {
+                $stream = str_replace('{' . $match . '}', date($match), $stream);
+            }
+        }
+
+        return $stream;
     }
 }
