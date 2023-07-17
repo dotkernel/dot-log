@@ -1,11 +1,10 @@
 <?php
+
 /**
  * @see https://github.com/dotkernel/dot-log/ for the canonical source repository
- * @copyright Copyright (c) 2017 Apidemia (https://www.apidemia.com)
- * @license https://github.com/dotkernel/dot-log/blob/master/LICENSE.md MIT License
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Dot\Log;
 
@@ -21,10 +20,6 @@ use Laminas\Log\LoggerServiceFactory;
 use Laminas\Log\ProcessorPluginManager;
 use Laminas\Log\WriterPluginManager;
 
-/**
- * Class ConfigProvider
- * @package Dot\Log
- */
 class ConfigProvider
 {
     /**
@@ -34,19 +29,12 @@ class ConfigProvider
     {
         return [
             'dependencies' => $this->getDependencies(),
-
-            'dot_log' => [
-
+            'dot_log'      => [
                 'formatter_manager' => [],
-
-                'filter_manager' => [],
-
+                'filter_manager'    => [],
                 'processor_manager' => [],
-
-                'writer_manager' => [],
-
-                'loggers' => [],
-
+                'writer_manager'    => [],
+                'loggers'           => [],
             ],
         ];
     }
@@ -60,19 +48,19 @@ class ConfigProvider
             'abstract_factories' => [
                 LoggerAbstractServiceFactory::class,
             ],
-            'aliases' => [
-                FilterPluginManager::class => 'LogFilterManager',
+            'aliases'            => [
+                FilterPluginManager::class    => 'LogFilterManager',
                 FormatterPluginManager::class => 'LogFormatterManager',
                 ProcessorPluginManager::class => 'LogProcessorManager',
-                WriterPluginManager::class => 'LogWriterManager',
+                WriterPluginManager::class    => 'LogWriterManager',
             ],
-            'factories' => [
-                Logger::class => LoggerServiceFactory::class,
-                'LogFilterManager' => FilterPluginManagerFactory::class,
+            'factories'          => [
+                Logger::class         => LoggerServiceFactory::class,
+                'LogFilterManager'    => FilterPluginManagerFactory::class,
                 'LogFormatterManager' => FormatterPluginManagerFactory::class,
                 'LogProcessorManager' => ProcessorPluginManagerFactory::class,
-                'LogWriterManager' => WriterPluginManagerFactory::class,
-            ]
+                'LogWriterManager'    => WriterPluginManagerFactory::class,
+            ],
         ];
     }
 }

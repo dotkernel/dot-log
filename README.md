@@ -13,6 +13,9 @@ DotKernel log component extending and customizing
 [![GitHub stars](https://img.shields.io/github/stars/dotkernel/dot-log)](https://github.com/dotkernel/dot-log/stargazers)
 [![GitHub license](https://img.shields.io/github/license/dotkernel/dot-log)](https://github.com/dotkernel/dot-log/blob/3.0/LICENSE.md)
 
+[![SymfonyInsight](https://insight.symfony.com/projects/287e81e8-b4fb-4452-bd8f-4f12c0ab1f76/big.svg)](https://insight.symfony.com/projects/287e81e8-b4fb-4452-bd8f-4f12c0ab1f76)
+
+
 ## Adding The Config Provider
 * Enter config/config.php
 * If there is no entry for the config provider below, add it:

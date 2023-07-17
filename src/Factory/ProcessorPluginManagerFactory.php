@@ -1,35 +1,41 @@
 <?php
-/**
- * @see https://github.com/dotkernel/dot-log/ for the canonical source repository
- * @copyright Copyright (c) 2017 Apidemia (https://www.apidemia.com)
- * @license https://github.com/dotkernel/dot-log/blob/master/LICENSE.md MIT License
- */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Dot\Log\Factory;
 
-use Psr\Container\ContainerInterface;
+use Exception;
 use Laminas\Log\ProcessorPluginManager;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\ContainerInterface;
+use Psr\Container\NotFoundExceptionInterface;
 
-/**
- * Class ProcessorPluginManagerFactory
- * @package Dot\Log\Factory
- */
+use function is_array;
+
 class ProcessorPluginManagerFactory
 {
     /**
-     * @param ContainerInterface $container
-     * @return ProcessorPluginManager
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     * @throws Exception
      */
-    public function __invoke(ContainerInterface $container)
+    public function __invoke(ContainerInterface $container): ProcessorPluginManager
     {
-        $config = $container->has('config')
-            ? $container->get('config')
-            : [];
+        if (! $container->has('config')) {
+            throw new Exception('Unable to find config');
+        }
 
-        $config = isset($config['dot_log']) && isset($config['dot_log']['processor_manager'])
-            ? $config['dot_log']['processor_manager'] : [];
+        $config = $container->get('config');
+
+        if (! isset($config['dot_log']) || ! is_array($config['dot_log'])) {
+            throw new Exception('Unable to find dot_log config');
+        }
+
+        $config = $config['dot_log'];
+
+        if (! isset($config['processor_manager']) || ! is_array($config['processor_manager'])) {
+            throw new Exception('Unable to find processor_manager config');
+        }
 
         return new ProcessorPluginManager($container, $config);
     }

@@ -1,35 +1,41 @@
 <?php
-/**
- * @see https://github.com/dotkernel/dot-log/ for the canonical source repository
- * @copyright Copyright (c) 2017 Apidemia (https://www.apidemia.com)
- * @license https://github.com/dotkernel/dot-log/blob/master/LICENSE.md MIT License
- */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Dot\Log\Factory;
 
-use Psr\Container\ContainerInterface;
+use Exception;
 use Laminas\Log\WriterPluginManager;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\ContainerInterface;
+use Psr\Container\NotFoundExceptionInterface;
 
-/**
- * Class WriterPluginManagerFactory
- * @package Dot\Log\Factory
- */
+use function is_array;
+
 class WriterPluginManagerFactory
 {
     /**
-     * @param ContainerInterface $container
-     * @return WriterPluginManager
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     * @throws Exception
      */
-    public function __invoke(ContainerInterface $container)
+    public function __invoke(ContainerInterface $container): WriterPluginManager
     {
-        $config = $container->has('config')
-            ? $container->get('config')
-            : [];
+        if (! $container->has('config')) {
+            throw new Exception('Unable to find config');
+        }
 
-        $config = isset($config['dot_log']) && isset($config['dot_log']['writer_manager'])
-            ? $config['dot_log']['writer_manager'] : [];
+        $config = $container->get('config');
+
+        if (! isset($config['dot_log']) || ! is_array($config['dot_log'])) {
+            throw new Exception('Unable to find dot_log config');
+        }
+
+        $config = $config['dot_log'];
+
+        if (! isset($config['writer_manager']) || ! is_array($config['writer_manager'])) {
+            throw new Exception('Unable to find writer_manager config');
+        }
 
         return new WriterPluginManager($container, $config);
     }
