@@ -1,9 +1,5 @@
 <?php
 
-/**
- * @see https://github.com/dotkernel/dot-log/ for the canonical source repository
- */
-
 declare(strict_types=1);
 
 namespace Dot\Log;
@@ -22,9 +18,6 @@ use Laminas\Log\WriterPluginManager;
 
 class ConfigProvider
 {
-    /**
-     * @return array
-     */
     public function __invoke(): array
     {
         return [
@@ -39,9 +32,6 @@ class ConfigProvider
         ];
     }
 
-    /**
-     * @return array
-     */
     public function getDependencies(): array
     {
         return [

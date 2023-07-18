@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Factory;
+namespace DotTest\Log\Factory;
 
 use Dot\Log\Factory\LoggerAbstractServiceFactory;
 use Laminas\Log\Logger;
@@ -64,10 +64,5 @@ class LoggerAbstractServiceFactoryTest extends TestCase
         $this->assertIsBool($this->factory->canCreate($this->container, ''));
         $this->assertFalse($this->factory->canCreate($this->container, ''));
         $this->assertTrue($this->factory->canCreate($this->container, 'dot-log.test-log'));
-    }
-
-    public function testGetConfigReturnArray(): void
-    {
-        $this->assertIsArray($this->factory->getConfig($this->container));
     }
 }

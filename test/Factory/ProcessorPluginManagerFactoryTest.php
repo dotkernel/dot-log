@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Factory;
+namespace DotTest\Log\Factory;
 
 use Dot\Log\Factory\ProcessorPluginManagerFactory;
 use Laminas\Log\ProcessorPluginManager;

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace DotLog\Test;
+namespace DotTest\Log;
 
 use Dot\Log\ConfigProvider;
 use Laminas\Log\FilterPluginManager;
@@ -12,7 +12,7 @@ use Laminas\Log\ProcessorPluginManager;
 use Laminas\Log\WriterPluginManager;
 use PHPUnit\Framework\TestCase;
 
-class ConfigProvideTest extends TestCase
+class ConfigProviderTest extends TestCase
 {
     protected array $config;
 

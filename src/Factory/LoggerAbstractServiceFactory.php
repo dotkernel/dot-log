@@ -8,6 +8,8 @@ use Dot\Mail\Service\MailServiceInterface;
 use interop\container\containerinterface;
 use Laminas\Log\Logger;
 use Laminas\Log\Writer\Mail;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
 
 use function count;
 use function date;
@@ -22,17 +24,15 @@ class LoggerAbstractServiceFactory extends \Laminas\Log\LoggerAbstractServiceFac
 {
     protected const PREFIX = 'dot-log';
 
-    /** @var string */
+    /** @var string $configKey */
     protected $configKey = 'dot_log';
 
-    /** @var string */
-    protected $subConfigKey = 'loggers';
+    protected string $subConfigKey = 'loggers';
 
     /**
      * @param string $requestedName
-     * @return bool
      */
-    public function canCreate(containerinterface $container, $requestedName)
+    public function canCreate(containerinterface $container, $requestedName): bool
     {
         $parts = explode('.', $requestedName);
         if (count($parts) !== 2) {
@@ -47,19 +47,15 @@ class LoggerAbstractServiceFactory extends \Laminas\Log\LoggerAbstractServiceFac
 
     /**
      * @param string $requestedName
-     * @param array|null $options
-     * @return object|Logger
+     * @throws ContainerExceptionInterface
      */
-    public function __invoke(containerinterface $container, $requestedName, ?array $options = null)
+    public function __invoke(containerinterface $container, $requestedName, ?array $options = null): Logger
     {
         $parts = explode('.', $requestedName);
         return parent::__invoke($container, $parts[1], $options);
     }
 
-    /**
-     * @return array
-     */
-    public function getConfig(containerinterface $services): array
+    protected function getConfig(containerinterface $services): array
     {
         parent::getConfig($services);
 
@@ -76,8 +72,10 @@ class LoggerAbstractServiceFactory extends \Laminas\Log\LoggerAbstractServiceFac
 
     /**
      * @param array $config
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
-    public function processConfig(&$config, containerinterface $services): void
+    protected function processConfig(&$config, containerinterface $services): void
     {
         if (isset($config['writers'])) {
             foreach ($config['writers'] as $index => $writerConfig) {
