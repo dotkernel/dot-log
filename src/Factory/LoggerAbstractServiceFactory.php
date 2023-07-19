@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace Dot\Log\Factory;
 
 use Dot\Mail\Service\MailServiceInterface;
-use interop\container\containerinterface;
 use Laminas\Log\Logger;
 use Laminas\Log\Writer\Mail;
 use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\ContainerInterface;
 use Psr\Container\NotFoundExceptionInterface;
 
 use function count;
@@ -32,7 +32,7 @@ class LoggerAbstractServiceFactory extends \Laminas\Log\LoggerAbstractServiceFac
     /**
      * @param string $requestedName
      */
-    public function canCreate(containerinterface $container, $requestedName): bool
+    public function canCreate(ContainerInterface $container, $requestedName): bool
     {
         $parts = explode('.', $requestedName);
         if (count($parts) !== 2) {
@@ -49,13 +49,13 @@ class LoggerAbstractServiceFactory extends \Laminas\Log\LoggerAbstractServiceFac
      * @param string $requestedName
      * @throws ContainerExceptionInterface
      */
-    public function __invoke(containerinterface $container, $requestedName, ?array $options = null): Logger
+    public function __invoke(ContainerInterface $container, $requestedName, ?array $options = null): Logger
     {
         $parts = explode('.', $requestedName);
         return parent::__invoke($container, $parts[1], $options);
     }
 
-    protected function getConfig(containerinterface $services): array
+    protected function getConfig(ContainerInterface $services): array
     {
         parent::getConfig($services);
 
@@ -75,7 +75,7 @@ class LoggerAbstractServiceFactory extends \Laminas\Log\LoggerAbstractServiceFac
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      */
-    protected function processConfig(&$config, containerinterface $services): void
+    protected function processConfig(&$config, ContainerInterface $services): void
     {
         if (isset($config['writers'])) {
             foreach ($config['writers'] as $index => $writerConfig) {
