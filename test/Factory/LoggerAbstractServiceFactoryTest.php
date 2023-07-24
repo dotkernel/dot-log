@@ -9,7 +9,9 @@ use Laminas\Log\Logger;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
+use Psr\Container\NotFoundExceptionInterface;
 
 class LoggerAbstractServiceFactoryTest extends TestCase
 {
@@ -33,6 +35,9 @@ class LoggerAbstractServiceFactoryTest extends TestCase
         $this->factory   = new LoggerAbstractServiceFactory();
     }
 
+    /**
+     * @throws ContainerExceptionInterface
+     */
     public function testWillInstantiate()
     {
         $this->container
@@ -49,6 +54,10 @@ class LoggerAbstractServiceFactoryTest extends TestCase
         $this->assertInstanceOf(Logger::class, $factory);
     }
 
+    /**
+     * @throws NotFoundExceptionInterface
+     * @throws ContainerExceptionInterface
+     */
     public function testCanCreate(): void
     {
         $this->container->expects($this->once())

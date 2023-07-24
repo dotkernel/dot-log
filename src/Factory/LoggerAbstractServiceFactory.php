@@ -24,13 +24,17 @@ class LoggerAbstractServiceFactory extends \Laminas\Log\LoggerAbstractServiceFac
 {
     protected const PREFIX = 'dot-log';
 
-    /** @var string $configKey */
-    protected $configKey = 'dot_log';
-
     protected string $subConfigKey = 'loggers';
+
+    public function __construct(string $configKey = 'dot_log')
+    {
+        parent::__construct($configKey);
+    }
 
     /**
      * @param string $requestedName
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
     public function canCreate(ContainerInterface $container, $requestedName): bool
     {
@@ -71,11 +75,10 @@ class LoggerAbstractServiceFactory extends \Laminas\Log\LoggerAbstractServiceFac
     }
 
     /**
-     * @param array $config
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      */
-    protected function processConfig(&$config, ContainerInterface $services): void
+    protected function processConfig(array &$config, ContainerInterface $services): void
     {
         if (isset($config['writers'])) {
             foreach ($config['writers'] as $index => $writerConfig) {
