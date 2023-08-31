@@ -32,7 +32,6 @@ Loggers must have at least one writer.
 A writer is an object that inherits from `Laminas\Log\Writer\AbstractWriter`. A writer's responsibility is to record log data to a storage backend. (from laminas-log's writer documentation)
 
 
-
 ### Writing to a file (stream)
 It is possible separate logs into multiple files using writers and filters.
 For example *warnings.log*, *errors.log*, *all_messages.log*.
