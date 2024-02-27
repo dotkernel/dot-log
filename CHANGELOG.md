@@ -1,3 +1,17 @@
+## 3.4.5 - 2024-02-27
+
+### Changed
+* dot-mail dependency update from 4.0 to 4.1 (introduced PHP 8.3 support)
+
+### Added
+* Nothing
+
+### Deprecated
+* Nothing
+
+### Removed
+* Nothing
+
 ## 3.1.0 - 2020-11-03
 
 ### Changed
