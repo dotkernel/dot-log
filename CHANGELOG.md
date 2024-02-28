@@ -1,3 +1,17 @@
+## 3.4.7 - 2024-02-28
+
+### Changed
+* laminas/laminas-servicemanager dependency update from 3.10.0 to 3.22
+
+### Added
+* Nothing
+
+### Deprecated
+* Nothing
+
+### Removed
+* Nothing
+
 ## 3.4.6 - 2024-02-28
 
 ### Changed
