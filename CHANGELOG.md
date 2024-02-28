@@ -1,3 +1,17 @@
+## 3.4.6 - 2024-02-28
+
+### Changed
+* laminas/laminas-log dependency update from 2.16 to 2.17 (introduced PHP 8.3 support)
+
+### Added
+* Nothing
+
+### Deprecated
+* Nothing
+
+### Removed
+* Nothing
+
 ## 3.4.5 - 2024-02-27
 
 ### Changed
