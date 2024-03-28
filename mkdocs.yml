@@ -1,0 +1,21 @@
+docs_dir: docs/book
+site_dir: docs/html
+extra:
+  project: Packages
+  current_version: v4
+  versions:
+    - v4
+nav:
+  - Home: index.md
+  - v4:
+      - "Adding The Config Provider": v4/addingConfigProvider.md
+      - "Configuring the writer(s)": v4/configuringWriter.md
+      - "Grouping log files by date": v4/groupingLogFilesByDate.md
+      - "Filtering log messages": v4/filteringLogMessages.md
+      - "Formatting Messages": v4/formattingMessages.md
+      - "Usage": v4/usage.md
+site_name: dot-log
+site_description: "DotKernel log component extending and customizing"
+repo_url: "https://github.com/dotkernel/dot-log"
+plugins:
+  - search
