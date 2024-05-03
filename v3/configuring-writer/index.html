@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        <meta name="description" content="DotKernel log component extending and customizing">
+        
+        
+
+        
+        
+            
+        
+        <meta name="docsearch:version" content="3.0.0,latest">
+        <meta name="docsearch:language" content="en">
+        <meta name="docsearch:component" content="dot-log">
+
+        
+        <link rel="canonical" href="https://docs.dotkernel.org/dot-log/v3/configuring-writer/">
+        
+        
+        <link rel="shortcut icon" href="https://docs.dotkernel.org/img/dk_logomark.svg">
+        
+
+        <title>Configuring the writer(s) - dot-log - DotKernel Documentation</title>
+
+        <link rel="stylesheet" href="https://docs.dotkernel.org/css/bootstrap.css">
+        <link rel="stylesheet" href="https://docs.dotkernel.org/css/bootstrap-icons.min.css">
+        <link rel="stylesheet" href="https://docs.dotkernel.org/css/docs.css">
+        <script src="https://docs.dotkernel.org//js/bootstrap.js" defer></script>
+        <script src="https://docs.dotkernel.org//js/docs.js" defer></script>
+        <script src="https://docs.dotkernel.org//js/scripts.js" defer></script>
+    </head>
+    <body data-bs-spy="scroll" data-bs-target=".toc" data-bs-offset="100">
+
+        
+        <nav class="navbar navbar-expand-lg bg-body-tertiary bg-light dk-nav py-3" data-bs-theme="light">
+    <div class="container justify-content-between">
+        <div class="dk-nav-icon d-flex align-items-center">
+            <a class="navbar-brand" href="https://docs.dotkernel.org/">
+                <img src="https://docs.dotkernel.org//img/dk_logomark_white.svg" alt="DotKernel Logo" width="45" height="50" class="d-inline-block align-text-top" />
+            </a>
+
+            <div class="dk-nav-icon-items">
+                <span style="font-size: 12px; line-height: 13px">DotKernel Documentation</span>
+
+                <div class="dropdown" data-bs-theme="light">
+                    <span class="fw-bold dropdown-toggle dk-pkg-name" data-bs-toggle="dropdown" aria-expanded="false">Packages</span>
+                    <ul class="dropdown-menu">
+                        <li class="dropdown-item">
+                            <a href="https://docs.dotkernel.org/api/" class="nav-link d-flex gap-4 align-items-center">
+                                <img src="https://docs.dotkernel.org/img/dk_logomark.svg" alt="DotKernel Logo" width="45" height="50" class="d-inline-block align-text-top" />
+                                <div>
+                                    <span class="fw-bold d-block">API</span>
+                                    <span>DotKernel API</span>
+                                </div>
+                            </a>
+                        </li>
+
+                        <li class="dropdown-item">
+                            <a href="https://docs.dotkernel.org/admin/" class="nav-link d-flex gap-4 align-items-center">
+                                <img src="https://docs.dotkernel.org/img/dk_logomark.svg" alt="DotKernel Logo" width="45" height="50" class="d-inline-block align-text-top" />
+                                <div>
+                                    <span class="fw-bold d-block">Admin</span>
+                                    <span>DotKernel admin application</span>
+                                </div>
+                            </a>
+                        </li>
+
+                        <li class="dropdown-item">
+                            <a href="https://docs.dotkernel.org/frontend/" class="nav-link d-flex gap-4 align-items-center">
+                                <img src="https://docs.dotkernel.org/img/dk_logomark.svg" alt="DotKernel Logo" width="45" height="50" class="d-inline-block align-text-top" />
+                                <div>
+                                    <span class="fw-bold d-block">Frontend</span>
+                                    <span>DotKernel frontend application</span>
+                                </div>
+                            </a>
+                        </li>
+
+                        <li class="dropdown-item bg-light">
+                            <a href="https://docs.dotkernel.org/packages/" class="nav-link d-flex gap-4 align-items-center">
+                                <img src="https://docs.dotkernel.org/img/dk_logomark.svg" alt="DotKernel Logo" width="45" height="50" class="d-inline-block align-text-top" />
+                                <div>
+                                    <span class="fw-bold d-block">Packages</span>
+                                    <span>DotKernel packages</span>
+                                </div>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarText">
+            <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+<!--                <li class="nav-item">-->
+<!--                    <a href="#" class="nav-link fw-bold text-white" data-bs-toggle="modal" data-bs-target="#mkdocs_search_modal" title="Open search">-->
+<!--                        <i class="bi bi-search"></i> Search-->
+<!--                    </a>-->
+<!--                </li>-->
+                <li class="nav-item">
+                    <a class="nav-link fw-bold text-white" href="https://github.com/dotkernel/dot-log" title="Go to dot-log repository" target="_blank">
+                        <i class="bi bi-github"></i>
+                        GitHub
+                    </a>
+                </li>
+                <li class="nav-item">
+                    
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+        
+        <div class="container">
+    <nav aria-label="breadcrumb" class="nav_breadcrumb">
+        <ol class="breadcrumb">
+            
+                <li class="breadcrumb-item"><a href="https://docs.dotkernel.org/">Overview</a></li>
+                <li class="breadcrumb-item"><a href="https://docs.dotkernel.org/packages/">Packages</a></li>
+
+                
+                    <li class="breadcrumb-item"><a href="../..">dot-log</a></li>
+
+                    
+                        
+                            
+                            
+                        
+                    
+
+                    <li class="breadcrumb-item active" aria-current="page">Configuring the writer(s)</li>
+                
+            
+        </ol>
+    </nav>
+</div>
+
+        
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-3 right_sidebar">
+                    
+                    
+    <div class="subnavigation hidden-print">
+<!--        <h4 class="subnavigation__title">-->
+<!--            <a href="../..">dot-log</a>-->
+<!--        </h4>-->
+
+        <h5 class="subnavigation__title">Table of Contents</h5>
+
+        <ul class="subnavigation__list">
+            
+
+                
+                
+                    
+                        
+    <li class="subnavigation__list-item ">
+        <a href="../adding-config-provider/" class="subnavigation__link">Adding The Config Provider</a>
+    </li>
+
+                    
+                        
+    <li class="subnavigation__list-item subnavigation__list-item--active">
+        <a href="./" class="subnavigation__link">Configuring the writer(s)</a>
+    </li>
+
+                    
+                        
+    <li class="subnavigation__list-item ">
+        <a href="../grouping-log-files-by-date/" class="subnavigation__link">Grouping log files by date</a>
+    </li>
+
+                    
+                        
+    <li class="subnavigation__list-item ">
+        <a href="../filtering-log-messages/" class="subnavigation__link">Filtering log messages</a>
+    </li>
+
+                    
+                        
+    <li class="subnavigation__list-item ">
+        <a href="../formatting-messages/" class="subnavigation__link">Formatting Messages</a>
+    </li>
+
+                    
+                        
+    <li class="subnavigation__list-item ">
+        <a href="../example-with-formatter/" class="subnavigation__link">Example with formatter</a>
+    </li>
+
+                    
+                        
+    <li class="subnavigation__list-item ">
+        <a href="../usage/" class="subnavigation__link">Usage</a>
+    </li>
+
+                    
+                
+            
+        </ul>
+    </div>
+
+                    
+
+                    
+                    
+                    
+    
+
+    
+    
+        <div class="toc">
+            <h6 class="toc__headline">On this page</h6>
+            <ul class="toc__list">
+            
+                <li class="toc__entry">
+                    <a href="#writing-to-a-file-stream" class="toc__link nav-link">Writing to a file (stream)</a>
+                </li>
+            
+            </ul>
+        </div>
+    
+
+                    
+                </div>
+                <div class="col-lg-9 main_docs">
+                    
+                    
+
+
+
+
+    
+    
+
+    <h1 id="configuring-the-writers">Configuring the writer(s)</h1>
+<p>Loggers must have at least one writer.</p>
+<p>A writer is an object that inherits from <code>Laminas\Log\Writer\AbstractWriter</code>. A writer's responsibility is to record log data to a storage backend. (from laminas-log's writer documentation)</p>
+<h2 id="writing-to-a-file-stream">Writing to a file (stream)</h2>
+<p>It is possible separate logs into multiple files using writers and filters.
+For example <em>warnings.log</em>, <em>errors.log</em>, <em>all_messages.log</em>.</p>
+<p>The following is the simplest example to write all log messages to <code>/log/dk.log</code></p>
+<pre class="highlight"><code class="language-php">return [
+    'dot_log' =&gt; [
+        'loggers' =&gt; [
+            'my_logger' =&gt; [
+                'writers' =&gt; [
+                     'FileWriter' =&gt; [
+                        'name' =&gt; 'FileWriter',
+                        'priority' =&gt; \Laminas\Log\Logger::ALERT, // this is equal to 1
+                        'options' =&gt; [
+                            'stream' =&gt; __DIR__ . '/../../log/dk.log',
+                        ],
+                    ],
+                ],
+            ]
+        ],
+    ],
+];</code></pre>
+<ul>
+<li>The <code>FileWriter</code> key is optional, otherwise the writers array would be enumerative instead of associative.</li>
+<li>The writer name key is a developer-provided name for that writer, the writer name key is <strong>mandatory</strong>.</li>
+</ul>
+<p>The writer priority key is not affecting the errors that are written, it is a way to organize writers, for example:</p>
+<p>1 - FILE
+2 - SQL
+3 - E-mail
+It is the most important to write in the file, the sql or e-mail are more probably fail because the servers can be external and offline, the file is on the same server.</p>
+<p>The writer priority key is optional.</p>
+<p>To write into a file the key stream must be present in the writer options array. This is required only if writing into streams/files.</p>
+
+
+
+
+    <nav>
+    <ul class="page-nav hidden-print">
+        
+        <li class="page-nav__item">
+            
+                <a rel="prev" class="page-nav__link page-nav__link--prev" href="../adding-config-provider/">
+                    <small class="page-nav__label">Previous</small>
+                    <i class="bi bi-chevron-left"></i>
+                    Adding The Config Provider
+                </a>
+            
+        </li>
+
+        
+        <li class="page-nav__item">
+            
+                <a rel="next" class="page-nav__link page-nav__link--next" href="../grouping-log-files-by-date/">
+                    <small class="page-nav__label">Next</small>
+                    Grouping log files by date
+                    <i class="bi bi-chevron-right"></i>
+                </a>
+            
+        </li>
+    </ul>
+</nav>
+
+
+
+                    
+                </div>
+            </div>
+        </div>
+
+        
+        <footer class="footer">
+    <div class="container">
+
+        <div class="row">
+            <div class="col-md-9">
+                <div class="footer_head">
+                    <p>DotKernel</p>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 dk_widget">
+                        <p>DotKernel Frontend</p>
+                        <a href="https://docs.dotkernel.org/frontend/" target="_blank">
+                            <i class="bi bi-arrow-return-right"></i>
+                            DotKernel web starter project suitable for frontend applications
+                        </a>
+                    </div>
+
+                    <div class="col-md-6 dk_widget">
+                        <p>DotKernel API</p>
+                        <a href="https://docs.dotkernel.org/api/" target="_blank">
+                            <i class="bi bi-arrow-return-right"></i>
+                            DotKernel web starter project suitable for building RESTful APIs
+                        </a>
+                    </div>
+
+                    <div class="col-md-6 dk_widget">
+                        <p>DotKernel Admin</p>
+
+                        <a href="https://docs.dotkernel.org/admin/" target="_blank">
+                            <i class="bi bi-arrow-return-right"></i>
+                            DotKernel web starter project suitable for admin applications
+                        </a>
+                    </div>
+
+                    <div class="col-md-6 dk_widget">
+                        <p>DotKernel Packages</p>
+                        <a href="https://docs.dotkernel.org/packages/" target="_blank">
+                            <i class="bi bi-arrow-return-right"></i>
+                            DotKernel packages offering a wide range of tools
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="col-md-3">
+                <div class="footer_head">
+                    <p>Support</p>
+                </div>
+                <ul class="support__list">
+                    <li class="support__list-item">
+                        <a href="https://github.com/dotkernel" class="support__link" title="GitHub" target="_blank">
+                            <i class="bi bi-github"></i> GitHub
+                        </a>
+                    </li>
+                    <li class="support__list-item">
+                        <a href="https://dotkernel.slack.com" class="support__link" title="Slack" target="_blank">
+                            <i class="bi bi-slack"></i> Slack
+                        </a>
+                    </li>
+                    <li class="support__list-item">
+                        <a href="https://twitter.com/dotkernel" class="support__link" title="X (Twitter)" target="_blank">
+                            <i class="bi bi-twitter-x"></i> Twitter
+                        </a>
+                    </li>
+
+                    <li class="support__list-item">
+                        <a href="https://www.dotkernel.com/blog/" class="support__link" title="Blog" target="_blank">
+                            <i class="bi bi-file-post"></i> Blog
+                        </a>
+                    </li>
+                    <li class="support__list-item">
+                        <a href="https://www.dotkernel.com/feed/" class="support__link" title="Blog feed" target="_blank">
+                            <i class="bi bi-rss-fill"></i> Feed
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="footer_copy">
+            &#169; 2024 by <a href="https://www.dotkernel.com/" target="_blank">DotKernel</a> a collection of PSR-7 Middleware applications and libraries
+        </div>
+    </div>
+</footer>
+
+        <script>
+            let base_url = '../..',
+                project  = "packages",
+                siteName = 'dot-log';
+        </script>
+<!--        -->
+<!--        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Search</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form role="form">
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Search in dot-log" id="mkdocs-search-query">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results"></div>
+            </div>
+        </div>
+    </div>
+</div>-->
+    </body>
+</html>
