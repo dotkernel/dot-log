@@ -20,9 +20,7 @@
         
         <link rel="canonical" href="https://docs.dotkernel.org/dot-log/v3/example-with-formatter/">
         
-        
-        <link rel="shortcut icon" href="https://docs.dotkernel.org/img/dk_logomark.svg">
-        
+        <link rel="shortcut icon" href="https://docs.dotkernel.org/img/dk_docs_favicon_white.svg">
 
         <title>Example with formatter - dot-log - DotKernel Documentation</title>
 
@@ -40,7 +38,8 @@
     <div class="container justify-content-between">
         <div class="dk-nav-icon d-flex align-items-center">
             <a class="navbar-brand" href="https://docs.dotkernel.org/">
-                <img src="https://docs.dotkernel.org//img/dk_logomark_white.svg" alt="DotKernel Logo" width="45" height="50" class="d-inline-block align-text-top" />
+                <img alt="DotKernel Logo" class="d-inline-block align-text-top" height="50"
+                     src="https://docs.dotkernel.org//img/dk_logomark_white.svg" width="45"/>
             </a>
 
             <div class="dk-nav-icon-items">
@@ -49,45 +48,47 @@
                 <div class="dropdown" data-bs-theme="light">
                     <span class="fw-bold dropdown-toggle dk-pkg-name" data-bs-toggle="dropdown" aria-expanded="false">Packages</span>
                     <ul class="dropdown-menu">
-                        <li class="dropdown-item">
-                            <a href="https://docs.dotkernel.org/api/" class="nav-link d-flex gap-4 align-items-center">
-                                <img src="https://docs.dotkernel.org/img/dk_logomark.svg" alt="DotKernel Logo" width="45" height="50" class="d-inline-block align-text-top" />
+                        
+                        <li class="dropdown-item ">
+                            <a href="https://docs.dotkernel.org/api-documentation/" class="nav-link d-flex gap-4 align-items-center">
+                                <img alt="DotKernel Logo" class="d-inline-block align-text-top" height="50" src="https://docs.dotkernel.org/img/dk_logomark.svg" width="45" />
                                 <div>
                                     <span class="fw-bold d-block">API</span>
                                     <span>DotKernel API</span>
                                 </div>
                             </a>
                         </li>
-
-                        <li class="dropdown-item">
+                        
+                        <li class="dropdown-item ">
                             <a href="https://docs.dotkernel.org/admin/" class="nav-link d-flex gap-4 align-items-center">
-                                <img src="https://docs.dotkernel.org/img/dk_logomark.svg" alt="DotKernel Logo" width="45" height="50" class="d-inline-block align-text-top" />
+                                <img alt="DotKernel Logo" class="d-inline-block align-text-top" height="50" src="https://docs.dotkernel.org/img/dk_logomark.svg" width="45" />
                                 <div>
                                     <span class="fw-bold d-block">Admin</span>
-                                    <span>DotKernel admin application</span>
+                                    <span>DotKernel Admin application</span>
                                 </div>
                             </a>
                         </li>
-
-                        <li class="dropdown-item">
+                        
+                        <li class="dropdown-item ">
                             <a href="https://docs.dotkernel.org/frontend/" class="nav-link d-flex gap-4 align-items-center">
-                                <img src="https://docs.dotkernel.org/img/dk_logomark.svg" alt="DotKernel Logo" width="45" height="50" class="d-inline-block align-text-top" />
+                                <img alt="DotKernel Logo" class="d-inline-block align-text-top" height="50" src="https://docs.dotkernel.org/img/dk_logomark.svg" width="45" />
                                 <div>
                                     <span class="fw-bold d-block">Frontend</span>
-                                    <span>DotKernel frontend application</span>
+                                    <span>DotKernel Frontend application</span>
                                 </div>
                             </a>
                         </li>
-
+                        
                         <li class="dropdown-item bg-light">
                             <a href="https://docs.dotkernel.org/packages/" class="nav-link d-flex gap-4 align-items-center">
-                                <img src="https://docs.dotkernel.org/img/dk_logomark.svg" alt="DotKernel Logo" width="45" height="50" class="d-inline-block align-text-top" />
+                                <img alt="DotKernel Logo" class="d-inline-block align-text-top" height="50" src="https://docs.dotkernel.org/img/dk_logomark.svg" width="45" />
                                 <div>
                                     <span class="fw-bold d-block">Packages</span>
                                     <span>DotKernel packages</span>
                                 </div>
                             </a>
                         </li>
+                        
                     </ul>
                 </div>
             </div>
@@ -217,17 +218,6 @@
 
     
     
-        <div class="toc">
-            <h6 class="toc__headline">On this page</h6>
-            <ul class="toc__list">
-            
-                <li class="toc__entry">
-                    <a href="#usage" class="toc__link nav-link">Usage</a>
-                </li>
-            
-            </ul>
-        </div>
-    
 
                     
                 </div>
@@ -243,11 +233,11 @@
 
     <h1 id="example-with-formatter">Example with formatter</h1>
 <ul>
-<li>The log is used through dot-log</li>
-<li>The logger name is my_logger</li>
-<li>Writes to file: log/dk.log</li>
-<li>Explicitly allows all the messages to be written</li>
-<li>Formats the messages as JSON</li>
+<li>The log is used through <code>dot-log</code></li>
+<li>The logger name is <code>my_logger</code></li>
+<li>It writes to file: <code>log/dk.log</code></li>
+<li>It is configured to explicitly write all messages  </li>
+<li>The messages are formatted as JSON</li>
 </ul>
 <pre class="highlight"><code class="language-php">&lt;?php
 return [
@@ -280,23 +270,6 @@ return [
         ],
     ],
 ];</code></pre>
-<h2 id="usage">Usage</h2>
-<p>Basic usage of the logger is illustraded below.</p>
-<p>The messages are written to see which logs are written and which are not written.</p>
-<pre class="highlight"><code class="language-php">use Laminas\Log\Logger;</code></pre>
-<p>...</p>
-<pre class="highlight"><code class="language-php">$logger = $container-&gt;get('dot-log.my_logger');
-
-/** @var Logger $logger */
-$logger-&gt;emerg('0 EMERG');
-$logger-&gt;alert('1 ALERT');
-$logger-&gt;crit('2 CRITICAL');
-$logger-&gt;err('3 ERR');
-$logger-&gt;warn('4 WARN');
-$logger-&gt;notice('5 NOTICE');
-$logger-&gt;info('6 INF');
-$logger-&gt;debug('7 debug');
-$logger-&gt;log(Logger::NOTICE, 'NOTICE from log()');</code></pre>
 
 
 
@@ -355,7 +328,7 @@ $logger-&gt;log(Logger::NOTICE, 'NOTICE from log()');</code></pre>
 
                     <div class="col-md-6 dk_widget">
                         <p>DotKernel API</p>
-                        <a href="https://docs.dotkernel.org/api/" target="_blank">
+                        <a href="https://docs.dotkernel.org/api-documentation/" target="_blank">
                             <i class="bi bi-arrow-return-right"></i>
                             DotKernel web starter project suitable for building RESTful APIs
                         </a>

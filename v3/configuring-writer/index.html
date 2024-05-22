@@ -20,9 +20,7 @@
         
         <link rel="canonical" href="https://docs.dotkernel.org/dot-log/v3/configuring-writer/">
         
-        
-        <link rel="shortcut icon" href="https://docs.dotkernel.org/img/dk_logomark.svg">
-        
+        <link rel="shortcut icon" href="https://docs.dotkernel.org/img/dk_docs_favicon_white.svg">
 
         <title>Configuring the writer(s) - dot-log - DotKernel Documentation</title>
 
@@ -40,7 +38,8 @@
     <div class="container justify-content-between">
         <div class="dk-nav-icon d-flex align-items-center">
             <a class="navbar-brand" href="https://docs.dotkernel.org/">
-                <img src="https://docs.dotkernel.org//img/dk_logomark_white.svg" alt="DotKernel Logo" width="45" height="50" class="d-inline-block align-text-top" />
+                <img alt="DotKernel Logo" class="d-inline-block align-text-top" height="50"
+                     src="https://docs.dotkernel.org//img/dk_logomark_white.svg" width="45"/>
             </a>
 
             <div class="dk-nav-icon-items">
@@ -49,45 +48,47 @@
                 <div class="dropdown" data-bs-theme="light">
                     <span class="fw-bold dropdown-toggle dk-pkg-name" data-bs-toggle="dropdown" aria-expanded="false">Packages</span>
                     <ul class="dropdown-menu">
-                        <li class="dropdown-item">
-                            <a href="https://docs.dotkernel.org/api/" class="nav-link d-flex gap-4 align-items-center">
-                                <img src="https://docs.dotkernel.org/img/dk_logomark.svg" alt="DotKernel Logo" width="45" height="50" class="d-inline-block align-text-top" />
+                        
+                        <li class="dropdown-item ">
+                            <a href="https://docs.dotkernel.org/api-documentation/" class="nav-link d-flex gap-4 align-items-center">
+                                <img alt="DotKernel Logo" class="d-inline-block align-text-top" height="50" src="https://docs.dotkernel.org/img/dk_logomark.svg" width="45" />
                                 <div>
                                     <span class="fw-bold d-block">API</span>
                                     <span>DotKernel API</span>
                                 </div>
                             </a>
                         </li>
-
-                        <li class="dropdown-item">
+                        
+                        <li class="dropdown-item ">
                             <a href="https://docs.dotkernel.org/admin/" class="nav-link d-flex gap-4 align-items-center">
-                                <img src="https://docs.dotkernel.org/img/dk_logomark.svg" alt="DotKernel Logo" width="45" height="50" class="d-inline-block align-text-top" />
+                                <img alt="DotKernel Logo" class="d-inline-block align-text-top" height="50" src="https://docs.dotkernel.org/img/dk_logomark.svg" width="45" />
                                 <div>
                                     <span class="fw-bold d-block">Admin</span>
-                                    <span>DotKernel admin application</span>
+                                    <span>DotKernel Admin application</span>
                                 </div>
                             </a>
                         </li>
-
-                        <li class="dropdown-item">
+                        
+                        <li class="dropdown-item ">
                             <a href="https://docs.dotkernel.org/frontend/" class="nav-link d-flex gap-4 align-items-center">
-                                <img src="https://docs.dotkernel.org/img/dk_logomark.svg" alt="DotKernel Logo" width="45" height="50" class="d-inline-block align-text-top" />
+                                <img alt="DotKernel Logo" class="d-inline-block align-text-top" height="50" src="https://docs.dotkernel.org/img/dk_logomark.svg" width="45" />
                                 <div>
                                     <span class="fw-bold d-block">Frontend</span>
-                                    <span>DotKernel frontend application</span>
+                                    <span>DotKernel Frontend application</span>
                                 </div>
                             </a>
                         </li>
-
+                        
                         <li class="dropdown-item bg-light">
                             <a href="https://docs.dotkernel.org/packages/" class="nav-link d-flex gap-4 align-items-center">
-                                <img src="https://docs.dotkernel.org/img/dk_logomark.svg" alt="DotKernel Logo" width="45" height="50" class="d-inline-block align-text-top" />
+                                <img alt="DotKernel Logo" class="d-inline-block align-text-top" height="50" src="https://docs.dotkernel.org/img/dk_logomark.svg" width="45" />
                                 <div>
                                     <span class="fw-bold d-block">Packages</span>
                                     <span>DotKernel packages</span>
                                 </div>
                             </a>
                         </li>
+                        
                     </ul>
                 </div>
             </div>
@@ -245,8 +246,7 @@
 <p>Loggers must have at least one writer.</p>
 <p>A writer is an object that inherits from <code>Laminas\Log\Writer\AbstractWriter</code>. A writer's responsibility is to record log data to a storage backend. (from laminas-log's writer documentation)</p>
 <h2 id="writing-to-a-file-stream">Writing to a file (stream)</h2>
-<p>It is possible separate logs into multiple files using writers and filters.
-For example <em>warnings.log</em>, <em>errors.log</em>, <em>all_messages.log</em>.</p>
+<p>You can separate logs into multiple files using writers and filters. For example <em>warnings.log</em>, <em>errors.log</em>, <em>all_messages.log</em>.</p>
 <p>The following is the simplest example to write all log messages to <code>/log/dk.log</code></p>
 <pre class="highlight"><code class="language-php">return [
     'dot_log' =&gt; [
@@ -267,15 +267,17 @@ For example <em>warnings.log</em>, <em>errors.log</em>, <em>all_messages.log</em
 ];</code></pre>
 <ul>
 <li>The <code>FileWriter</code> key is optional, otherwise the writers array would be enumerative instead of associative.</li>
-<li>The writer name key is a developer-provided name for that writer, the writer name key is <strong>mandatory</strong>.</li>
+<li>The <code>name</code> key is a developer-provided name for that writer, the writer name key is <strong>mandatory</strong>.</li>
 </ul>
-<p>The writer priority key is not affecting the errors that are written, it is a way to organize writers, for example:</p>
-<p>1 - FILE
-2 - SQL
-3 - E-mail
-It is the most important to write in the file, the sql or e-mail are more probably fail because the servers can be external and offline, the file is on the same server.</p>
-<p>The writer priority key is optional.</p>
-<p>To write into a file the key stream must be present in the writer options array. This is required only if writing into streams/files.</p>
+<p>The <code>priority</code> key does not affect the errors that are written. It is a way to organize writers, for example:</p>
+<ul>
+<li>1 - FILE</li>
+<li>2 - SQL</li>
+<li>3 - E-mail</li>
+</ul>
+<p>The most important things to write in the file, the sql or e-mail are usually fails because the servers can be external and offline, but the file is on the same server.</p>
+<p>The <code>priority</code> key is optional.</p>
+<p>The key <code>stream</code> is required only if writing into streams/files.</p>
 
 
 
@@ -334,7 +336,7 @@ It is the most important to write in the file, the sql or e-mail are more probab
 
                     <div class="col-md-6 dk_widget">
                         <p>DotKernel API</p>
-                        <a href="https://docs.dotkernel.org/api/" target="_blank">
+                        <a href="https://docs.dotkernel.org/api-documentation/" target="_blank">
                             <i class="bi bi-arrow-return-right"></i>
                             DotKernel web starter project suitable for building RESTful APIs
                         </a>

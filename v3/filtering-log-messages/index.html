@@ -20,9 +20,7 @@
         
         <link rel="canonical" href="https://docs.dotkernel.org/dot-log/v3/filtering-log-messages/">
         
-        
-        <link rel="shortcut icon" href="https://docs.dotkernel.org/img/dk_logomark.svg">
-        
+        <link rel="shortcut icon" href="https://docs.dotkernel.org/img/dk_docs_favicon_white.svg">
 
         <title>Filtering log messages - dot-log - DotKernel Documentation</title>
 
@@ -40,7 +38,8 @@
     <div class="container justify-content-between">
         <div class="dk-nav-icon d-flex align-items-center">
             <a class="navbar-brand" href="https://docs.dotkernel.org/">
-                <img src="https://docs.dotkernel.org//img/dk_logomark_white.svg" alt="DotKernel Logo" width="45" height="50" class="d-inline-block align-text-top" />
+                <img alt="DotKernel Logo" class="d-inline-block align-text-top" height="50"
+                     src="https://docs.dotkernel.org//img/dk_logomark_white.svg" width="45"/>
             </a>
 
             <div class="dk-nav-icon-items">
@@ -49,45 +48,47 @@
                 <div class="dropdown" data-bs-theme="light">
                     <span class="fw-bold dropdown-toggle dk-pkg-name" data-bs-toggle="dropdown" aria-expanded="false">Packages</span>
                     <ul class="dropdown-menu">
-                        <li class="dropdown-item">
-                            <a href="https://docs.dotkernel.org/api/" class="nav-link d-flex gap-4 align-items-center">
-                                <img src="https://docs.dotkernel.org/img/dk_logomark.svg" alt="DotKernel Logo" width="45" height="50" class="d-inline-block align-text-top" />
+                        
+                        <li class="dropdown-item ">
+                            <a href="https://docs.dotkernel.org/api-documentation/" class="nav-link d-flex gap-4 align-items-center">
+                                <img alt="DotKernel Logo" class="d-inline-block align-text-top" height="50" src="https://docs.dotkernel.org/img/dk_logomark.svg" width="45" />
                                 <div>
                                     <span class="fw-bold d-block">API</span>
                                     <span>DotKernel API</span>
                                 </div>
                             </a>
                         </li>
-
-                        <li class="dropdown-item">
+                        
+                        <li class="dropdown-item ">
                             <a href="https://docs.dotkernel.org/admin/" class="nav-link d-flex gap-4 align-items-center">
-                                <img src="https://docs.dotkernel.org/img/dk_logomark.svg" alt="DotKernel Logo" width="45" height="50" class="d-inline-block align-text-top" />
+                                <img alt="DotKernel Logo" class="d-inline-block align-text-top" height="50" src="https://docs.dotkernel.org/img/dk_logomark.svg" width="45" />
                                 <div>
                                     <span class="fw-bold d-block">Admin</span>
-                                    <span>DotKernel admin application</span>
+                                    <span>DotKernel Admin application</span>
                                 </div>
                             </a>
                         </li>
-
-                        <li class="dropdown-item">
+                        
+                        <li class="dropdown-item ">
                             <a href="https://docs.dotkernel.org/frontend/" class="nav-link d-flex gap-4 align-items-center">
-                                <img src="https://docs.dotkernel.org/img/dk_logomark.svg" alt="DotKernel Logo" width="45" height="50" class="d-inline-block align-text-top" />
+                                <img alt="DotKernel Logo" class="d-inline-block align-text-top" height="50" src="https://docs.dotkernel.org/img/dk_logomark.svg" width="45" />
                                 <div>
                                     <span class="fw-bold d-block">Frontend</span>
-                                    <span>DotKernel frontend application</span>
+                                    <span>DotKernel Frontend application</span>
                                 </div>
                             </a>
                         </li>
-
+                        
                         <li class="dropdown-item bg-light">
                             <a href="https://docs.dotkernel.org/packages/" class="nav-link d-flex gap-4 align-items-center">
-                                <img src="https://docs.dotkernel.org/img/dk_logomark.svg" alt="DotKernel Logo" width="45" height="50" class="d-inline-block align-text-top" />
+                                <img alt="DotKernel Logo" class="d-inline-block align-text-top" height="50" src="https://docs.dotkernel.org/img/dk_logomark.svg" width="45" />
                                 <div>
                                     <span class="fw-bold d-block">Packages</span>
                                     <span>DotKernel packages</span>
                                 </div>
                             </a>
                         </li>
+                        
                     </ul>
                 </div>
             </div>
@@ -231,14 +232,24 @@
     
 
     <h1 id="filtering-log-messages">Filtering log messages</h1>
-<p>As per PSR-3 document.</p>
-<p>The log levels are: emergency (0), alert (1), critical (2), error (3), warn (4), notice (5), info (6), debug (7) (in order of priority/importance)</p>
-<p>Although the plain Logger in Laminas Log is not fully compatible with PSR-3, it provides a way to log all of these message types.</p>
+<p>The following conforms to the <code>PSR-3: Logger Interface</code> document.</p>
+<p>The log levels are in order of priority/importance:</p>
+<ul>
+<li>emergency (0)</li>
+<li>alert (1)</li>
+<li>critical (2)</li>
+<li>error (3)</li>
+<li>warning (4)</li>
+<li>notice (5)</li>
+<li>info (6)</li>
+<li>debug (7)</li>
+</ul>
+<p>Although the plain Logger in <code>laminas-log</code> is not fully compatible with PSR-3, it provides a way to log all of these message types.</p>
 <p>The following example has three file writers using filters:</p>
 <ul>
 <li>First Example: <code>FileWriter</code> - All messages are logged in <code>/log/dk.log</code></li>
 <li>Second Example: <code>OnlyWarningsWriter</code> - Only warnings are logged in <code>/log/warnings.log</code></li>
-<li>Third Example: <code>WarningOrHigherWriter</code> - All important messages (<code>warnings</code> or more critical) are logged in <code>/log/important_messages.log</code></li>
+<li>Third Example: <code>WarningOrHigherWriter</code> - All important messages (<code>warnings</code> or critical) are logged in <code>/log/important_messages.log</code></li>
 </ul>
 <pre class="highlight"><code class="language-php">&lt;?php
 
@@ -291,7 +302,7 @@ return [
                                     'name' =&gt; 'priority',
                                     'options' =&gt; [
                                         // note, the smaller the priority, the more important is the message
-                                        // 0 - emergency, 1 - alert, 2- error, 3 - warn. .etc
+                                        // 0 - emergency, 1 - alert, 2- error, 3 - warn etc.
                                         'operator' =&gt; '&lt;=',
                                         'priority' =&gt; \Laminas\Log\Logger::WARN,
                                     ],
@@ -305,9 +316,8 @@ return [
     ],
 ];</code></pre>
 <p>As in the writer configuration, the developer can optionally use keys for associating the filters with a name.</p>
-<p>IMPORTANT NOTE: the operator for more important messages is &lt;=, this is because the number representation is smaller for a more important message type.</p>
-<p>The filter added on the first writer is equal to not setting a filter, but it was been added to illustrate how to explicitly allow all messages.</p>
-<p>It was added opposite to the others just to demonstrate the other operator is also an option.</p>
+<p>IMPORTANT NOTE: the operator for more important messages is <code>&lt;=</code>, this is because the number representation is smaller for a more important message type.</p>
+<p>The filter added on the first writer is equivalent to not setting a filter, but it was added to illustrate the usage of the operator to explicitly allow all messages.</p>
 <p>More examples on filters: https://docs.laminas.dev/laminas-log/filters/</p>
 
 
@@ -367,7 +377,7 @@ return [
 
                     <div class="col-md-6 dk_widget">
                         <p>DotKernel API</p>
-                        <a href="https://docs.dotkernel.org/api/" target="_blank">
+                        <a href="https://docs.dotkernel.org/api-documentation/" target="_blank">
                             <i class="bi bi-arrow-return-right"></i>
                             DotKernel web starter project suitable for building RESTful APIs
                         </a>
