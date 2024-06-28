@@ -124,7 +124,7 @@
         <ol class="breadcrumb">
             
                 <li class="breadcrumb-item"><a href="https://docs.dotkernel.org/">Overview</a></li>
-                <li class="breadcrumb-item"><a href="https://docs.dotkernel.org/packages/">Packages</a></li>
+                
 
                 
                     <li class="breadcrumb-item">dot-log</li>
@@ -154,45 +154,45 @@
                 
                     
                         
-    <li class="subnavigation__list-item ">
-        <a href="v3/adding-config-provider/" class="subnavigation__link">Adding The Config Provider</a>
-    </li>
+<li class="subnavigation__list-item ">
+    <a href="v3/adding-config-provider/" class="subnavigation__link">Adding The Config Provider</a>
+</li>
 
                     
                         
-    <li class="subnavigation__list-item ">
-        <a href="v3/configuring-writer/" class="subnavigation__link">Configuring the writer(s)</a>
-    </li>
+<li class="subnavigation__list-item ">
+    <a href="v3/configuring-writer/" class="subnavigation__link">Configuring the writer(s)</a>
+</li>
 
                     
                         
-    <li class="subnavigation__list-item ">
-        <a href="v3/grouping-log-files-by-date/" class="subnavigation__link">Grouping log files by date</a>
-    </li>
+<li class="subnavigation__list-item ">
+    <a href="v3/grouping-log-files-by-date/" class="subnavigation__link">Grouping log files by date</a>
+</li>
 
                     
                         
-    <li class="subnavigation__list-item ">
-        <a href="v3/filtering-log-messages/" class="subnavigation__link">Filtering log messages</a>
-    </li>
+<li class="subnavigation__list-item ">
+    <a href="v3/filtering-log-messages/" class="subnavigation__link">Filtering log messages</a>
+</li>
 
                     
                         
-    <li class="subnavigation__list-item ">
-        <a href="v3/formatting-messages/" class="subnavigation__link">Formatting Messages</a>
-    </li>
+<li class="subnavigation__list-item ">
+    <a href="v3/formatting-messages/" class="subnavigation__link">Formatting Messages</a>
+</li>
 
                     
                         
-    <li class="subnavigation__list-item ">
-        <a href="v3/example-with-formatter/" class="subnavigation__link">Example with formatter</a>
-    </li>
+<li class="subnavigation__list-item ">
+    <a href="v3/example-with-formatter/" class="subnavigation__link">Example with formatter</a>
+</li>
 
                     
                         
-    <li class="subnavigation__list-item ">
-        <a href="v3/usage/" class="subnavigation__link">Usage</a>
-    </li>
+<li class="subnavigation__list-item ">
+    <a href="v3/usage/" class="subnavigation__link">Usage</a>
+</li>
 
                     
                 
@@ -351,6 +351,14 @@
             let base_url = '.',
                 project  = "packages",
                 siteName = 'dot-log';
+
+                document.addEventListener("DOMContentLoaded", function() {
+                    document.querySelectorAll('.subnavigation__link').forEach(function(link) {
+                        if (link.getAttribute('href') === './') {
+                            link.parentNode.parentNode.classList.add('show');
+                        }
+                    });
+                });
         </script>
 <!--        -->
 <!--        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
@@ -376,5 +384,5 @@
 
 <!--
 MkDocs version : 1.6.0
-Build Date UTC : 2024-05-22 09:20:30.926227+00:00
+Build Date UTC : 2024-06-28 09:13:53.072879+00:00
 -->
