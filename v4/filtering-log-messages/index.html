@@ -18,9 +18,11 @@
         <meta name="docsearch:component" content="dot-log">
 
         
+        <link rel="canonical" href="https://docs.dotkernel.org/dot-log/v4/filtering-log-messages/">
+        
         <link rel="shortcut icon" href="https://docs.dotkernel.org/img/dk_docs_favicon_white.svg">
 
-        <title>dot-log - DotKernel Documentation</title>
+        <title>Filtering log messages - dot-log - DotKernel Documentation</title>
 
         <link rel="stylesheet" href="https://docs.dotkernel.org/css/bootstrap.css">
         <link rel="stylesheet" href="https://docs.dotkernel.org/css/bootstrap-icons.min.css">
@@ -130,7 +132,7 @@
         <div class="dropdown-menu dropdown-menu-right dropdown-menu-lg-left" aria-labelledby="version-selector-dropdown">
             
                 
-                    <a href="../v4/overview/" class="dropdown-item">
+                    <a href="../overview/" class="dropdown-item active">
                         
                             v4 (latest)
                         
@@ -138,7 +140,7 @@
                 
             
                 
-                    <a href="../v3/overview/" class="dropdown-item">
+                    <a href="../../v3/overview/" class="dropdown-item">
                         
                             v3
                         
@@ -164,11 +166,16 @@
                 
 
                 
-                    <li class="breadcrumb-item"><a href="../.">dot-log</a></li>
+                    <li class="breadcrumb-item"><a href="../..">dot-log</a></li>
 
                     
+                        
+                            
+                            
+                        
+                    
 
-                    <li class="breadcrumb-item active" aria-current="page"></li>
+                    <li class="breadcrumb-item active" aria-current="page">Filtering log messages</li>
                 
             
         </ol>
@@ -183,7 +190,7 @@
                     
     <div class="subnavigation hidden-print">
 <!--        <h4 class="subnavigation__title">-->
-<!--            <a href="../.">dot-log</a>-->
+<!--            <a href="../..">dot-log</a>-->
 <!--        </h4>-->
 
         <h5 class="subnavigation__title">Table of Contents</h5>
@@ -193,8 +200,54 @@
 
                 
                 
+                    
+                        
+<li class="subnavigation__list-item ">
+    <a href="../overview/" class="subnavigation__link">Overview</a>
+</li>
 
                     
+                        
+<li class="subnavigation__list-item ">
+    <a href="../adding-config-provider/" class="subnavigation__link">Adding The Config Provider</a>
+</li>
+
+                    
+                        
+<li class="subnavigation__list-item ">
+    <a href="../configuring-writer/" class="subnavigation__link">Configuring the writer(s)</a>
+</li>
+
+                    
+                        
+<li class="subnavigation__list-item ">
+    <a href="../grouping-log-files-by-date/" class="subnavigation__link">Grouping log files by date</a>
+</li>
+
+                    
+                        
+<li class="subnavigation__list-item subnavigation__list-item--active">
+    <a href="./" class="subnavigation__link">Filtering log messages</a>
+</li>
+
+                    
+                        
+<li class="subnavigation__list-item ">
+    <a href="../formatting-messages/" class="subnavigation__link">Formatting Messages</a>
+</li>
+
+                    
+                        
+<li class="subnavigation__list-item ">
+    <a href="../example-with-formatter/" class="subnavigation__link">Example with formatter</a>
+</li>
+
+                    
+                        
+<li class="subnavigation__list-item ">
+    <a href="../usage/" class="subnavigation__link">Usage</a>
+</li>
+
                     
                 
             
@@ -214,22 +267,143 @@
                     
                     
                     
+    
+
+    
+    
+
                     
                 </div>
                 <div class="col-lg-9 main_docs">
                     
-
-<h1 class="content__title">404</h1>
-<blockquote>
-    <h3>Something went wrong!</h3>
-    <p>
-        We're sorry, but the page you are looking for does not exist.
-    </p>
-</blockquote>
-
-<a href="../." class="btn btn-default" role="button">Go to homepage</a>
+                    
 
 
+
+
+    
+    
+
+    <h1 id="filtering-log-messages">Filtering log messages</h1>
+<p>The following conforms to the <code>PSR-3: Logger Interface</code> document.</p>
+<p>The log levels are in order of priority/importance:</p>
+<ul>
+<li>emergency (0)</li>
+<li>alert (1)</li>
+<li>critical (2)</li>
+<li>error (3)</li>
+<li>warning (4)</li>
+<li>notice (5)</li>
+<li>info (6)</li>
+<li>debug (7)</li>
+</ul>
+<p>Although the plain Logger in <code>dot-log</code> is not fully compatible with PSR-3, it provides a way to log all of these message types.</p>
+<p>The following example has three file writers using filters:</p>
+<ul>
+<li>First Example: <code>FileWriter</code> - All messages are logged in <code>/log/dk.log</code></li>
+<li>Second Example: <code>OnlyWarningsWriter</code> - Only warnings are logged in <code>/log/warnings.log</code></li>
+<li>Third Example: <code>WarningOrHigherWriter</code> - All important messages (<code>warnings</code> or critical) are logged in <code>/log/important_messages.log</code></li>
+</ul>
+<pre class="highlight"><code class="language-php">&lt;?php
+
+return [
+    'dot_log' =&gt; [
+        'loggers' =&gt; [
+            'my_logger' =&gt; [
+                'writers' =&gt; [
+                    'FileWriter' =&gt; [
+                        'name' =&gt; 'FileWriter',
+                        'priority' =&gt; \Dot\Log\Manager\Logger::ALERT,
+                        'options' =&gt; [
+                            'stream' =&gt; __DIR__ . '/../../log/dk.log',
+                            'filters' =&gt; [
+                                'allMessages' =&gt; [
+                                    'name' =&gt; 'priority',
+                                    'options' =&gt; [
+                                        'operator' =&gt; '&gt;=', 
+                                        'priority' =&gt; \Dot\Log\Manager\Logger::EMERG,
+                                    ]
+                                ],
+                            ],
+                        ],
+                    ],
+                    // Only warnings
+                    'OnlyWarningsWriter' =&gt; [
+                        'name' =&gt; 'stream',
+                        'priority' =&gt; \Dot\Log\Manager\Logger::ALERT,
+                        'options' =&gt; [
+                            'stream' =&gt; __DIR__ . '/../../log/warnings_only.log',
+                            'filters' =&gt; [
+                                'warningOnly' =&gt; [
+                                    'name' =&gt; 'priority',
+                                    'options' =&gt; [
+                                        'operator' =&gt; '==',
+                                        'priority' =&gt; \Dot\Log\Manager\Logger::WARN,
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ],
+                    // Warnings and more important messages
+                    'WarningOrHigherWriter' =&gt; [
+                        'name' =&gt; 'stream',
+                        'priority' =&gt; \Dot\Log\Manager\Logger::ALERT,
+                        'options' =&gt; [
+                            'stream' =&gt; __DIR__ . '/../../log/important_messages.log',
+                            'filters' =&gt; [
+                                'importantMessages' =&gt; [
+                                    'name' =&gt; 'priority',
+                                    'options' =&gt; [
+                                        // note, the smaller the priority, the more important is the message
+                                        // 0 - emergency, 1 - alert, 2- error, 3 - warn etc.
+                                        'operator' =&gt; '&lt;=',
+                                        'priority' =&gt; \Dot\Log\Manager\Logger::WARN,
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+        ],
+    ],
+];</code></pre>
+<p>As in the writer configuration, the developer can optionally use keys for associating the filters with a name.</p>
+<p>IMPORTANT NOTE: the operator for more important messages is <code>&lt;=</code>, this is because the number representation is smaller for a more important message type.</p>
+<p>The filter added on the first writer is equivalent to not setting a filter, but it was added to illustrate the usage of the operator to explicitly allow all messages.</p>
+
+
+
+
+    <nav>
+    <ul class="page-nav hidden-print">
+        
+        <li class="page-nav__item">
+            
+                <a rel="prev" class="page-nav__link page-nav__link--prev" href="../grouping-log-files-by-date/">
+                    <small class="page-nav__label">Previous</small>
+                    <i class="bi bi-chevron-left"></i>
+                    Grouping log files by date
+                </a>
+            
+        </li>
+
+        
+        <li class="page-nav__item">
+            
+                <a rel="next" class="page-nav__link page-nav__link--next" href="../formatting-messages/">
+                    <small class="page-nav__label">Next</small>
+                    Formatting Messages
+                    <i class="bi bi-chevron-right"></i>
+                </a>
+            
+        </li>
+    </ul>
+</nav>
+
+
+
+                    
                 </div>
             </div>
         </div>
@@ -323,7 +497,7 @@
 </footer>
 
         <script>
-            let base_url = '..',
+            let base_url = '../..',
                 project  = "packages",
                 siteName = 'dot-log';
 

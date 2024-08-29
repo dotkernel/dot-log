@@ -18,9 +18,11 @@
         <meta name="docsearch:component" content="dot-log">
 
         
+        <link rel="canonical" href="https://docs.dotkernel.org/dot-log/v4/grouping-log-files-by-date/">
+        
         <link rel="shortcut icon" href="https://docs.dotkernel.org/img/dk_docs_favicon_white.svg">
 
-        <title>dot-log - DotKernel Documentation</title>
+        <title>Grouping log files by date - dot-log - DotKernel Documentation</title>
 
         <link rel="stylesheet" href="https://docs.dotkernel.org/css/bootstrap.css">
         <link rel="stylesheet" href="https://docs.dotkernel.org/css/bootstrap-icons.min.css">
@@ -130,7 +132,7 @@
         <div class="dropdown-menu dropdown-menu-right dropdown-menu-lg-left" aria-labelledby="version-selector-dropdown">
             
                 
-                    <a href="../v4/overview/" class="dropdown-item">
+                    <a href="../overview/" class="dropdown-item active">
                         
                             v4 (latest)
                         
@@ -138,7 +140,7 @@
                 
             
                 
-                    <a href="../v3/overview/" class="dropdown-item">
+                    <a href="../../v3/overview/" class="dropdown-item">
                         
                             v3
                         
@@ -164,11 +166,16 @@
                 
 
                 
-                    <li class="breadcrumb-item"><a href="../.">dot-log</a></li>
+                    <li class="breadcrumb-item"><a href="../..">dot-log</a></li>
 
                     
+                        
+                            
+                            
+                        
+                    
 
-                    <li class="breadcrumb-item active" aria-current="page"></li>
+                    <li class="breadcrumb-item active" aria-current="page">Grouping log files by date</li>
                 
             
         </ol>
@@ -183,7 +190,7 @@
                     
     <div class="subnavigation hidden-print">
 <!--        <h4 class="subnavigation__title">-->
-<!--            <a href="../.">dot-log</a>-->
+<!--            <a href="../..">dot-log</a>-->
 <!--        </h4>-->
 
         <h5 class="subnavigation__title">Table of Contents</h5>
@@ -193,8 +200,54 @@
 
                 
                 
+                    
+                        
+<li class="subnavigation__list-item ">
+    <a href="../overview/" class="subnavigation__link">Overview</a>
+</li>
 
                     
+                        
+<li class="subnavigation__list-item ">
+    <a href="../adding-config-provider/" class="subnavigation__link">Adding The Config Provider</a>
+</li>
+
+                    
+                        
+<li class="subnavigation__list-item ">
+    <a href="../configuring-writer/" class="subnavigation__link">Configuring the writer(s)</a>
+</li>
+
+                    
+                        
+<li class="subnavigation__list-item subnavigation__list-item--active">
+    <a href="./" class="subnavigation__link">Grouping log files by date</a>
+</li>
+
+                    
+                        
+<li class="subnavigation__list-item ">
+    <a href="../filtering-log-messages/" class="subnavigation__link">Filtering log messages</a>
+</li>
+
+                    
+                        
+<li class="subnavigation__list-item ">
+    <a href="../formatting-messages/" class="subnavigation__link">Formatting Messages</a>
+</li>
+
+                    
+                        
+<li class="subnavigation__list-item ">
+    <a href="../example-with-formatter/" class="subnavigation__link">Example with formatter</a>
+</li>
+
+                    
+                        
+<li class="subnavigation__list-item ">
+    <a href="../usage/" class="subnavigation__link">Usage</a>
+</li>
+
                     
                 
             
@@ -214,22 +267,65 @@
                     
                     
                     
+    
+
+    
+    
+
                     
                 </div>
                 <div class="col-lg-9 main_docs">
                     
-
-<h1 class="content__title">404</h1>
-<blockquote>
-    <h3>Something went wrong!</h3>
-    <p>
-        We're sorry, but the page you are looking for does not exist.
-    </p>
-</blockquote>
-
-<a href="../." class="btn btn-default" role="button">Go to homepage</a>
+                    
 
 
+
+
+    
+    
+
+    <h1 id="grouping-log-files-by-date">Grouping log files by date</h1>
+<p>By default, logs will be written to the same file: <code>log/dk.log</code>.</p>
+<p>Optionally, you can use date format specifiers wrapped between curly braces in your FileWriter's <code>stream</code> option to automatically group your logs by day, week, month, year etc.</p>
+<p>Examples:</p>
+<ul>
+<li><code>log/dk-{Y}-{m}-{d}.log</code> will create a new log file each day (eg: log/dk-2021-01-01.log)</li>
+<li><code>log/dk-{Y}-{W}.log</code> will create a new log file each week (eg: log/dk-2021-10.log)</li>
+</ul>
+<p>The full list of format specifiers is available <a href="https://www.php.net/manual/en/datetime.format.php">here</a>.</p>
+
+
+
+
+    <nav>
+    <ul class="page-nav hidden-print">
+        
+        <li class="page-nav__item">
+            
+                <a rel="prev" class="page-nav__link page-nav__link--prev" href="../configuring-writer/">
+                    <small class="page-nav__label">Previous</small>
+                    <i class="bi bi-chevron-left"></i>
+                    Configuring the writer(s)
+                </a>
+            
+        </li>
+
+        
+        <li class="page-nav__item">
+            
+                <a rel="next" class="page-nav__link page-nav__link--next" href="../filtering-log-messages/">
+                    <small class="page-nav__label">Next</small>
+                    Filtering log messages
+                    <i class="bi bi-chevron-right"></i>
+                </a>
+            
+        </li>
+    </ul>
+</nav>
+
+
+
+                    
                 </div>
             </div>
         </div>
@@ -323,7 +419,7 @@
 </footer>
 
         <script>
-            let base_url = '..',
+            let base_url = '../..',
                 project  = "packages",
                 siteName = 'dot-log';
 

@@ -5,7 +5,7 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         
-        <meta name="description" content="DotKernel log component extending and customizing laminas-log">
+        <meta name="description" content="DotKernel log component">
         
         
 
@@ -13,7 +13,7 @@
         
             
         
-        <meta name="docsearch:version" content="3.0.0,latest">
+        <meta name="docsearch:version" content="4.0.0,latest">
         <meta name="docsearch:language" content="en">
         <meta name="docsearch:component" content="dot-log">
 
@@ -60,7 +60,7 @@
                         </li>
                         
                         <li class="dropdown-item ">
-                            <a href="https://docs.dotkernel.org/admin/" class="nav-link d-flex gap-4 align-items-center">
+                            <a href="https://docs.dotkernel.org/admin-documentation/" class="nav-link d-flex gap-4 align-items-center">
                                 <img alt="DotKernel Logo" class="d-inline-block align-text-top" height="50" src="https://docs.dotkernel.org/img/dk_logomark.svg" width="45" />
                                 <div>
                                     <span class="fw-bold d-block">Admin</span>
@@ -70,7 +70,7 @@
                         </li>
                         
                         <li class="dropdown-item ">
-                            <a href="https://docs.dotkernel.org/frontend/" class="nav-link d-flex gap-4 align-items-center">
+                            <a href="https://docs.dotkernel.org/frontend-documentation/" class="nav-link d-flex gap-4 align-items-center">
                                 <img alt="DotKernel Logo" class="d-inline-block align-text-top" height="50" src="https://docs.dotkernel.org/img/dk_logomark.svg" width="45" />
                                 <div>
                                     <span class="fw-bold d-block">Frontend</span>
@@ -85,6 +85,16 @@
                                 <div>
                                     <span class="fw-bold d-block">Packages</span>
                                     <span>DotKernel packages</span>
+                                </div>
+                            </a>
+                        </li>
+                        
+                        <li class="dropdown-item ">
+                            <a href="https://docs.dotkernel.org/development/" class="nav-link d-flex gap-4 align-items-center">
+                                <img alt="DotKernel Logo" class="d-inline-block align-text-top" height="50" src="https://docs.dotkernel.org/img/dk_logomark.svg" width="45" />
+                                <div>
+                                    <span class="fw-bold d-block">Development</span>
+                                    <span>WSL2 Development Environment</span>
                                 </div>
                             </a>
                         </li>
@@ -112,6 +122,35 @@
                 </li>
                 <li class="nav-item">
                     
+<div class="version-selector">
+    <div class="btn-group">
+        <button type="button" class="btn dropdown-toggle bg-light" data-toggle="dropdown" data-display="static" aria-haspopup="true" aria-expanded="false" id="version-selector-dropdown">
+            
+                v4
+            
+        </button>
+        <div class="dropdown-menu dropdown-menu-right dropdown-menu-lg-left" aria-labelledby="version-selector-dropdown">
+            
+                
+                    <a href="v4/overview/" class="dropdown-item">
+                        
+                            v4 (latest)
+                        
+                    </a>
+                
+            
+                
+                    <a href="v3/overview/" class="dropdown-item">
+                        
+                            v3
+                        
+                    </a>
+                
+            
+        </div>
+    </div>
+</div>
+
                 </li>
             </ul>
         </div>
@@ -155,51 +194,59 @@
                     
                         
 <li class="subnavigation__list-item ">
-    <a href="v3/overview/" class="subnavigation__link">Overview</a>
+    <a href="v4/overview/" class="subnavigation__link">Overview</a>
 </li>
 
                     
                         
 <li class="subnavigation__list-item ">
-    <a href="v3/adding-config-provider/" class="subnavigation__link">Adding The Config Provider</a>
+    <a href="v4/adding-config-provider/" class="subnavigation__link">Adding The Config Provider</a>
 </li>
 
                     
                         
 <li class="subnavigation__list-item ">
-    <a href="v3/configuring-writer/" class="subnavigation__link">Configuring the writer(s)</a>
+    <a href="v4/configuring-writer/" class="subnavigation__link">Configuring the writer(s)</a>
 </li>
 
                     
                         
 <li class="subnavigation__list-item ">
-    <a href="v3/grouping-log-files-by-date/" class="subnavigation__link">Grouping log files by date</a>
+    <a href="v4/grouping-log-files-by-date/" class="subnavigation__link">Grouping log files by date</a>
 </li>
 
                     
                         
 <li class="subnavigation__list-item ">
-    <a href="v3/filtering-log-messages/" class="subnavigation__link">Filtering log messages</a>
+    <a href="v4/filtering-log-messages/" class="subnavigation__link">Filtering log messages</a>
 </li>
 
                     
                         
 <li class="subnavigation__list-item ">
-    <a href="v3/formatting-messages/" class="subnavigation__link">Formatting Messages</a>
+    <a href="v4/formatting-messages/" class="subnavigation__link">Formatting Messages</a>
 </li>
 
                     
                         
 <li class="subnavigation__list-item ">
-    <a href="v3/example-with-formatter/" class="subnavigation__link">Example with formatter</a>
+    <a href="v4/example-with-formatter/" class="subnavigation__link">Example with formatter</a>
 </li>
 
                     
                         
 <li class="subnavigation__list-item ">
-    <a href="v3/usage/" class="subnavigation__link">Usage</a>
+    <a href="v4/usage/" class="subnavigation__link">Usage</a>
 </li>
 
+                    
+                
+            
+
+                
+                
+
+                    
                     
                 
             
@@ -217,10 +264,9 @@
 
 
 
+    
     <h1>dot-log</h1>
-<p>DotKernel log component extending and customizing laminas-log</p>
-
-
+    <p>DotKernel log component</p>
     <h2>Installation</h2>
     <h3>Using Composer</h3>
     <pre class="highlight line-numbers">
@@ -248,7 +294,7 @@
         
         <li class="page-nav__item">
             
-                <a rel="next" class="page-nav__link page-nav__link--next" href="v3/overview/">
+                <a rel="next" class="page-nav__link page-nav__link--next" href="v4/overview/">
                     <small class="page-nav__label">Next</small>
                     Overview
                     <i class="bi bi-chevron-right"></i>
@@ -278,7 +324,7 @@
                 <div class="row">
                     <div class="col-md-6 dk_widget">
                         <p>DotKernel Frontend</p>
-                        <a href="https://docs.dotkernel.org/frontend/" target="_blank">
+                        <a href="https://docs.dotkernel.org/frontend-documentation/" target="_blank">
                             <i class="bi bi-arrow-return-right"></i>
                             DotKernel web starter project suitable for frontend applications
                         </a>
@@ -295,7 +341,7 @@
                     <div class="col-md-6 dk_widget">
                         <p>DotKernel Admin</p>
 
-                        <a href="https://docs.dotkernel.org/admin/" target="_blank">
+                        <a href="https://docs.dotkernel.org/admin-documentation/" target="_blank">
                             <i class="bi bi-arrow-return-right"></i>
                             DotKernel web starter project suitable for admin applications
                         </a>
@@ -390,5 +436,5 @@
 
 <!--
 MkDocs version : 1.6.0
-Build Date UTC : 2024-06-30 12:34:32.754022+00:00
+Build Date UTC : 2024-08-29 09:10:31.181752+00:00
 -->
