@@ -21,24 +21,21 @@ use function sprintf;
 class FormatterPluginManager extends AbstractPluginManager
 {
     /** @var string[]  */
-    protected $aliases = [
+    protected array $aliases = [
         'simple' => Simple::class,
     ];
 
     /** @var string[]|callable[] */
-    protected $factories = [
+    protected array $factories = [
         Simple::class => InvokableFactory::class,
     ];
 
-    /** @var ?string */
-    protected $instanceOf = FormatterInterface::class;
+    protected string $instanceOf = FormatterInterface::class;
 
     /**
      * Allow many formatters of the same type
-     *
-     * @var bool
      */
-    protected $sharedByDefault = false;
+    protected bool $sharedByDefault = false;
 
     /**
      * Validate the plugin is of the expected type.

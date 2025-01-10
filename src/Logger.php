@@ -17,6 +17,7 @@ use Laminas\ServiceManager\AbstractPluginManager;
 use Laminas\ServiceManager\ServiceManager;
 use Laminas\Stdlib\ArrayUtils;
 use Laminas\Stdlib\SplPriorityQueue;
+use Psr\Container\ContainerExceptionInterface;
 use Traversable;
 
 use function array_reverse;
@@ -133,6 +134,8 @@ class Logger implements LoggerInterface
      * - writers: array of writers to add to this logger
      * - exceptionhandler: if true register this logger as exceptionhandler
      * - errorhandler: if true register this logger as errorhandler
+     *
+     * @throws ContainerExceptionInterface
      */
     public function __construct(?iterable $options = null)
     {
@@ -210,7 +213,7 @@ class Logger implements LoggerInterface
         foreach ($this->writers as $writer) {
             try {
                 $writer->shutdown();
-            } catch (Exception $e) {
+            } catch (Exception) {
             }
         }
     }
@@ -232,15 +235,17 @@ class Logger implements LoggerInterface
     /**
      * Get writer instance
      *
-     * @psalm-suppress InvalidReturnStatement
+     * @throws ContainerExceptionInterface
      */
-    public function writerPlugin(string $name, ?array $options = null): WriterInterface
+    public function writerPlugin(string $name, ?array $options = null): ?WriterInterface
     {
-        return $this->getWriterPluginManager()->get($name, $options);
+        return $this->getWriterPluginManager()?->build($name, $options);
     }
 
     /**
      * Add a writer to a logger
+     *
+     * @throws ContainerExceptionInterface
      */
     public function addWriter(WriterInterface|string $writer, int $priority = 1, ?array $options = null): static
     {
@@ -284,6 +289,9 @@ class Logger implements LoggerInterface
         return $this->processorPlugins;
     }
 
+    /**
+     * @param class-string|ProcessorPluginManager $plugins
+     */
     public function setProcessorPluginManager(string|ProcessorPluginManager $plugins): static
     {
         if (is_string($plugins)) {
@@ -302,13 +310,16 @@ class Logger implements LoggerInterface
     }
 
     /**
-     * @psalm-suppress InvalidReturnStatement
+     * @throws ContainerExceptionInterface
      */
-    public function processorPlugin(string $name, ?array $options = null): ProcessorInterface
+    public function processorPlugin(string $name, ?array $options = null): ?ProcessorInterface
     {
-        return $this->getProcessorPluginManager()->get($name, $options);
+        return $this->getProcessorPluginManager()?->build($name, $options);
     }
 
+    /**
+     * @throws ContainerExceptionInterface
+     */
     public function addProcessor(
         ProcessorInterface|string $processor,
         int $priority = 1,
