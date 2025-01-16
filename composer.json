@@ -1,7 +1,7 @@
 {
     "name": "dotkernel/dot-log",
     "type": "library",
-    "description": "DotKernel log component extending and customizing laminas-log",
+    "description": "Dotkernel log component extending and customizing laminas-log",
     "license": "MIT",
     "homepage": "https://github.com/dotkernel/dot-log",
     "keywords": [
@@ -14,7 +14,7 @@
     ],
     "authors": [
         {
-            "name": "DotKernel Team",
+            "name": "Dotkernel Team",
             "email": "team@dotkernel.com"
         }
     ],

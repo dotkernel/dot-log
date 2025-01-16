@@ -27,7 +27,7 @@ nav:
       - "Example with formatter": v3/example-with-formatter.md
       - "Usage": v3/usage.md
 site_name: dot-log
-site_description: "DotKernel log component"
+site_description: "Dotkernel log component"
 repo_url: "https://github.com/dotkernel/dot-log"
 plugins:
   - search
