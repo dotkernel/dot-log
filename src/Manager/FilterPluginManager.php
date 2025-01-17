@@ -24,7 +24,7 @@ use function sprintf;
 class FilterPluginManager extends AbstractPluginManager
 {
     /** @var string[] */
-    protected $aliases = [
+    protected array $aliases = [
         'priority'       => Priority::class,
         'regex'          => Regex::class,
         'suppress'       => SuppressFilter::class,
@@ -33,22 +33,19 @@ class FilterPluginManager extends AbstractPluginManager
     ];
 
     /** @var string[]|callable[] */
-    protected $factories = [
+    protected array $factories = [
         Priority::class       => InvokableFactory::class,
         Regex::class          => InvokableFactory::class,
         SuppressFilter::class => InvokableFactory::class,
         Validator::class      => InvokableFactory::class,
     ];
 
-    /** @var ?string */
-    protected $instanceOf = FilterInterface::class;
+    protected string $instanceOf = FilterInterface::class;
 
     /**
      * Allow many filters of the same type
-     *
-     * @var bool
      */
-    protected $sharedByDefault = false;
+    protected bool $sharedByDefault = false;
 
     /**
      * Validate the plugin is of the expected type.

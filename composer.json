@@ -1,7 +1,7 @@
 {
     "name": "dotkernel/dot-log",
     "type": "library",
-    "description": "DotKernel log component extending and customizing laminas-log",
+    "description": "Dotkernel log component extending and customizing laminas-log",
     "license": "MIT",
     "homepage": "https://github.com/dotkernel/dot-log",
     "keywords": [
@@ -14,18 +14,18 @@
     ],
     "authors": [
         {
-            "name": "DotKernel Team",
+            "name": "Dotkernel Team",
             "email": "team@dotkernel.com"
         }
     ],
     "require": {
-        "php": "~8.1.0 || ~8.2.0 || ~8.3.0",
-        "laminas/laminas-servicemanager": "^3.22",
-        "laminas/laminas-validator": "^2.64"
+        "php": "~8.1.0 || ~8.2.0 || ~8.3.0 || ~8.4.0",
+        "laminas/laminas-servicemanager": "^4.0",
+        "laminas/laminas-validator": "^3.0"
     },
     "require-dev": {
+        "laminas/laminas-coding-standard": "^3.0",
         "phpunit/phpunit": "^10.2",
-        "laminas/laminas-coding-standard": "^2.5",
         "vimeo/psalm": "^5.13"
     },
     "autoload": {
@@ -48,7 +48,8 @@
     "scripts": {
         "check": [
             "@cs-check",
-            "@test"
+            "@test",
+            "@static-analysis"
         ],
         "cs-check": "phpcs",
         "cs-fix": "phpcbf",

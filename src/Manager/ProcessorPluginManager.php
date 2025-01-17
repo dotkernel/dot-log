@@ -24,7 +24,7 @@ use function sprintf;
 class ProcessorPluginManager extends AbstractPluginManager
 {
     /** @var string[] */
-    protected $aliases = [
+    protected array $aliases = [
         'backtrace'      => Backtrace::class,
         'psrplaceholder' => PsrPlaceholder::class,
         'referenceid'    => ReferenceId::class,
@@ -32,22 +32,19 @@ class ProcessorPluginManager extends AbstractPluginManager
     ];
 
     /** @var string[]|callable[] */
-    protected $factories = [
+    protected array $factories = [
         Backtrace::class      => InvokableFactory::class,
         PsrPlaceholder::class => InvokableFactory::class,
         ReferenceId::class    => InvokableFactory::class,
         RequestId::class      => InvokableFactory::class,
     ];
 
-    /** @var ?string */
-    protected $instanceOf = ProcessorInterface::class;
+    protected string $instanceOf = ProcessorInterface::class;
 
     /**
      * Allow many processors of the same type
-     *
-     * @var bool
      */
-    protected $sharedByDefault = false;
+    protected bool $sharedByDefault = false;
 
     /**
      * Validate the plugin is of the expected type.

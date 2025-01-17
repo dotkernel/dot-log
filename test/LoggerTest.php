@@ -18,6 +18,7 @@ use Exception;
 use Laminas\ServiceManager\Exception\ServiceNotFoundException;
 use Laminas\Stdlib\SplPriorityQueue;
 use PHPUnit\Framework\TestCase;
+use Psr\Container\ContainerExceptionInterface;
 
 use function count;
 use function set_exception_handler;
@@ -38,11 +39,14 @@ class LoggerTest extends TestCase
         $this->assertInstanceOf(WriterPluginManager::class, $this->subject->getWriterPluginManager());
     }
 
+    /**
+     * @throws ContainerExceptionInterface
+     */
     public function testPassingShortNameToPluginReturnsWriterByThatName(): void
     {
         $this->expectException(ServiceNotFoundException::class);
         $this->expectExceptionMessage(
-            'A plugin by the name "mock" was not found in the plugin manager Dot\Log\Manager\WriterPluginManager'
+            'Unable to resolve service "mock" to a factory; are you certain you provided it during configuration?'
         );
         $this->subject->writerPlugin('mock');
     }
@@ -54,6 +58,9 @@ class LoggerTest extends TestCase
         $this->subject->log(Logger::INFO, 'test');
     }
 
+    /**
+     * @throws ContainerExceptionInterface
+     */
     public function testSetWriters(): void
     {
         $writer  = $this->subject->writerPlugin('null');
@@ -67,6 +74,9 @@ class LoggerTest extends TestCase
         $this->assertInstanceOf(Noop::class, $writer);
     }
 
+    /**
+     * @throws ContainerExceptionInterface
+     */
     public function testAddWriterWithPriority(): void
     {
         $writer = $this->subject->writerPlugin('null');
@@ -78,6 +88,9 @@ class LoggerTest extends TestCase
         $this->assertInstanceOf(Noop::class, $writer);
     }
 
+    /**
+     * @throws ContainerExceptionInterface
+     */
     public function testAddWithSamePriority(): void
     {
         $writer1 = $this->subject->writerPlugin('null');
@@ -93,26 +106,35 @@ class LoggerTest extends TestCase
         $this->assertInstanceOf(Noop::class, $writer);
     }
 
+    /**
+     * @throws ContainerExceptionInterface
+     */
     public function testLogging(): void
     {
         $writer = new Mock();
         $this->subject->addWriter($writer);
         $this->subject->log(Logger::INFO, 'tottakai');
 
-        $this->assertEquals(count($writer->events), 1);
+        $this->assertEquals(1, count($writer->events));
         $this->assertStringContainsString('tottakai', $writer->events[0]['message']);
     }
 
+    /**
+     * @throws ContainerExceptionInterface
+     */
     public function testLoggingArray(): void
     {
         $writer = new Mock();
         $this->subject->addWriter($writer);
         $this->subject->log(Logger::INFO, ['test']);
 
-        $this->assertEquals(count($writer->events), 1);
+        $this->assertEquals(1, count($writer->events));
         $this->assertStringContainsString('test', $writer->events[0]['message']);
     }
 
+    /**
+     * @throws ContainerExceptionInterface
+     */
     public function testAddFilter(): void
     {
         $writer = new Mock();
@@ -121,7 +143,7 @@ class LoggerTest extends TestCase
         $this->subject->addWriter($writer);
         $this->subject->log(Logger::INFO, ['test']);
 
-        $this->assertEquals(count($filter->events), 1);
+        $this->assertEquals(1, count($filter->events));
         $this->assertStringContainsString('test', $filter->events[0]['message']);
     }
 
@@ -135,6 +157,7 @@ class LoggerTest extends TestCase
 
     /**
      * @dataProvider provideTestFilters
+     * @throws ContainerExceptionInterface
      */
     public function testAddFilterByNameWithParams(string $filter, array $options): void
     {
@@ -143,7 +166,7 @@ class LoggerTest extends TestCase
         $this->subject->addWriter($writer);
 
         $this->subject->log(Logger::INFO, '123');
-        $this->assertEquals(count($writer->events), 1);
+        $this->assertEquals(1, count($writer->events));
         $this->assertStringContainsString('123', $writer->events[0]['message']);
     }
 
@@ -158,6 +181,7 @@ class LoggerTest extends TestCase
 
     /**
      * @dataProvider provideAttributes
+     * @throws ContainerExceptionInterface
      */
     public function testLoggingCustomAttributesForUserContext(array|ArrayObject $extra): void
     {
@@ -165,11 +189,14 @@ class LoggerTest extends TestCase
         $this->subject->addWriter($writer);
         $this->subject->log(Logger::ERR, 'tottakai', $extra);
 
-        $this->assertEquals(count($writer->events), 1);
+        $this->assertEquals(1, count($writer->events));
         $this->assertIsArray($writer->events[0]['extra']);
         $this->assertEquals(count($writer->events[0]['extra']), count($extra));
     }
 
+    /**
+     * @throws ContainerExceptionInterface
+     */
     public function testRegisterErrorHandler(): void
     {
         $writer = new Mock();
@@ -190,6 +217,9 @@ class LoggerTest extends TestCase
         $this->assertEquals('Undefined variable $test', $writer->events[0]['message']);
     }
 
+    /**
+     * @throws ContainerExceptionInterface
+     */
     public function testOptionsWithMock(): void
     {
         $options = [
@@ -207,6 +237,9 @@ class LoggerTest extends TestCase
         $this->assertInstanceOf(Noop::class, $writers[0]);
     }
 
+    /**
+     * @throws ContainerExceptionInterface
+     */
     public function testOptionsWithWriterOptions(): void
     {
         $options = [
@@ -229,6 +262,9 @@ class LoggerTest extends TestCase
         $this->assertEquals('foo', $writers[0]->getLogSeparator());
     }
 
+    /**
+     * @throws ContainerExceptionInterface
+     */
     public function testOptionsWithMockAndProcessor(): void
     {
         $options    = [
@@ -251,6 +287,9 @@ class LoggerTest extends TestCase
         $this->assertInstanceOf(RequestId::class, $processors[0]);
     }
 
+    /**
+     * @throws ContainerExceptionInterface
+     */
     public function testAddProcessor(): void
     {
         $processor = new Backtrace();
@@ -260,6 +299,9 @@ class LoggerTest extends TestCase
         $this->assertEquals($processor, $processors[0]);
     }
 
+    /**
+     * @throws ContainerExceptionInterface
+     */
     public function testAddProcessorByName(): void
     {
         $this->subject->addProcessor('backtrace');
@@ -272,6 +314,9 @@ class LoggerTest extends TestCase
         $this->subject->log(Logger::ERR, 'foo');
     }
 
+    /**
+     * @throws ContainerExceptionInterface
+     */
     public function testExceptionHandler(): void
     {
         $writer = new Mock();
@@ -292,7 +337,7 @@ class LoggerTest extends TestCase
 
         // call the exception handler
         $exceptionHandler(new Exception('error', 200, new Exception('previos', 100)));
-        $exceptionHandler(new ErrorException('user notice', 1000, E_USER_NOTICE, __FILE__, __LINE__));
+        $exceptionHandler(new ErrorException('user notice', 1_000, E_USER_NOTICE, __FILE__, __LINE__));
 
         // check logged messages
         $expectedEvents = [
@@ -312,6 +357,7 @@ class LoggerTest extends TestCase
 
     /**
      * @group Laminas-7238
+     * @throws ContainerExceptionInterface
      */
     public function testCatchExceptionNotValidPriority(): void
     {

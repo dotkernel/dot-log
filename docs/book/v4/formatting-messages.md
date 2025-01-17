@@ -9,6 +9,8 @@ The formatter accepts following parameters:
 
 The following snippet formats the message as JSON data:
 
-    'formatter' => [
-        'name' => \Dot\Log\Formatter\Json::class,
-    ],
+```php
+'formatter' => [
+    'name' => \Dot\Log\Formatter\Json::class,
+],
+```

@@ -1,7 +1,7 @@
 # dot-log
 
 ![OSS Lifecycle](https://img.shields.io/osslifecycle/dotkernel/dot-log)
-![PHP from Packagist (specify version)](https://img.shields.io/packagist/php-v/dotkernel/dot-log/4.0.0)
+![PHP from Packagist (specify version)](https://img.shields.io/packagist/php-v/dotkernel/dot-log/4.1.0)
 
 [![GitHub issues](https://img.shields.io/github/issues/dotkernel/dot-log)](https://github.com/dotkernel/dot-log/issues)
 [![GitHub forks](https://img.shields.io/github/forks/dotkernel/dot-log)](https://github.com/dotkernel/dot-log/network)
@@ -11,14 +11,12 @@
 [![Build Static](https://github.com/dotkernel/dot-log/actions/workflows/continuous-integration.yml/badge.svg?branch=4.0)](https://github.com/dotkernel/dot-log/actions/workflows/continuous-integration.yml)
 [![codecov](https://codecov.io/gh/dotkernel/dot-log/graph/badge.svg?token=JX19KTBRCZ)](https://codecov.io/gh/dotkernel/dot-log)
 
-[![SymfonyInsight](https://insight.symfony.com/projects/287e81e8-b4fb-4452-bd8f-4f12c0ab1f76/big.svg)](https://insight.symfony.com/projects/287e81e8-b4fb-4452-bd8f-4f12c0ab1f76)
-
 ## Adding The Config Provider
 
 * Enter config/config.php
 * If there is no entry for the config provider below, add it:
 `\Dot\Log\ConfigProvider::class`
-* Make sure it is added before with the Application-Specific components, eg.: `\Frontend\App\ConfigProvider.php`, `\Admin\App\ConfigProvider::class`, `MyProject\ConfigProvider::class` , etc.
+* Make sure it is added before with the Application-Specific components, e.g.: `\Frontend\App\ConfigProvider.php`, `\Admin\App\ConfigProvider::class`, `MyProject\ConfigProvider::class` , etc.
 * Open the `Dot\Log\ConfigProvider`
 * In the dependencies section you will see an abstract factory (`LoggerAbstractServiceFactory::class`)
 * This class responds to "selectors" instead of class names
@@ -162,7 +160,7 @@ As in the writer configuration, the developer can optionally use keys for associ
 
 IMPORTANT NOTE: the operator for more important messages is <=, this is because the number representation is smaller for a more important message type.
 
-The filter added on the first writer is equal to not setting a filter, but it was been added to illustrate how to explicitly allow all messages.
+The filter added on the first writer is equal to not setting a filter, but it has been added to illustrate how to explicitly allow all messages.
 
 It was added opposite to the others just to demonstrate the other operator is also an option.
 

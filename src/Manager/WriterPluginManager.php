@@ -22,7 +22,7 @@ use function sprintf;
 class WriterPluginManager extends AbstractPluginManager
 {
     /** @var string[] */
-    protected $aliases = [
+    protected array $aliases = [
         'noop'   => Noop::class,
         'stream' => Stream::class,
 
@@ -33,20 +33,17 @@ class WriterPluginManager extends AbstractPluginManager
     ];
 
     /** @var string[]|callable[] */
-    protected $factories = [
+    protected array $factories = [
         Noop::class   => WriterFactory::class,
         Stream::class => WriterFactory::class,
     ];
 
-    /** @var ?string */
-    protected $instanceOf = WriterInterface::class;
+    protected string $instanceOf = WriterInterface::class;
 
     /**
      * Allow many writers of the same type
-     *
-     * @var bool
      */
-    protected $sharedByDefault = false;
+    protected bool $sharedByDefault = false;
 
     /**
      * Validate the plugin is of the expected type.

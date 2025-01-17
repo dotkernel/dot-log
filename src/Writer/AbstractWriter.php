@@ -15,8 +15,10 @@ use ErrorException;
 use Exception;
 use Laminas\ServiceManager\ServiceManager;
 use Laminas\Stdlib\ErrorHandler;
+use Psr\Container\ContainerExceptionInterface;
 use Traversable;
 
+use function class_exists;
 use function gettype;
 use function is_array;
 use function is_int;
@@ -35,7 +37,7 @@ abstract class AbstractWriter implements WriterInterface
 
     protected array $filters = [];
 
-    protected FormatterInterface $formatter;
+    protected ?FormatterInterface $formatter = null;
 
     /**
      * Use Laminas\Stdlib\ErrorHandler to report errors during calls to write
@@ -53,6 +55,8 @@ abstract class AbstractWriter implements WriterInterface
      * Set options for a writer. Accepted options are:
      * - filters: array of filters to add to this filter
      * - formatter: formatter for this writer
+     *
+     * @throws ContainerExceptionInterface
      */
     public function __construct(?iterable $options = null)
     {
@@ -99,7 +103,13 @@ abstract class AbstractWriter implements WriterInterface
                         throw new InvalidArgumentException('Options must contain a name for the formatter');
                     }
                     $formatterOptions = $formatter['options'] ?? null;
-                    $this->setFormatter($formatter['name'], $formatterOptions);
+
+                    $formatterClass = $formatter['name'];
+                    if (class_exists($formatterClass)) {
+                        $formatterClass = new $formatterClass();
+                    }
+
+                    $this->setFormatter($formatterClass, $formatterOptions);
                 }
             }
         }
@@ -107,6 +117,8 @@ abstract class AbstractWriter implements WriterInterface
 
     /**
      * Add a filter specific to this writer.
+     *
+     * @throws ContainerExceptionInterface
      */
     public function addFilter(int|string|FilterInterface $filter, ?array $options = null): WriterInterface
     {
@@ -138,6 +150,9 @@ abstract class AbstractWriter implements WriterInterface
         return $this->filterPlugins;
     }
 
+    /**
+     * @param class-string|FilterPluginManager $plugins
+     */
     public function setFilterPluginManager(string|FilterPluginManager $plugins): static
     {
         if (is_string($plugins)) {
@@ -155,9 +170,12 @@ abstract class AbstractWriter implements WriterInterface
         return $this;
     }
 
+    /**
+     * @throws ContainerExceptionInterface
+     */
     public function filterPlugin(string $name, ?array $options = null): mixed
     {
-        return $this->getFilterPluginManager()->get($name, $options);
+        return $this->getFilterPluginManager()?->build($name, $options);
     }
 
     public function getFormatterPluginManager(): ?FormatterPluginManager
@@ -168,6 +186,9 @@ abstract class AbstractWriter implements WriterInterface
         return $this->formatterPlugins;
     }
 
+    /**
+     * @param class-string|FormatterPluginManager $plugins
+     */
     public function setFormatterPluginManager(string|FormatterPluginManager $plugins): static
     {
         if (is_string($plugins)) {
@@ -187,9 +208,12 @@ abstract class AbstractWriter implements WriterInterface
         return $this;
     }
 
+    /**
+     * @throws ContainerExceptionInterface
+     */
     public function formatterPlugin(string $name, ?array $options = null): mixed
     {
-        return $this->getFormatterPluginManager()->get($name, $options);
+        return $this->getFormatterPluginManager()?->build($name, $options);
     }
 
     /**
@@ -229,6 +253,9 @@ abstract class AbstractWriter implements WriterInterface
         }
     }
 
+    /**
+     * @throws ContainerExceptionInterface
+     */
     public function setFormatter(FormatterInterface|string $formatter, ?array $options = null): WriterInterface
     {
         if (is_string($formatter)) {
@@ -247,7 +274,7 @@ abstract class AbstractWriter implements WriterInterface
         return $this;
     }
 
-    protected function getFormatter(): FormatterInterface
+    protected function getFormatter(): ?FormatterInterface
     {
         return $this->formatter;
     }

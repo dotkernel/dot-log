@@ -8,16 +8,13 @@ use Dot\Log\Logger;
 use Dot\Log\LoggerServiceFactory;
 use Dot\Log\Manager\ProcessorPluginManager;
 use Dot\Log\Manager\WriterPluginManager;
-use Dot\Log\Processor\ProcessorInterface;
+use Dot\Log\Processor\PsrPlaceholder;
 use Dot\Log\Writer\Noop;
-use Dot\Log\Writer\WriterInterface;
-use Laminas\ServiceManager\Config;
 use Laminas\ServiceManager\Exception\ServiceNotCreatedException;
 use Laminas\ServiceManager\Exception\ServiceNotFoundException;
 use Laminas\ServiceManager\ServiceLocatorInterface;
 use Laminas\ServiceManager\ServiceManager;
 use Laminas\Stdlib\ArrayObject;
-use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
@@ -34,8 +31,7 @@ class LoggerServiceFactoryTest extends TestCase
      */
     protected function setUp(): void
     {
-        $this->serviceManager = new ServiceManager();
-        $config               = new Config([
+        $this->serviceManager = new ServiceManager([
             'aliases'   => [
                 'Dot\Log' => Logger::class,
             ],
@@ -48,7 +44,6 @@ class LoggerServiceFactoryTest extends TestCase
                 ],
             ],
         ]);
-        $config->configureServiceManager($this->serviceManager);
     }
 
     public static function providerValidLoggerService(): array
@@ -93,15 +88,12 @@ class LoggerServiceFactoryTest extends TestCase
     /**
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
-     * @throws Exception
      */
     public function testWillInjectWriterPluginManagerIfAvailable(): void
     {
-        $writers    = new WriterPluginManager(new ServiceManager());
-        $mockWriter = $this->createMock(WriterInterface::class);
-        $writers->setService('CustomWriter', $mockWriter);
+        $writers = new WriterPluginManager(new ServiceManager());
 
-        $config   = new Config([
+        $services = new ServiceManager([
             'factories' => [
                 Logger::class => LoggerServiceFactory::class,
             ],
@@ -109,33 +101,27 @@ class LoggerServiceFactoryTest extends TestCase
                 'LogWriterManager' => $writers,
                 'config'           => [
                     'log' => [
-                        'writers' => [['name' => 'CustomWriter', 'priority' => 1]],
+                        'writers' => [['name' => 'noop', 'priority' => 1]],
                     ],
                 ],
             ],
         ]);
-        $services = new ServiceManager();
-        $config->configureServiceManager($services);
 
         $log        = $services->get(Logger::class);
         $logWriters = $log->getWriters();
         self::assertEquals(1, count($logWriters));
-        $writer = $logWriters->current();
-        self::assertSame($mockWriter, $writer);
+        $this->assertInstanceOf(Noop::class, $logWriters->current());
     }
 
     /**
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
-     * @throws Exception
      */
     public function testWillInjectProcessorPluginManagerIfAvailable(): void
     {
-        $processors    = new ProcessorPluginManager(new ServiceManager());
-        $mockProcessor = $this->createMock(ProcessorInterface::class);
-        $processors->setService('CustomProcessor', $mockProcessor);
+        $processors = new ProcessorPluginManager(new ServiceManager());
 
-        $config   = new Config([
+        $services = new ServiceManager([
             'factories' => [
                 Logger::class => LoggerServiceFactory::class,
             ],
@@ -144,19 +130,16 @@ class LoggerServiceFactoryTest extends TestCase
                 'config'              => [
                     'log' => [
                         'writers'    => [['name' => Noop::class, 'priority' => 1]],
-                        'processors' => [['name' => 'CustomProcessor', 'priority' => 1]],
+                        'processors' => [['name' => 'psrplaceholder', 'priority' => 1]],
                     ],
                 ],
             ],
         ]);
-        $services = new ServiceManager();
-        $config->configureServiceManager($services);
 
         $log           = $services->get(Logger::class);
         $logProcessors = $log->getProcessors();
         self::assertEquals(1, count($logProcessors));
-        $processor = $logProcessors->current();
-        self::assertSame($mockProcessor, $processor);
+        $this->assertInstanceOf(PsrPlaceholder::class, $logProcessors->current());
     }
 
     /**
@@ -166,7 +149,7 @@ class LoggerServiceFactoryTest extends TestCase
      */
     public function testWritersValue(mixed $writers, int $count): void
     {
-        $config   = new Config([
+        $services = new ServiceManager([
             'factories' => [
                 Logger::class => LoggerServiceFactory::class,
             ],
@@ -178,10 +161,7 @@ class LoggerServiceFactoryTest extends TestCase
                 ],
             ],
         ]);
-        $services = new ServiceManager();
-        $config->configureServiceManager($services);
 
-        /** @var Logger $log */
         $log = $services->get(Logger::class);
         self::assertCount($count, $log->getWriters());
     }
@@ -205,7 +185,7 @@ class LoggerServiceFactoryTest extends TestCase
      */
     public function testInvalidWriterConfig(mixed $value, string $type): void
     {
-        $config   = new Config([
+        $services = new ServiceManager([
             'factories' => [
                 Logger::class => LoggerServiceFactory::class,
             ],
@@ -219,8 +199,6 @@ class LoggerServiceFactoryTest extends TestCase
                 ],
             ],
         ]);
-        $services = new ServiceManager();
-        $config->configureServiceManager($services);
 
         self::expectException(ServiceNotCreatedException::class);
         self::expectExceptionMessage(
