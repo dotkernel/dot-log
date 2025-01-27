@@ -9,4 +9,4 @@ Examples:
 * `log/dk-{Y}-{m}-{d}.log` will create a new log file each day (eg: log/dk-2021-01-01.log)
 * `log/dk-{Y}-{W}.log` will create a new log file each week (eg: log/dk-2021-10.log)
 
-The full list of format specifiers is available [here](https://www.php.net/manual/en/datetime.format.php).
+The full list of format specifiers is available in the [PHP docs for datetime formatting](https://www.php.net/manual/en/datetime.format.php).

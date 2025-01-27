@@ -1,6 +1,9 @@
 # Formatting Messages
 
-When using `dot-log` or `laminas-log`, the logged value is not limited to a string. Arrays can be logged as well. For better readability, these arrays can be serialized. Laminas Log provides String, XML, JSON and FirePHP formatting.
+When using `dot-log` or `laminas-log`, the logged value is not limited to a string.
+Arrays can be logged as well.
+For better readability, these arrays can be serialized.
+Laminas Log provides String, XML, JSON and FirePHP formatting.
 
 The formatter accepts following parameters:
 

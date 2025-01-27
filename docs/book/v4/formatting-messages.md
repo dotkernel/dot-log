@@ -1,6 +1,9 @@
 # Formatting Messages
 
-When using `dot-log`, the logged value is not limited to a string. Arrays can be logged as well. For better readability, these arrays can be serialized. Dot Log provides String and JSON formatting.
+When using `dot-log`, the logged value is not limited to a string.
+Arrays can be logged as well.
+For better readability, these arrays can be serialized.
+DotLog provides String and JSON formatting.
 
 The formatter accepts following parameters:
 
