@@ -1,7 +1,7 @@
 # dot-log
 
 ![OSS Lifecycle](https://img.shields.io/osslifecycle/dotkernel/dot-log)
-![PHP from Packagist (specify version)](https://img.shields.io/packagist/php-v/dotkernel/dot-log/4.1.0)
+![PHP from Packagist (specify version)](https://img.shields.io/packagist/php-v/dotkernel/dot-log/4.1.1)
 
 [![GitHub issues](https://img.shields.io/github/issues/dotkernel/dot-log)](https://github.com/dotkernel/dot-log/issues)
 [![GitHub forks](https://img.shields.io/github/forks/dotkernel/dot-log)](https://github.com/dotkernel/dot-log/network)

@@ -90,6 +90,6 @@ return [
 
 As in the writer configuration, the developer can optionally use keys for associating the filters with a name.
 
-IMPORTANT NOTE: the operator for more important messages is `<=`, this is because the number representation is smaller for a more important message type.
+> The operator for more important messages is `<=`, this is because the number representation is smaller for a more important message type.
 
 The filter added on the first writer is equivalent to not setting a filter, but it was added to illustrate the usage of the operator to explicitly allow all messages.
