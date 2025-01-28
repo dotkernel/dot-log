@@ -288,9 +288,8 @@
                     
                     
 
-    <div class="alert alert-danger" role="alert">
-        <h4>Caution</h4>
-        <p>
+    <div class="alert alert-danger alert-caution" role="alert">
+        <p class="mb-0">
             The documentation you are viewing is for an older version of this component.<br>
             <a href="../..">Switch to the latest (v4) version.</a>
         </p>
@@ -303,7 +302,10 @@
     
 
     <h1 id="formatting-messages">Formatting Messages</h1>
-<p>When using <code>dot-log</code> or <code>laminas-log</code>, the logged value is not limited to a string. Arrays can be logged as well. For better readability, these arrays can be serialized. Laminas Log provides String, XML, JSON and FirePHP formatting.</p>
+<p>When using <code>dot-log</code> or <code>laminas-log</code>, the logged value is not limited to a string.
+Arrays can be logged as well.
+For better readability, these arrays can be serialized.
+Laminas Log provides String, XML, JSON and FirePHP formatting.</p>
 <p>The formatter accepts following parameters:</p>
 <ul>
 <li>name - the formatter class (it must implement <code>Laminas\Log\Formatter\FormatterInterface</code>)</li>
@@ -318,12 +320,11 @@
 
 
     <nav>
-    <ul class="page-nav hidden-print">
+    <ul class="list-unstyled page-nav row w-100 mt-5 mb-3 pt-5 pb-3">
         
-        <li class="page-nav__item">
+        <li class="col text-nowrap text-md-start">
             
                 <a rel="prev" class="page-nav__link page-nav__link--prev" href="../filtering-log-messages/">
-                    <small class="page-nav__label">Previous</small>
                     <i class="bi bi-chevron-left"></i>
                     Filtering log messages
                 </a>
@@ -331,10 +332,9 @@
         </li>
 
         
-        <li class="page-nav__item">
+        <li class="col text-nowrap text-md-end pe-0">
             
                 <a rel="next" class="page-nav__link page-nav__link--next" href="../example-with-formatter/">
-                    <small class="page-nav__label">Next</small>
                     Example with formatter
                     <i class="bi bi-chevron-right"></i>
                 </a>
@@ -414,11 +414,7 @@
                 </div>
             </div>
 
-            <div class="col-md-3 pt-3">
-                <div class="footer_head">
-                    <p>Support</p>
-                </div>
-
+            <div class="col-md-3 pt-3 mt-1">
                 <ul class="support__list row">
                     <li class="support__list-item col-lg-6 mb-md-3">
                         <a href="https://github.com/dotkernel" class="support__link" title="GitHub" target="_blank">

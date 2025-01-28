@@ -288,9 +288,8 @@
                     
                     
 
-    <div class="alert alert-danger" role="alert">
-        <h4>Caution</h4>
-        <p>
+    <div class="alert alert-danger alert-caution" role="alert">
+        <p class="mb-0">
             The documentation you are viewing is for an older version of this component.<br>
             <a href="../..">Switch to the latest (v4) version.</a>
         </p>
@@ -302,10 +301,10 @@
     
     
 
-    <h1 id="adding-the-config-provider">Adding The Config Provider</h1>
+    <h1 id="adding-the-configprovider">Adding the ConfigProvider</h1>
 <ul>
 <li>In <code>config/config.php</code> add an entry for the config provider <code>\Dot\Log\ConfigProvider::class</code><ul>
-<li>Make sure it is added before with the Application-Specific components, eg.:<ul>
+<li>Make sure it is added before with the Application-Specific components, e.g.:<ul>
 <li><code>\Frontend\App\ConfigProvider.php</code></li>
 <li><code>\Admin\App\ConfigProvider::class</code></li>
 <li><code>\MyProject\ConfigProvider::class</code> etc.</li>
@@ -315,18 +314,20 @@
 </li>
 <li>Add the logger configuration in an autoload config file, e.g. you can create <code>config/autoload/logger.global.php</code>. Follow the <code>Configuring the writer(s)</code> chapter for a simple working example.</li>
 </ul>
-<p>Note: <code>Dot\Log\ConfigProvider</code> has an abstract factory <code>LoggerAbstractServiceFactory::class</code> which corresponds to the alias, not  the class name. Instead of requesting <code>Laminas\Log\Logger::class</code> from the container, use <code>dot-log.my_logger</code> (or just <code>my_logger</code> if using laminas-log).</p>
+<blockquote>
+<p><code>Dot\Log\ConfigProvider</code> has an abstract factory <code>LoggerAbstractServiceFactory::class</code> which corresponds to the alias, not  the class name.
+Instead of requesting <code>Laminas\Log\Logger::class</code> from the container, use <code>dot-log.my_logger</code> (or just <code>my_logger</code> if using laminas-log).</p>
+</blockquote>
 
 
 
 
     <nav>
-    <ul class="page-nav hidden-print">
+    <ul class="list-unstyled page-nav row w-100 mt-5 mb-3 pt-5 pb-3">
         
-        <li class="page-nav__item">
+        <li class="col text-nowrap text-md-start">
             
                 <a rel="prev" class="page-nav__link page-nav__link--prev" href="../overview/">
-                    <small class="page-nav__label">Previous</small>
                     <i class="bi bi-chevron-left"></i>
                     Overview
                 </a>
@@ -334,10 +335,9 @@
         </li>
 
         
-        <li class="page-nav__item">
+        <li class="col text-nowrap text-md-end pe-0">
             
                 <a rel="next" class="page-nav__link page-nav__link--next" href="../configuring-writer/">
-                    <small class="page-nav__label">Next</small>
                     Configuring the writer(s)
                     <i class="bi bi-chevron-right"></i>
                 </a>
@@ -417,11 +417,7 @@
                 </div>
             </div>
 
-            <div class="col-md-3 pt-3">
-                <div class="footer_head">
-                    <p>Support</p>
-                </div>
-
+            <div class="col-md-3 pt-3 mt-1">
                 <ul class="support__list row">
                     <li class="support__list-item col-lg-6 mb-md-3">
                         <a href="https://github.com/dotkernel" class="support__link" title="GitHub" target="_blank">
