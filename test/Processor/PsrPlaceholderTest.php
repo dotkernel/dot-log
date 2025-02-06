@@ -28,7 +28,7 @@ class PsrPlaceholderTest extends TestCase
     {
         $input = [
             "message" => '{nullvalue} of {objectvalue} is in fact a {stringvalue}',
-            "extra"   => [
+            "context" => [
                 "nullvalue"   => null,
                 "objectvalue" => $this->subject,
                 "stringvalue" => "this is a message",

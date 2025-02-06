@@ -18,7 +18,7 @@ use function strpos;
 
 class Simple extends Base
 {
-    public const DEFAULT_FORMAT = '%timestamp% %priorityName% (%priority%): %message% %extra%';
+    public const DEFAULT_FORMAT = '%timestamp% %levelName% (%level%): %message% %extra%';
 
     /**
      * Format specifier for log messages

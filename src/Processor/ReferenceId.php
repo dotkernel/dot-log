@@ -13,15 +13,15 @@ class ReferenceId extends RequestId implements ProcessorInterface
      */
     public function process(array $event): array
     {
-        if (isset($event['extra']['referenceId'])) {
+        if (isset($event['context']['referenceId'])) {
             return $event;
         }
 
-        if (! isset($event['extra'])) {
-            $event['extra'] = [];
+        if (! isset($event['context'])) {
+            $event['context'] = [];
         }
 
-        $event['extra']['referenceId'] = $this->getIdentifier();
+        $event['context']['referenceId'] = $this->getIdentifier();
 
         return $event;
     }

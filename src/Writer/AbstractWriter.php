@@ -7,7 +7,7 @@ namespace Dot\Log\Writer;
 use Dot\Log\Exception\InvalidArgumentException;
 use Dot\Log\Exception\RuntimeException;
 use Dot\Log\Filter\FilterInterface;
-use Dot\Log\Filter\Priority;
+use Dot\Log\Filter\Level;
 use Dot\Log\Formatter\FormatterInterface;
 use Dot\Log\Manager\FilterPluginManager;
 use Dot\Log\Manager\FormatterPluginManager;
@@ -123,7 +123,7 @@ abstract class AbstractWriter implements WriterInterface
     public function addFilter(int|string|FilterInterface $filter, ?array $options = null): WriterInterface
     {
         if (is_int($filter)) {
-            $filter = new Priority($filter);
+            $filter = new Level($filter);
         }
 
         if (is_string($filter)) {

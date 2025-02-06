@@ -20,7 +20,7 @@ class PsrPlaceholder implements ProcessorInterface
         }
 
         $replacements = [];
-        foreach ($event['extra'] as $key => $val) {
+        foreach ($event['context'] as $key => $val) {
             if (
                 $val === null
                 || is_scalar($val)

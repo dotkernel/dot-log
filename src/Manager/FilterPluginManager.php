@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Dot\Log\Manager;
 
 use Dot\Log\Filter\FilterInterface;
-use Dot\Log\Filter\Priority;
+use Dot\Log\Filter\Level;
 use Dot\Log\Filter\Regex;
 use Dot\Log\Filter\SuppressFilter;
 use Dot\Log\Filter\Validator;
@@ -25,7 +25,7 @@ class FilterPluginManager extends AbstractPluginManager
 {
     /** @var string[] */
     protected array $aliases = [
-        'priority'       => Priority::class,
+        'level'          => Level::class,
         'regex'          => Regex::class,
         'suppress'       => SuppressFilter::class,
         'suppressfilter' => SuppressFilter::class,
@@ -34,7 +34,7 @@ class FilterPluginManager extends AbstractPluginManager
 
     /** @var string[]|callable[] */
     protected array $factories = [
-        Priority::class       => InvokableFactory::class,
+        Level::class          => InvokableFactory::class,
         Regex::class          => InvokableFactory::class,
         SuppressFilter::class => InvokableFactory::class,
         Validator::class      => InvokableFactory::class,

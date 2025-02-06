@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace DotTest\Log\Manager;
 
-use Dot\Log\Filter\Priority;
+use Dot\Log\Filter\Level;
 use Dot\Log\Formatter\Json;
 use Dot\Log\Manager\FormatterPluginManager;
 use Laminas\ServiceManager\Exception\InvalidServiceException;
@@ -34,9 +34,9 @@ class FormatterPluginManagerTest extends TestCase
     {
         $this->expectExceptionMessage(
             'Dot\Log\Manager\FormatterPluginManager can only create instances of'
-            . ' Dot\Log\Formatter\FormatterInterface; Dot\Log\Filter\Priority is invalid'
+            . ' Dot\Log\Formatter\FormatterInterface; Dot\Log\Filter\Level is invalid'
         );
         $this->expectException(InvalidServiceException::class);
-        $this->subject->validate(new Priority(47));
+        $this->subject->validate(new Level(47));
     }
 }

@@ -22,10 +22,10 @@ class StreamTest extends TestCase
         'stream'    => __DIR__ . '/../../log/error-log-{Y}-{m}-{d}.log',
         'filters'   => [
             'allMessages' => [
-                'name'    => 'priority',
+                'name'    => 'level',
                 'options' => [
                     'operator' => '>=',
-                    'priority' => Logger::EMERG,
+                    'level'    => Logger::EMERG,
                 ],
             ],
         ],

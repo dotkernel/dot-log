@@ -43,7 +43,7 @@ return [
                 'writers' => [
                      'FileWriter' => [
                         'name' => 'FileWriter',
-                        'priority' => \Dot\Log\Manager\Logger::ALERT, // this is equal to 1
+                        'level'   => \Dot\Log\Manager\Logger::ALERT, // this is equal to 1
                         'options' => [
                             'stream' => __DIR__ . '/../../log/dk.log',
                         ],
@@ -58,9 +58,9 @@ return [
 * The `FileWriter` key is optional, otherwise the writers array would be enumerative instead of associative.
 * The writer name key is a developer-provided name for that writer, the writer name key is **mandatory**.
 
-The writer priority key is not affecting the errors that are written, it is a way to organize writers.
+The writer level key is not affecting the errors that are written, it is a way to organize writers.
 
-The writer priority key is optional.
+The writer level key is optional.
 
 To write into a file the key stream must be present in the writer options array. This is required only if writing into streams/files.
 
@@ -79,7 +79,7 @@ The full list of format specifiers is available [here](https://www.php.net/manua
 
 As per PSR-3 document.
 
-The log levels are: emergency (0), alert (1), critical (2), error (3), warn (4), notice (5), info (6), debug (7) (in order of priority/importance)
+The log levels are: emergency (0), alert (1), critical (2), error (3), warn (4), notice (5), info (6), debug (7) (in order of level/importance)
 
 Although the plain Logger in Dot Log is not fully compatible with PSR-3, it provides a way to log all of these message types.
 
@@ -98,16 +98,16 @@ return [
             'my_logger' => [
                 'writers' => [
                     'FileWriter' => [
-                        'name' => 'FileWriter',
-                        'priority' => \Dot\Log\Manager\Logger::ALERT,
+                        'name'    => 'FileWriter',
+                        'level'   => \Dot\Log\Manager\Logger::ALERT,
                         'options' => [
                             'stream' => __DIR__ . '/../../log/dk.log',
                             'filters' => [
                                 'allMessages' => [
-                                    'name' => 'priority',
+                                    'name' => 'level',
                                     'options' => [
                                         'operator' => '>=', 
-                                        'priority' => \Dot\Log\Manager\Logger::EMERG,
+                                        'level'    => \Dot\Log\Manager\Logger::EMERG,
                                     ]
                                 ],
                             ],
@@ -115,16 +115,16 @@ return [
                     ],
                     // Only warnings
                     'OnlyWarningsWriter' => [
-                        'name' => 'stream',
-                        'priority' => \Dot\Log\Manager\Logger::ALERT,
+                        'name'  => 'stream',
+                        'level' => \Dot\Log\Manager\Logger::ALERT,
                         'options' => [
                             'stream' => __DIR__ . '/../../log/warnings_only.log',
                             'filters' => [
                                 'warningOnly' => [
-                                    'name' => 'priority',
+                                    'name' => 'level',
                                     'options' => [
                                         'operator' => '==',
-                                        'priority' => \Dot\Log\Manager\Logger::WARN,
+                                        'level'    => \Dot\Log\Manager\Logger::WARN,
                                     ],
                                 ],
                             ],
@@ -133,17 +133,17 @@ return [
                     // Warnings and more important messages
                     'WarningOrHigherWriter' => [
                         'name' => 'stream',
-                        'priority' => \Dot\Log\Manager\Logger::ALERT,
+                        'level' => \Dot\Log\Manager\Logger::ALERT,
                         'options' => [
                             'stream' => __DIR__ . '/../../log/important_messages.log',
                             'filters' => [
                                 'importantMessages' => [
-                                    'name' => 'priority',
+                                    'name'    => 'level',
                                     'options' => [
-                                        // note, the smaller the priority, the more important is the message
+                                        // note, the smaller the level, the more important is the message
                                         // 0 - emergency, 1 - alert, 2- error, 3 - warn. .etc
                                         'operator' => '<=',
-                                        'priority' => \Dot\Log\Manager\Logger::WARN,
+                                        'level'    => \Dot\Log\Manager\Logger::WARN,
                                     ],
                                 ],
                             ],
@@ -203,17 +203,17 @@ return [
             'my_logger' => [
                 'writers' => [
                     'FileWriter' => [
-                        'name' => 'FileWriter',
-                        'priority' => \Dot\Log\Manager\Logger::ALERT,
+                        'name'    => 'FileWriter',
+                        'level'   => \Dot\Log\Manager\Logger::ALERT,
                         'options' => [
                             'stream' => __DIR__ . '/../../log/dk.log',
                             // explicitly log all messages
                             'filters' => [
                                 'allMessages' => [
-                                    'name' => 'priority',
+                                    'name'    => 'level',
                                     'options' => [
                                         'operator' => '>=',
-                                        'priority' => \Dot\Log\Manager\Logger::EMERG,
+                                        'level'    => \Dot\Log\Manager\Logger::EMERG,
                                     ],
                                 ],
                             ],

@@ -19,7 +19,7 @@ class ReferenceIdTest extends TestCase
     public function testProcessWithReferenceId(): void
     {
         $input = [
-            "extra" => [
+            "context" => [
                 "referenceId" => "something",
             ],
         ];
@@ -33,7 +33,7 @@ class ReferenceIdTest extends TestCase
         $input = [];
 
         $result = $this->subject->process($input);
-        $this->assertArrayHasKey("extra", $result);
+        $this->assertArrayHasKey("context", $result);
     }
 
     public function testGetReferenceId(): void

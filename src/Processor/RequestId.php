@@ -17,15 +17,15 @@ class RequestId implements ProcessorInterface
      */
     public function process(array $event): array
     {
-        if (isset($event['extra']['requestId'])) {
+        if (isset($event['context']['requestId'])) {
             return $event;
         }
 
-        if (! isset($event['extra'])) {
-            $event['extra'] = [];
+        if (! isset($event['context'])) {
+            $event['context'] = [];
         }
 
-        $event['extra']['requestId'] = $this->getIdentifier();
+        $event['context']['requestId'] = $this->getIdentifier();
         return $event;
     }
 

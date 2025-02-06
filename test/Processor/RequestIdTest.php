@@ -19,7 +19,7 @@ class RequestIdTest extends TestCase
     public function testProcessWithRequestId(): void
     {
         $input = [
-            "extra" => [
+            "context" => [
                 "requestId" => "something",
             ],
         ];
@@ -33,6 +33,6 @@ class RequestIdTest extends TestCase
         $input = [];
 
         $result = $this->subject->process($input);
-        $this->assertArrayHasKey("extra", $result);
+        $this->assertArrayHasKey("context", $result);
     }
 }
