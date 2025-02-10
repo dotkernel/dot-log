@@ -15,7 +15,7 @@ return [
                 'writers' => [
                     'FileWriter' => [
                         'name'    => 'FileWriter',
-                        'level'   => \Dot\Log\Manager\Logger::ALERT,
+                        'level'   => \Dot\Log\Logger::ALERT,
                         'options' => [
                             'stream' => __DIR__ . '/../../log/dk.log',
                             // explicitly log all messages
@@ -24,12 +24,12 @@ return [
                                     'name'    => 'level',
                                     'options' => [
                                         'operator' => '>=',
-                                        'level' => \Dot\Log\Manager\Logger::EMERG,
+                                        'level' => \Dot\Log\Logger::EMERG,
                                     ],
                                 ],
                             ],
                             'formatter' => [
-                                'name' => \Dot\Log\Manager\Formatter\Json::class,
+                                'name' => \Dot\Log\Formatter\Json::class,
                             ],
                         ],
                     ],

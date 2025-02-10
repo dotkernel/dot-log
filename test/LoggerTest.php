@@ -114,9 +114,13 @@ class LoggerTest extends TestCase
         $writer = new Mock();
         $this->subject->addWriter($writer);
         $this->subject->log(Logger::INFO, 'tottakai');
+        $this->subject->log(4, 'tottakai');
+        $this->subject->log('2', 'tottakai');
 
-        $this->assertEquals(1, count($writer->events));
-        $this->assertStringContainsString('tottakai', $writer->events[0]['message']);
+        $this->assertEquals(3, count($writer->events));
+        foreach ($writer->events as $event) {
+            $this->assertStringContainsString('tottakai', $event['message']);
+        }
     }
 
     /**

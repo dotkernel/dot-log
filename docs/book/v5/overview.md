@@ -1,3 +1,3 @@
 # Overview
 
-Robust, composite logger with filtering, formatting, and PSR-3 support.
+Robust, composite PSR-3 compliant logger with filtering and formatting.

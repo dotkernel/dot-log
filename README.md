@@ -1,14 +1,22 @@
 # dot-log
 
+Robust, composite PSR-3 compliant logger with filtering and formatting.
+
+## Documentation
+
+Documentation is available at: https://docs.dotkernel.org/dot-log/.
+
+## Badges
+
 ![OSS Lifecycle](https://img.shields.io/osslifecycle/dotkernel/dot-log)
-![PHP from Packagist (specify version)](https://img.shields.io/packagist/php-v/dotkernel/dot-log/4.1.1)
+![PHP from Packagist (specify version)](https://img.shields.io/packagist/php-v/dotkernel/dot-log/5.0.0)
 
 [![GitHub issues](https://img.shields.io/github/issues/dotkernel/dot-log)](https://github.com/dotkernel/dot-log/issues)
 [![GitHub forks](https://img.shields.io/github/forks/dotkernel/dot-log)](https://github.com/dotkernel/dot-log/network)
 [![GitHub stars](https://img.shields.io/github/stars/dotkernel/dot-log)](https://github.com/dotkernel/dot-log/stargazers)
-[![GitHub license](https://img.shields.io/github/license/dotkernel/dot-log)](https://github.com/dotkernel/dot-log/blob/4.0/LICENSE.md)
+[![GitHub license](https://img.shields.io/github/license/dotkernel/dot-log)](https://github.com/dotkernel/dot-log/blob/5.0/LICENSE.md)
 
-[![Build Static](https://github.com/dotkernel/dot-log/actions/workflows/continuous-integration.yml/badge.svg?branch=4.0)](https://github.com/dotkernel/dot-log/actions/workflows/continuous-integration.yml)
+[![Build Static](https://github.com/dotkernel/dot-log/actions/workflows/continuous-integration.yml/badge.svg?branch=5.0)](https://github.com/dotkernel/dot-log/actions/workflows/continuous-integration.yml)
 [![codecov](https://codecov.io/gh/dotkernel/dot-log/graph/badge.svg?token=JX19KTBRCZ)](https://codecov.io/gh/dotkernel/dot-log)
 
 ## Adding The Config Provider
@@ -43,7 +51,7 @@ return [
                 'writers' => [
                      'FileWriter' => [
                         'name' => 'FileWriter',
-                        'level'   => \Dot\Log\Manager\Logger::ALERT, // this is equal to 1
+                        'level'   => \Dot\Log\Logger::ALERT, // this is equal to 1
                         'options' => [
                             'stream' => __DIR__ . '/../../log/dk.log',
                         ],
@@ -81,8 +89,6 @@ As per PSR-3 document.
 
 The log levels are: emergency (0), alert (1), critical (2), error (3), warn (4), notice (5), info (6), debug (7) (in order of level/importance)
 
-Although the plain Logger in Dot Log is not fully compatible with PSR-3, it provides a way to log all of these message types.
-
 The following example has three file writers using filters:
 
 * First Example: `FileWriter` - All messages are logged in `/log/dk.log`
@@ -99,7 +105,7 @@ return [
                 'writers' => [
                     'FileWriter' => [
                         'name'    => 'FileWriter',
-                        'level'   => \Dot\Log\Manager\Logger::ALERT,
+                        'level'   => \Dot\Log\Logger::ALERT,
                         'options' => [
                             'stream' => __DIR__ . '/../../log/dk.log',
                             'filters' => [
@@ -107,7 +113,7 @@ return [
                                     'name' => 'level',
                                     'options' => [
                                         'operator' => '>=', 
-                                        'level'    => \Dot\Log\Manager\Logger::EMERG,
+                                        'level'    => \Dot\Log\Logger::EMERG,
                                     ]
                                 ],
                             ],
@@ -116,7 +122,7 @@ return [
                     // Only warnings
                     'OnlyWarningsWriter' => [
                         'name'  => 'stream',
-                        'level' => \Dot\Log\Manager\Logger::ALERT,
+                        'level' => \Dot\Log\Logger::ALERT,
                         'options' => [
                             'stream' => __DIR__ . '/../../log/warnings_only.log',
                             'filters' => [
@@ -124,7 +130,7 @@ return [
                                     'name' => 'level',
                                     'options' => [
                                         'operator' => '==',
-                                        'level'    => \Dot\Log\Manager\Logger::WARN,
+                                        'level'    => \Dot\Log\Logger::WARN,
                                     ],
                                 ],
                             ],
@@ -133,7 +139,7 @@ return [
                     // Warnings and more important messages
                     'WarningOrHigherWriter' => [
                         'name' => 'stream',
-                        'level' => \Dot\Log\Manager\Logger::ALERT,
+                        'level' => \Dot\Log\Logger::ALERT,
                         'options' => [
                             'stream' => __DIR__ . '/../../log/important_messages.log',
                             'filters' => [
@@ -143,7 +149,7 @@ return [
                                         // note, the smaller the level, the more important is the message
                                         // 0 - emergency, 1 - alert, 2- error, 3 - warn. .etc
                                         'operator' => '<=',
-                                        'level'    => \Dot\Log\Manager\Logger::WARN,
+                                        'level'    => \Dot\Log\Logger::WARN,
                                     ],
                                 ],
                             ],
@@ -181,7 +187,7 @@ The following formats the message as JSON data:
 
 ```php
 'formatter' => [
-    'name' => \Dot\Log\Manager\Formatter\Json::class,
+    'name' => \Dot\Log\Formatter\Json::class,
 ],
 ```
 
@@ -204,7 +210,7 @@ return [
                 'writers' => [
                     'FileWriter' => [
                         'name'    => 'FileWriter',
-                        'level'   => \Dot\Log\Manager\Logger::ALERT,
+                        'level'   => \Dot\Log\Logger::ALERT,
                         'options' => [
                             'stream' => __DIR__ . '/../../log/dk.log',
                             // explicitly log all messages
@@ -213,12 +219,12 @@ return [
                                     'name'    => 'level',
                                     'options' => [
                                         'operator' => '>=',
-                                        'level'    => \Dot\Log\Manager\Logger::EMERG,
+                                        'level'    => \Dot\Log\Logger::EMERG,
                                     ],
                                 ],
                             ],
                             'formatter' => [
-                                'name' => \Dot\Log\Manager\Formatter\Json::class,
+                                'name' => \Dot\Log\Formatter\Json::class,
                             ],
                         ],
                     ],
@@ -236,7 +242,7 @@ Basic usage of the logger is illustrated below.
 The messages are written to see which logs are written and which are not written.
 
 ```php
-use Dot\Log\Manager\Logger;
+use Dot\Log\Logger;
 ```
 
 ...
@@ -245,11 +251,11 @@ use Dot\Log\Manager\Logger;
 $logger = $container->get('dot-log.my_logger');
 
 /** @var Logger $logger */
-$logger->emerg('0 EMERG');
+$logger->emergency('0 EMERG');
 $logger->alert('1 ALERT');
-$logger->crit('2 CRITICAL');
-$logger->err('3 ERR');
-$logger->warn('4 WARN');
+$logger->critical('2 CRITICAL');
+$logger->error('3 ERR');
+$logger->warning('4 WARN');
 $logger->notice('5 NOTICE');
 $logger->info('6 INF');
 $logger->debug('7 debug');

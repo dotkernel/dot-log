@@ -20,7 +20,7 @@ return [
                 'writers' => [
                      'FileWriter' => [
                         'name'    => 'FileWriter',
-                        'level'   => \Dot\Log\Manager\Logger::ALERT, // this is equal to 1
+                        'level'   => \Dot\Log\Logger::ALERT, // this is equal to 1
                         'options' => [
                             'stream' => __DIR__ . '/../../log/dk.log',
                         ],

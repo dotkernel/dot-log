@@ -8,8 +8,7 @@
       "log",
       "logging",
       "services",
-      "mezzio",
-      "laminas"
+      "PSR-3"
     ],
     "authors": [
         {

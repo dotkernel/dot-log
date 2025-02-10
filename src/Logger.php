@@ -24,11 +24,13 @@ use Stringable;
 use Traversable;
 
 use function array_reverse;
+use function array_search;
 use function count;
 use function error_get_last;
 use function error_reporting;
 use function in_array;
 use function is_array;
+use function is_numeric;
 use function is_string;
 use function register_shutdown_function;
 use function restore_error_handler;
@@ -108,14 +110,14 @@ class Logger extends AbstractLogger
      * List of level code => level (short) name
      */
     protected array $levels = [
-        self::EMERG  => LogLevel::EMERGENCY,
-        self::ALERT  => LogLevel::ALERT,
-        self::CRIT   => LogLevel::CRITICAL,
-        self::ERR    => LogLevel::ERROR,
-        self::WARN   => LogLevel::WARNING,
-        self::NOTICE => LogLevel::NOTICE,
-        self::INFO   => LogLevel::INFO,
-        self::DEBUG  => LogLevel::DEBUG,
+        LogLevel::EMERGENCY => self::EMERG,
+        LogLevel::ALERT     => self::ALERT,
+        LogLevel::CRITICAL  => self::CRIT,
+        LogLevel::ERROR     => self::ERR,
+        LogLevel::WARNING   => self::WARN,
+        LogLevel::NOTICE    => self::NOTICE,
+        LogLevel::INFO      => self::INFO,
+        LogLevel::DEBUG     => self::DEBUG,
     ];
 
     protected SplPriorityQueue $writers;
@@ -344,6 +346,12 @@ class Logger extends AbstractLogger
 
     public function log(mixed $level, string|Stringable $message, iterable $context = []): void
     {
+        if (! is_numeric($level)) {
+            if (isset($this->levels[$level])) {
+                $level = $this->levels[$level];
+            }
+        }
+
         if (($level < 0) || ($level >= count($this->levels))) {
             throw new InvalidArgumentException(sprintf(
                 '$level must be an integer >= 0 and < %d; received %s',
@@ -365,7 +373,7 @@ class Logger extends AbstractLogger
         $event = [
             'timestamp' => $timestamp,
             'level'     => $level,
-            'levelName' => $this->levels[$level],
+            'levelName' => array_search((int) $level, $this->levels, true),
             'message'   => (string) $message,
             'context'   => $context,
         ];

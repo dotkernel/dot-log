@@ -13,7 +13,7 @@ The log levels are in order of level/importance:
 * info (6)
 * debug (7)
 
-Although the plain Logger in `dot-log` is not fully compatible with PSR-3, it provides a way to log all of these message types.
+Because the plain Logger in `dot-log` is fully compatible with PSR-3, it provides a way to log all of these message types.
 
 The following example has three file writers using filters:
 
@@ -31,7 +31,7 @@ return [
                 'writers' => [
                     'FileWriter' => [
                         'name'    => 'FileWriter',
-                        'level'   => \Dot\Log\Manager\Logger::ALERT,
+                        'level'   => \Dot\Log\Logger::ALERT,
                         'options' => [
                             'stream'  => __DIR__ . '/../../log/dk.log',
                             'filters' => [
@@ -39,7 +39,7 @@ return [
                                     'name'    => 'level',
                                     'options' => [
                                         'operator' => '>=', 
-                                        'level'    => \Dot\Log\Manager\Logger::EMERG,
+                                        'level'    => \Dot\Log\Logger::EMERG,
                                     ]
                                 ],
                             ],
@@ -48,7 +48,7 @@ return [
                     // Only warnings
                     'OnlyWarningsWriter' => [
                         'name'    => 'stream',
-                        'level'   => \Dot\Log\Manager\Logger::ALERT,
+                        'level'   => \Dot\Log\Logger::ALERT,
                         'options' => [
                             'stream'  => __DIR__ . '/../../log/warnings_only.log',
                             'filters' => [
@@ -56,7 +56,7 @@ return [
                                     'name'    => 'level',
                                     'options' => [
                                         'operator' => '==',
-                                        'level'    => \Dot\Log\Manager\Logger::WARN,
+                                        'level'    => \Dot\Log\Logger::WARN,
                                     ],
                                 ],
                             ],
@@ -65,7 +65,7 @@ return [
                     // Warnings and more important messages
                     'WarningOrHigherWriter' => [
                         'name'    => 'stream',
-                        'level'   => \Dot\Log\Manager\Logger::ALERT,
+                        'level'   => \Dot\Log\Logger::ALERT,
                         'options' => [
                             'stream'  => __DIR__ . '/../../log/important_messages.log',
                             'filters' => [
@@ -75,7 +75,7 @@ return [
                                         // note, the smaller the level, the more important is the message
                                         // 0 - emergency, 1 - alert, 2- error, 3 - warn etc.
                                         'operator' => '<=',
-                                        'level'    => \Dot\Log\Manager\Logger::WARN,
+                                        'level'    => \Dot\Log\Logger::WARN,
                                     ],
                                 ],
                             ],
