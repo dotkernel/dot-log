@@ -1,5 +1,7 @@
 # dot-log
 
+Robust, composite logger with filtering and formatting.
+
 > [!IMPORTANT]
 > dot-log is a wrapper on top of [laminas/laminas-log](https://github.com/laminas/laminas-log)
 
@@ -26,7 +28,7 @@ Documentation is available at: https://docs.dotkernel.org/dot-log/v3/overview/.
 
 * Enter config/config.php
 * If there is no entry for the config provider below, add it:
-`\Dot\Log\ConfigProvider::class`
+  `\Dot\Log\ConfigProvider::class`
 * Make sure it is added before with the Application-Specific components, eg.: `\Frontend\App\ConfigProvider.php`, `\Admin\App\ConfigProvider::class`, `MyProject\ConfigProvider::class` , etc.
 * Open the `Dot\Log\ConfigProvider`
 * In the dependencies section you will see an abstract factory (`LoggerAbstractServiceFactory::class`)
