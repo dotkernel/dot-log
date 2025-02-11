@@ -28,16 +28,19 @@ use function array_search;
 use function count;
 use function error_get_last;
 use function error_reporting;
+use function gettype;
 use function in_array;
 use function is_array;
 use function is_numeric;
 use function is_string;
+use function preg_match_all;
 use function register_shutdown_function;
 use function restore_error_handler;
 use function restore_exception_handler;
 use function set_error_handler;
 use function set_exception_handler;
 use function sprintf;
+use function strtr;
 use function var_export;
 
 use const E_COMPILE_ERROR;
@@ -370,11 +373,13 @@ class Logger extends AbstractLogger
 
         $timestamp = new DateTime();
 
+        $message = $this->handlePlaceholders((string) $message, $context);
+
         $event = [
             'timestamp' => $timestamp,
             'level'     => $level,
             'levelName' => array_search((int) $level, $this->levels, true),
-            'message'   => (string) $message,
+            'message'   => $message,
             'context'   => $context,
         ];
 
@@ -387,6 +392,30 @@ class Logger extends AbstractLogger
         foreach ($this->writers->toArray() as $writer) {
             $writer->write($event);
         }
+    }
+
+    protected function handlePlaceholders(string $message, array $context): string
+    {
+        if (preg_match_all('/\{([\w.]+)}/', $message, $matches)) {
+            $replacements = [];
+            foreach ($matches[1] as $match) {
+                if (! isset($context[$match])) {
+                    continue;
+                }
+
+                $placeholderValue = $context[$match];
+
+                if (is_string($placeholderValue) || is_numeric($placeholderValue)) {
+                    $replacements["{{$match}}"] = (string) $placeholderValue;
+                } else {
+                    $replacements["{{$match}}"] = gettype($placeholderValue);
+                }
+            }
+
+            $message = strtr($message, $replacements);
+        }
+
+        return $message;
     }
 
     /**

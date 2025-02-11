@@ -123,6 +123,68 @@ class LoggerTest extends TestCase
         }
     }
 
+    public static function provideTestPlaceholders(): array
+    {
+        $context = [
+            'placeholder1'  => 1,
+            '#placeholder2' => 'placeholder2',
+            'placeholder3'  => new class {
+            },
+        ];
+
+        return [
+            ["message with no placeholders", $context],
+            ["{placeholder1, {#placeholder2}, place_holder3} invalid placeholders", $context],
+            ["{placeholder1}, {#placeholder2}, {place_holder3}", []],
+        ];
+    }
+
+    /**
+     * @dataProvider provideTestPlaceholders
+     */
+    public function testLoggingWithoutValidPlaceholdersDoesNotModifyMessage(string $message, array $context): void
+    {
+        $writer = new Mock();
+        $this->subject->addWriter($writer);
+        $this->subject->log(Logger::INFO, $message, $context);
+
+        $this->assertEquals(1, count($writer->events));
+
+        $this->assertEquals(
+            $message,
+            $writer->events[0]['message']
+        );
+    }
+
+    public function testLoggingWithValidPlaceholders(): void
+    {
+        $message =
+            "{placeholder1}, {place.holder2}, {place_holder3} and {placeholder4}. {placeholder5} test {placeholder6}";
+        $context = [
+            'placeholder1'  => 1,
+            'place.holder2' => 'placeholder2',
+            'place_holder3' => new class {
+                public function hello(): string
+                {
+                    return 'Hello world!';
+                }
+            },
+            'placeholder4'  => ['array' => 'placeholder4'],
+            'placeholder5'  => 5.5,
+            'placeholder6'  => fn($arg1, $arg2) => $arg1 + $arg2,
+        ];
+
+        $writer = new Mock();
+        $this->subject->addWriter($writer);
+        $this->subject->log(Logger::INFO, $message, $context);
+
+        $this->assertEquals(1, count($writer->events));
+        $this->assertEquals(
+            '1, placeholder2, object and array. 5.5 test object',
+            $writer->events[0]['message']
+        );
+    }
+
     /**
      * @throws ContainerExceptionInterface
      */
