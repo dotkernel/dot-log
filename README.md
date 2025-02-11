@@ -261,5 +261,3 @@ $logger->info('6 INF');
 $logger->debug('7 debug');
 $logger->log(Logger::NOTICE, 'NOTICE from log()');
 ```
-
-Extracted from [this article](https://www.dotkernel.com/dotkernel/logging-with-dot-log-in-mezzio-and-dotkernel)
