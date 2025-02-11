@@ -1,5 +1,13 @@
 # dot-log
 
+Robust, composite logger with filtering and formatting.
+
+## Documentation
+
+Documentation is available at: https://docs.dotkernel.org/dot-log/v4/overview/.
+
+## Badges
+
 ![OSS Lifecycle](https://img.shields.io/osslifecycle/dotkernel/dot-log)
 ![PHP from Packagist (specify version)](https://img.shields.io/packagist/php-v/dotkernel/dot-log/4.1.1)
 
@@ -255,5 +263,3 @@ $logger->info('6 INF');
 $logger->debug('7 debug');
 $logger->log(Logger::NOTICE, 'NOTICE from log()');
 ```
-
-Extracted from [this article](https://www.dotkernel.com/dotkernel/logging-with-dot-log-in-mezzio-and-dotkernel)
