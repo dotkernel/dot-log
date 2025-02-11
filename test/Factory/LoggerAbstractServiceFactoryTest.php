@@ -38,11 +38,11 @@ class LoggerAbstractServiceFactoryTest extends TestCase
     /**
      * @throws ContainerExceptionInterface
      */
-    public function testWillInstantiate()
+    public function testWillInstantiate(): void
     {
         $this->container
             ->method('has')
-            ->will($this->onConsecutiveCalls(true, false));
+            ->willReturn(true, false, false);
 
         $this->container->expects($this->once())
             ->method('get')
