@@ -13,7 +13,7 @@
         
             
         
-        <meta name="docsearch:version" content="4.0.0,latest">
+        <meta name="docsearch:version" content="5.0.0,latest">
         <meta name="docsearch:language" content="en">
         <meta name="docsearch:component" content="dot-log">
 
@@ -142,9 +142,17 @@
         <div class="dropdown-menu dropdown-menu-right dropdown-menu-lg-left" aria-labelledby="version-selector-dropdown">
             
                 
+                    <a href="../../v5/overview/" class="dropdown-item">
+                        
+                            v5 (latest)
+                        
+                    </a>
+                
+            
+                
                     <a href="../overview/" class="dropdown-item active">
                         
-                            v4 (latest)
+                            v4
                         
                     </a>
                 
@@ -206,6 +214,14 @@
         <h5 class="subnavigation__title">Table of Contents</h5>
 
         <ul class="subnavigation__list">
+            
+
+                
+                
+
+                    
+                    
+                
             
 
                 
@@ -288,6 +304,13 @@
                     
                     
 
+    <div class="alert alert-danger alert-caution" role="alert">
+        <p class="mb-0">
+            The documentation you are viewing is for an older version of this component.<br>
+            <a href="../..">Switch to the latest (v5) version.</a>
+        </p>
+    </div>
+
 
 
 
@@ -297,7 +320,7 @@
     <h1 id="usage">Usage</h1>
 <p>Basic usage of the logger is illustrated below.</p>
 <p>The messages are written to see which logs are written and which are not written.</p>
-<pre class="highlight"><code class="language-php">use Dot\Log\Manager\Logger;</code></pre>
+<pre class="highlight"><code class="language-php">use Dot\Log\Logger;</code></pre>
 <p>...</p>
 <pre class="highlight"><code class="language-php">$logger = $container-&gt;get('dot-log.my_logger');
 

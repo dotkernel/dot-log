@@ -68,4 +68,36 @@
          <loc>https://docs.dotkernel.org/dot-log/v4/usage/</loc>
          <lastmod>2025-02-14</lastmod>
     </url>
+    <url>
+         <loc>https://docs.dotkernel.org/dot-log/v5/adding-config-provider/</loc>
+         <lastmod>2025-02-14</lastmod>
+    </url>
+    <url>
+         <loc>https://docs.dotkernel.org/dot-log/v5/configuring-writer/</loc>
+         <lastmod>2025-02-14</lastmod>
+    </url>
+    <url>
+         <loc>https://docs.dotkernel.org/dot-log/v5/example-with-formatter/</loc>
+         <lastmod>2025-02-14</lastmod>
+    </url>
+    <url>
+         <loc>https://docs.dotkernel.org/dot-log/v5/filtering-log-messages/</loc>
+         <lastmod>2025-02-14</lastmod>
+    </url>
+    <url>
+         <loc>https://docs.dotkernel.org/dot-log/v5/formatting-messages/</loc>
+         <lastmod>2025-02-14</lastmod>
+    </url>
+    <url>
+         <loc>https://docs.dotkernel.org/dot-log/v5/grouping-log-files-by-date/</loc>
+         <lastmod>2025-02-14</lastmod>
+    </url>
+    <url>
+         <loc>https://docs.dotkernel.org/dot-log/v5/overview/</loc>
+         <lastmod>2025-02-14</lastmod>
+    </url>
+    <url>
+         <loc>https://docs.dotkernel.org/dot-log/v5/usage/</loc>
+         <lastmod>2025-02-14</lastmod>
+    </url>
 </urlset>

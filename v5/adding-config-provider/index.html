@@ -18,7 +18,7 @@
         <meta name="docsearch:component" content="dot-log">
 
         
-        <link rel="canonical" href="https://docs.dotkernel.org/dot-log/v4/adding-config-provider/">
+        <link rel="canonical" href="https://docs.dotkernel.org/dot-log/v5/adding-config-provider/">
         
         <link rel="shortcut icon" href="https://docs.dotkernel.org/img/dk_docs_favicon_white.svg">
 
@@ -136,13 +136,13 @@
     <div class="btn-group">
         <button type="button" class="btn dropdown-toggle bg-light" data-toggle="dropdown" data-display="static" aria-haspopup="true" aria-expanded="false" id="version-selector-dropdown">
             
-                v4
+                v5
             
         </button>
         <div class="dropdown-menu dropdown-menu-right dropdown-menu-lg-left" aria-labelledby="version-selector-dropdown">
             
                 
-                    <a href="../../v5/overview/" class="dropdown-item">
+                    <a href="../overview/" class="dropdown-item active">
                         
                             v5 (latest)
                         
@@ -150,7 +150,7 @@
                 
             
                 
-                    <a href="../overview/" class="dropdown-item active">
+                    <a href="../../v4/overview/" class="dropdown-item">
                         
                             v4
                         
@@ -218,14 +218,6 @@
 
                 
                 
-
-                    
-                    
-                
-            
-
-                
-                
                     
                         
 <li class="subnavigation__list-item ">
@@ -285,6 +277,14 @@
                     
                 
             
+
+                
+                
+
+                    
+                    
+                
+            
         </ul>
     </div>
 
@@ -304,13 +304,6 @@
                     
                     
 
-    <div class="alert alert-danger alert-caution" role="alert">
-        <p class="mb-0">
-            The documentation you are viewing is for an older version of this component.<br>
-            <a href="../..">Switch to the latest (v5) version.</a>
-        </p>
-    </div>
-
 
 
 
@@ -320,7 +313,7 @@
     <h1 id="adding-the-config-provider">Adding The Config Provider</h1>
 <ul>
 <li>In <code>config/config.php</code> add an entry for the config provider <code>\Dot\Log\ConfigProvider::class</code><ul>
-<li>Make sure it is added before with the Application-Specific components, eg.:<ul>
+<li>Make sure it is added before the Application-Specific components, e.g.:<ul>
 <li><code>\Frontend\App\ConfigProvider.php</code></li>
 <li><code>\Admin\App\ConfigProvider::class</code></li>
 <li><code>\MyProject\ConfigProvider::class</code> etc.</li>
@@ -328,7 +321,8 @@
 </li>
 </ul>
 </li>
-<li>Add the logger configuration in an autoload config file, e.g. you can create <code>config/autoload/logger.global.php</code>. Follow the <code>Configuring the writer(s)</code> chapter for a simple working example.</li>
+<li>Add the logger configuration in an autoload config file, e.g. you can create <code>config/autoload/logger.global.php</code>.
+Follow the <code>Configuring the writer(s)</code> chapter for a simple working example.</li>
 </ul>
 <blockquote>
 <p><code>Dot\Log\ConfigProvider</code> has an abstract factory <code>LoggerAbstractServiceFactory::class</code> which corresponds to the alias, not  the class name.

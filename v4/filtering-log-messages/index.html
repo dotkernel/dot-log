@@ -13,7 +13,7 @@
         
             
         
-        <meta name="docsearch:version" content="4.0.0,latest">
+        <meta name="docsearch:version" content="5.0.0,latest">
         <meta name="docsearch:language" content="en">
         <meta name="docsearch:component" content="dot-log">
 
@@ -142,9 +142,17 @@
         <div class="dropdown-menu dropdown-menu-right dropdown-menu-lg-left" aria-labelledby="version-selector-dropdown">
             
                 
+                    <a href="../../v5/overview/" class="dropdown-item">
+                        
+                            v5 (latest)
+                        
+                    </a>
+                
+            
+                
                     <a href="../overview/" class="dropdown-item active">
                         
-                            v4 (latest)
+                            v4
                         
                     </a>
                 
@@ -206,6 +214,14 @@
         <h5 class="subnavigation__title">Table of Contents</h5>
 
         <ul class="subnavigation__list">
+            
+
+                
+                
+
+                    
+                    
+                
             
 
                 
@@ -288,6 +304,13 @@
                     
                     
 
+    <div class="alert alert-danger alert-caution" role="alert">
+        <p class="mb-0">
+            The documentation you are viewing is for an older version of this component.<br>
+            <a href="../..">Switch to the latest (v5) version.</a>
+        </p>
+    </div>
+
 
 
 
@@ -323,7 +346,7 @@ return [
                 'writers' =&gt; [
                     'FileWriter' =&gt; [
                         'name' =&gt; 'FileWriter',
-                        'priority' =&gt; \Dot\Log\Manager\Logger::ALERT,
+                        'priority' =&gt; \Dot\Log\Logger::ALERT,
                         'options' =&gt; [
                             'stream' =&gt; __DIR__ . '/../../log/dk.log',
                             'filters' =&gt; [
@@ -331,7 +354,7 @@ return [
                                     'name' =&gt; 'priority',
                                     'options' =&gt; [
                                         'operator' =&gt; '&gt;=', 
-                                        'priority' =&gt; \Dot\Log\Manager\Logger::EMERG,
+                                        'priority' =&gt; \Dot\Log\Logger::EMERG,
                                     ]
                                 ],
                             ],
@@ -340,7 +363,7 @@ return [
                     // Only warnings
                     'OnlyWarningsWriter' =&gt; [
                         'name' =&gt; 'stream',
-                        'priority' =&gt; \Dot\Log\Manager\Logger::ALERT,
+                        'priority' =&gt; \Dot\Log\Logger::ALERT,
                         'options' =&gt; [
                             'stream' =&gt; __DIR__ . '/../../log/warnings_only.log',
                             'filters' =&gt; [
@@ -348,7 +371,7 @@ return [
                                     'name' =&gt; 'priority',
                                     'options' =&gt; [
                                         'operator' =&gt; '==',
-                                        'priority' =&gt; \Dot\Log\Manager\Logger::WARN,
+                                        'priority' =&gt; \Dot\Log\Logger::WARN,
                                     ],
                                 ],
                             ],
@@ -357,7 +380,7 @@ return [
                     // Warnings and more important messages
                     'WarningOrHigherWriter' =&gt; [
                         'name' =&gt; 'stream',
-                        'priority' =&gt; \Dot\Log\Manager\Logger::ALERT,
+                        'priority' =&gt; \Dot\Log\Logger::ALERT,
                         'options' =&gt; [
                             'stream' =&gt; __DIR__ . '/../../log/important_messages.log',
                             'filters' =&gt; [
@@ -367,7 +390,7 @@ return [
                                         // note, the smaller the priority, the more important is the message
                                         // 0 - emergency, 1 - alert, 2- error, 3 - warn etc.
                                         'operator' =&gt; '&lt;=',
-                                        'priority' =&gt; \Dot\Log\Manager\Logger::WARN,
+                                        'priority' =&gt; \Dot\Log\Logger::WARN,
                                     ],
                                 ],
                             ],

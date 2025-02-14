@@ -18,11 +18,11 @@
         <meta name="docsearch:component" content="dot-log">
 
         
-        <link rel="canonical" href="https://docs.dotkernel.org/dot-log/v4/adding-config-provider/">
+        <link rel="canonical" href="https://docs.dotkernel.org/dot-log/v5/grouping-log-files-by-date/">
         
         <link rel="shortcut icon" href="https://docs.dotkernel.org/img/dk_docs_favicon_white.svg">
 
-        <title>Adding The Config Provider - dot-log - DotKernel Documentation</title>
+        <title>Grouping log files by date - dot-log - DotKernel Documentation</title>
 
         <link rel="stylesheet" href="https://docs.dotkernel.org/css/bootstrap.css">
         <link rel="stylesheet" href="https://docs.dotkernel.org/css/bootstrap-icons.min.css">
@@ -136,13 +136,13 @@
     <div class="btn-group">
         <button type="button" class="btn dropdown-toggle bg-light" data-toggle="dropdown" data-display="static" aria-haspopup="true" aria-expanded="false" id="version-selector-dropdown">
             
-                v4
+                v5
             
         </button>
         <div class="dropdown-menu dropdown-menu-right dropdown-menu-lg-left" aria-labelledby="version-selector-dropdown">
             
                 
-                    <a href="../../v5/overview/" class="dropdown-item">
+                    <a href="../overview/" class="dropdown-item active">
                         
                             v5 (latest)
                         
@@ -150,7 +150,7 @@
                 
             
                 
-                    <a href="../overview/" class="dropdown-item active">
+                    <a href="../../v4/overview/" class="dropdown-item">
                         
                             v4
                         
@@ -193,7 +193,7 @@
                         
                     
 
-                    <li class="breadcrumb-item active" aria-current="page">Adding The Config Provider</li>
+                    <li class="breadcrumb-item active" aria-current="page">Grouping log files by date</li>
                 
             
         </ol>
@@ -218,14 +218,6 @@
 
                 
                 
-
-                    
-                    
-                
-            
-
-                
-                
                     
                         
 <li class="subnavigation__list-item ">
@@ -234,8 +226,8 @@
 
                     
                         
-<li class="subnavigation__list-item subnavigation__list-item--active">
-    <a href="./" class="subnavigation__link">Adding The Config Provider</a>
+<li class="subnavigation__list-item ">
+    <a href="../adding-config-provider/" class="subnavigation__link">Adding The Config Provider</a>
 </li>
 
                     
@@ -246,8 +238,8 @@
 
                     
                         
-<li class="subnavigation__list-item ">
-    <a href="../grouping-log-files-by-date/" class="subnavigation__link">Grouping log files by date</a>
+<li class="subnavigation__list-item subnavigation__list-item--active">
+    <a href="./" class="subnavigation__link">Grouping log files by date</a>
 </li>
 
                     
@@ -285,6 +277,14 @@
                     
                 
             
+
+                
+                
+
+                    
+                    
+                
+            
         </ul>
     </div>
 
@@ -304,36 +304,21 @@
                     
                     
 
-    <div class="alert alert-danger alert-caution" role="alert">
-        <p class="mb-0">
-            The documentation you are viewing is for an older version of this component.<br>
-            <a href="../..">Switch to the latest (v5) version.</a>
-        </p>
-    </div>
-
 
 
 
     
     
 
-    <h1 id="adding-the-config-provider">Adding The Config Provider</h1>
+    <h1 id="grouping-log-files-by-date">Grouping log files by date</h1>
+<p>By default, logs will be written to the same file: <code>log/dk.log</code>.</p>
+<p>Optionally, you can use date format specifiers wrapped between curly braces in your FileWriter's <code>stream</code> option to automatically group your logs by day, week, month, year etc.</p>
+<p>Examples:</p>
 <ul>
-<li>In <code>config/config.php</code> add an entry for the config provider <code>\Dot\Log\ConfigProvider::class</code><ul>
-<li>Make sure it is added before with the Application-Specific components, eg.:<ul>
-<li><code>\Frontend\App\ConfigProvider.php</code></li>
-<li><code>\Admin\App\ConfigProvider::class</code></li>
-<li><code>\MyProject\ConfigProvider::class</code> etc.</li>
+<li><code>log/dk-{Y}-{m}-{d}.log</code> will create a new log file each day (eg: log/dk-2021-01-01.log)</li>
+<li><code>log/dk-{Y}-{W}.log</code> will create a new log file each week (eg: log/dk-2021-10.log)</li>
 </ul>
-</li>
-</ul>
-</li>
-<li>Add the logger configuration in an autoload config file, e.g. you can create <code>config/autoload/logger.global.php</code>. Follow the <code>Configuring the writer(s)</code> chapter for a simple working example.</li>
-</ul>
-<blockquote>
-<p><code>Dot\Log\ConfigProvider</code> has an abstract factory <code>LoggerAbstractServiceFactory::class</code> which corresponds to the alias, not  the class name.
-Instead of requesting <code>Dot\Log\Logger::class</code> from the container, use <code>dot-log.my_logger</code>.</p>
-</blockquote>
+<p>The full list of format specifiers is available in the <a href="https://www.php.net/manual/en/datetime.format.php">PHP docs for datetime formatting</a>.</p>
 
 
 
@@ -343,9 +328,9 @@ Instead of requesting <code>Dot\Log\Logger::class</code> from the container, use
         
         <li class="col text-nowrap text-md-start">
             
-                <a rel="prev" class="page-nav__link page-nav__link--prev" href="../overview/">
+                <a rel="prev" class="page-nav__link page-nav__link--prev" href="../configuring-writer/">
                     <i class="bi bi-chevron-left"></i>
-                    Overview
+                    Configuring the writer(s)
                 </a>
             
         </li>
@@ -353,8 +338,8 @@ Instead of requesting <code>Dot\Log\Logger::class</code> from the container, use
         
         <li class="col text-nowrap text-md-end pe-0">
             
-                <a rel="next" class="page-nav__link page-nav__link--next" href="../configuring-writer/">
-                    Configuring the writer(s)
+                <a rel="next" class="page-nav__link page-nav__link--next" href="../filtering-log-messages/">
+                    Filtering log messages
                     <i class="bi bi-chevron-right"></i>
                 </a>
             
