@@ -1,14 +1,18 @@
 # dot-log
 
+Robust, composite logger with filtering and formatting.
+
 > [!IMPORTANT]
 > dot-log is a wrapper on top of [laminas/laminas-log](https://github.com/laminas/laminas-log)
->
-> ![Dynamic JSON Badge](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fapi.github.com%2Frepos%2Flaminas%2Flaminas-log%2Fproperties%2Fvalues&query=%24%5B%3F(%40.property_name%3D%3D%22maintenance-mode%22)%5D.value&label=Maintenance%20Mode)
 
-## dot-log badges
+## Documentation
+
+Documentation is available at: https://docs.dotkernel.org/dot-log/v3/overview/.
+
+## Badges
 
 ![OSS Lifecycle](https://img.shields.io/osslifecycle/dotkernel/dot-log)
-![PHP from Packagist (specify version)](https://img.shields.io/packagist/php-v/dotkernel/dot-log/3.4.4)
+![PHP from Packagist (specify version)](https://img.shields.io/packagist/php-v/dotkernel/dot-log/3.5.4)
 
 [![GitHub issues](https://img.shields.io/github/issues/dotkernel/dot-log)](https://github.com/dotkernel/dot-log/issues)
 [![GitHub forks](https://img.shields.io/github/forks/dotkernel/dot-log)](https://github.com/dotkernel/dot-log/network)
@@ -18,13 +22,11 @@
 [![Build Static](https://github.com/dotkernel/dot-log/actions/workflows/continuous-integration.yml/badge.svg?branch=3.0)](https://github.com/dotkernel/dot-log/actions/workflows/continuous-integration.yml)
 [![codecov](https://codecov.io/gh/dotkernel/dot-log/graph/badge.svg?token=JX19KTBRCZ)](https://codecov.io/gh/dotkernel/dot-log)
 
-[![SymfonyInsight](https://insight.symfony.com/projects/287e81e8-b4fb-4452-bd8f-4f12c0ab1f76/big.svg)](https://insight.symfony.com/projects/287e81e8-b4fb-4452-bd8f-4f12c0ab1f76)
-
 ## Adding The Config Provider
 
 * Enter config/config.php
 * If there is no entry for the config provider below, add it:
-`\Dot\Log\ConfigProvider::class`
+  `\Dot\Log\ConfigProvider::class`
 * Make sure it is added before with the Application-Specific components, eg.: `\Frontend\App\ConfigProvider.php`, `\Admin\App\ConfigProvider::class`, `MyProject\ConfigProvider::class` , etc.
 * Open the `Dot\Log\ConfigProvider`
 * In the dependencies section you will see an abstract factory (`LoggerAbstractServiceFactory::class`)
@@ -277,5 +279,3 @@ Sources:
 * https://docs.laminas.dev/laminas-log/
 * https://docs.laminas.dev/laminas-log/writers/
 * https://docs.laminas.dev/laminas-log/filters/
-
-Extracted from [this article](https://www.dotkernel.com/dotkernel/logging-with-dot-log-in-mezzio-and-dotkernel)
