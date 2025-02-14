@@ -2,7 +2,7 @@
 
 The following conforms to the `PSR-3: Logger Interface` document.
 
-The log levels are in order of priority/importance:
+The log levels are in order of level/importance:
 
 * emergency (0)
 * alert (1)
@@ -13,7 +13,7 @@ The log levels are in order of priority/importance:
 * info (6)
 * debug (7)
 
-Although the plain Logger in `dot-log` is not fully compatible with PSR-3, it provides a way to log all of these message types.
+Because the plain Logger in `dot-log` is fully compatible with PSR-3, it provides a way to log all of these message types.
 
 The following example has three file writers using filters:
 
@@ -30,16 +30,16 @@ return [
             'my_logger' => [
                 'writers' => [
                     'FileWriter' => [
-                        'name' => 'FileWriter',
-                        'priority' => \Dot\Log\Logger::ALERT,
+                        'name'    => 'FileWriter',
+                        'level'   => \Dot\Log\Logger::ALERT,
                         'options' => [
-                            'stream' => __DIR__ . '/../../log/dk.log',
+                            'stream'  => __DIR__ . '/../../log/dk.log',
                             'filters' => [
                                 'allMessages' => [
-                                    'name' => 'priority',
+                                    'name'    => 'level',
                                     'options' => [
                                         'operator' => '>=', 
-                                        'priority' => \Dot\Log\Logger::EMERG,
+                                        'level'    => \Dot\Log\Logger::EMERG,
                                     ]
                                 ],
                             ],
@@ -47,16 +47,16 @@ return [
                     ],
                     // Only warnings
                     'OnlyWarningsWriter' => [
-                        'name' => 'stream',
-                        'priority' => \Dot\Log\Logger::ALERT,
+                        'name'    => 'stream',
+                        'level'   => \Dot\Log\Logger::ALERT,
                         'options' => [
-                            'stream' => __DIR__ . '/../../log/warnings_only.log',
+                            'stream'  => __DIR__ . '/../../log/warnings_only.log',
                             'filters' => [
                                 'warningOnly' => [
-                                    'name' => 'priority',
+                                    'name'    => 'level',
                                     'options' => [
                                         'operator' => '==',
-                                        'priority' => \Dot\Log\Logger::WARN,
+                                        'level'    => \Dot\Log\Logger::WARN,
                                     ],
                                 ],
                             ],
@@ -64,18 +64,18 @@ return [
                     ],
                     // Warnings and more important messages
                     'WarningOrHigherWriter' => [
-                        'name' => 'stream',
-                        'priority' => \Dot\Log\Logger::ALERT,
+                        'name'    => 'stream',
+                        'level'   => \Dot\Log\Logger::ALERT,
                         'options' => [
-                            'stream' => __DIR__ . '/../../log/important_messages.log',
+                            'stream'  => __DIR__ . '/../../log/important_messages.log',
                             'filters' => [
                                 'importantMessages' => [
-                                    'name' => 'priority',
+                                    'name'    => 'level',
                                     'options' => [
-                                        // note, the smaller the priority, the more important is the message
+                                        // note, the smaller the level, the more important is the message
                                         // 0 - emergency, 1 - alert, 2- error, 3 - warn etc.
                                         'operator' => '<=',
-                                        'priority' => \Dot\Log\Logger::WARN,
+                                        'level'    => \Dot\Log\Logger::WARN,
                                     ],
                                 ],
                             ],

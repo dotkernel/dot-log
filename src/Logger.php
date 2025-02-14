@@ -18,23 +18,29 @@ use Laminas\ServiceManager\ServiceManager;
 use Laminas\Stdlib\ArrayUtils;
 use Laminas\Stdlib\SplPriorityQueue;
 use Psr\Container\ContainerExceptionInterface;
+use Psr\Log\AbstractLogger;
+use Psr\Log\LogLevel;
+use Stringable;
 use Traversable;
 
 use function array_reverse;
+use function array_search;
 use function count;
 use function error_get_last;
 use function error_reporting;
+use function gettype;
 use function in_array;
 use function is_array;
-use function is_object;
+use function is_numeric;
 use function is_string;
-use function method_exists;
+use function preg_match_all;
 use function register_shutdown_function;
 use function restore_error_handler;
 use function restore_exception_handler;
 use function set_error_handler;
 use function set_exception_handler;
 use function sprintf;
+use function strtr;
 use function var_export;
 
 use const E_COMPILE_ERROR;
@@ -52,7 +58,7 @@ use const E_USER_NOTICE;
 use const E_USER_WARNING;
 use const E_WARNING;
 
-class Logger implements LoggerInterface
+class Logger extends AbstractLogger
 {
     /**
      * @link http://tools.ietf.org/html/rfc3164
@@ -69,9 +75,9 @@ class Logger implements LoggerInterface
     public const DEBUG  = 7;
 
     /**
-     * Map native PHP errors to priority
+     * Map native PHP errors to level
      */
-    public static array $errorPriorityMap = [
+    public static array $errorLevelMap = [
         E_NOTICE            => self::NOTICE,
         E_USER_NOTICE       => self::NOTICE,
         E_WARNING           => self::WARN,
@@ -104,17 +110,17 @@ class Logger implements LoggerInterface
     protected static bool $registeredExceptionHandler = false;
 
     /**
-     * List of priority code => priority (short) name
+     * List of level code => level (short) name
      */
-    protected array $priorities = [
-        self::EMERG  => 'EMERG',
-        self::ALERT  => 'ALERT',
-        self::CRIT   => 'CRIT',
-        self::ERR    => 'ERR',
-        self::WARN   => 'WARN',
-        self::NOTICE => 'NOTICE',
-        self::INFO   => 'INFO',
-        self::DEBUG  => 'DEBUG',
+    protected array $levels = [
+        LogLevel::EMERGENCY => self::EMERG,
+        LogLevel::ALERT     => self::ALERT,
+        LogLevel::CRITICAL  => self::CRIT,
+        LogLevel::ERROR     => self::ERR,
+        LogLevel::WARNING   => self::WARN,
+        LogLevel::NOTICE    => self::NOTICE,
+        LogLevel::INFO      => self::INFO,
+        LogLevel::DEBUG     => self::DEBUG,
     ];
 
     protected SplPriorityQueue $writers;
@@ -170,10 +176,10 @@ class Logger implements LoggerInterface
                     throw new InvalidArgumentException('Options must contain a name for the writer');
                 }
 
-                $priority      = $writer['priority'] ?? null;
+                $level         = $writer['level'] ?? null;
                 $writerOptions = $writer['options'] ?? null;
 
-                $this->addWriter($writer['name'], $priority, $writerOptions);
+                $this->addWriter($writer['name'], $level, $writerOptions);
             }
         }
 
@@ -183,10 +189,10 @@ class Logger implements LoggerInterface
                     throw new InvalidArgumentException('Options must contain a name for the processor');
                 }
 
-                $priority         = $processor['priority'] ?? null;
+                $level            = $processor['level'] ?? null;
                 $processorOptions = $processor['options'] ?? null;
 
-                $this->addProcessor($processor['name'], $priority, $processorOptions);
+                $this->addProcessor($processor['name'], $level, $processorOptions);
             }
         }
 
@@ -245,7 +251,7 @@ class Logger implements LoggerInterface
      *
      * @throws ContainerExceptionInterface
      */
-    public function addWriter(WriterInterface|string $writer, int $priority = 1, ?array $options = null): static
+    public function addWriter(WriterInterface|string $writer, int $level = 1, ?array $options = null): static
     {
         if (is_string($writer)) {
             $writer = $this->writerPlugin($writer, $options);
@@ -256,7 +262,7 @@ class Logger implements LoggerInterface
                 $writer::class
             ));
         }
-        $this->writers->insert($writer, $priority);
+        $this->writers->insert($writer, $level);
 
         return $this;
     }
@@ -320,7 +326,7 @@ class Logger implements LoggerInterface
      */
     public function addProcessor(
         ProcessorInterface|string $processor,
-        int $priority = 1,
+        int $level = 1,
         ?array $options = null
     ): static {
         if (is_string($processor)) {
@@ -331,7 +337,7 @@ class Logger implements LoggerInterface
                 $processor::class
             ));
         }
-        $this->processors->insert($processor, $priority);
+        $this->processors->insert($processor, $level);
 
         return $this;
     }
@@ -341,27 +347,24 @@ class Logger implements LoggerInterface
         return $this->processors;
     }
 
-    public function log(int $priority, mixed $message, iterable $extra = []): static
+    public function log(mixed $level, string|Stringable $message, iterable $context = []): void
     {
-        if (($priority < 0) || ($priority >= count($this->priorities))) {
-            throw new InvalidArgumentException(sprintf(
-                '$priority must be an integer >= 0 and < %d; received %s',
-                count($this->priorities),
-                var_export($priority, true)
-            ));
-        }
-        if (is_object($message) && ! method_exists($message, '__toString')) {
-            throw new InvalidArgumentException(
-                '$message must implement magic __toString() method'
-            );
+        if (! is_numeric($level)) {
+            if (isset($this->levels[$level])) {
+                $level = $this->levels[$level];
+            }
         }
 
-        if (! is_array($extra) && ! $extra instanceof Traversable) {
-            throw new InvalidArgumentException(
-                '$extra must be an array or implement Traversable'
-            );
-        } elseif ($extra instanceof Traversable) {
-            $extra = ArrayUtils::iteratorToArray($extra);
+        if (($level < 0) || ($level >= count($this->levels))) {
+            throw new InvalidArgumentException(sprintf(
+                '$level must be an integer >= 0 and < %d; received %s',
+                count($this->levels),
+                var_export($level, true)
+            ));
+        }
+
+        if ($context instanceof Traversable) {
+            $context = ArrayUtils::iteratorToArray($context);
         }
 
         if ($this->writers->count() === 0) {
@@ -370,16 +373,14 @@ class Logger implements LoggerInterface
 
         $timestamp = new DateTime();
 
-        if (is_array($message)) {
-            $message = var_export($message, true);
-        }
+        $message = $this->handlePlaceholders((string) $message, $context);
 
         $event = [
-            'timestamp'    => $timestamp,
-            'priority'     => $priority,
-            'priorityName' => $this->priorities[$priority],
-            'message'      => (string) $message,
-            'extra'        => $extra,
+            'timestamp' => $timestamp,
+            'level'     => $level,
+            'levelName' => array_search((int) $level, $this->levels, true),
+            'message'   => $message,
+            'context'   => $context,
         ];
 
         /** @var ProcessorInterface $processor */
@@ -391,48 +392,30 @@ class Logger implements LoggerInterface
         foreach ($this->writers->toArray() as $writer) {
             $writer->write($event);
         }
-
-        return $this;
     }
 
-    public function emerg(string $message, iterable $extra = []): LoggerInterface
+    protected function handlePlaceholders(string $message, array $context): string
     {
-        return $this->log(self::EMERG, $message, $extra);
-    }
+        if (preg_match_all('/\{([\w.]+)}/', $message, $matches)) {
+            $replacements = [];
+            foreach ($matches[1] as $match) {
+                if (! isset($context[$match])) {
+                    continue;
+                }
 
-    public function alert(string $message, iterable $extra = []): LoggerInterface
-    {
-        return $this->log(self::ALERT, $message, $extra);
-    }
+                $placeholderValue = $context[$match];
 
-    public function crit(string $message, iterable $extra = []): LoggerInterface
-    {
-        return $this->log(self::CRIT, $message, $extra);
-    }
+                if (is_string($placeholderValue) || is_numeric($placeholderValue)) {
+                    $replacements["{{$match}}"] = (string) $placeholderValue;
+                } else {
+                    $replacements["{{$match}}"] = gettype($placeholderValue);
+                }
+            }
 
-    public function err(string $message, iterable $extra = []): LoggerInterface
-    {
-        return $this->log(self::ERR, $message, $extra);
-    }
+            $message = strtr($message, $replacements);
+        }
 
-    public function warn(string $message, iterable $extra = []): LoggerInterface
-    {
-        return $this->log(self::WARN, $message, $extra);
-    }
-
-    public function notice(string $message, iterable $extra = []): LoggerInterface
-    {
-        return $this->log(self::NOTICE, $message, $extra);
-    }
-
-    public function info(string $message, iterable $extra = []): LoggerInterface
-    {
-        return $this->log(self::INFO, $message, $extra);
-    }
-
-    public function debug(string $message, iterable $extra = []): LoggerInterface
-    {
-        return $this->log(self::DEBUG, $message, $extra);
+        return $message;
     }
 
     /**
@@ -447,19 +430,19 @@ class Logger implements LoggerInterface
             return false;
         }
 
-        $errorPriorityMap = static::$errorPriorityMap;
+        $errorLevelMap = static::$errorLevelMap;
 
         $previous = set_error_handler(
-            function ($level, $message, $file, $line) use ($logger, $errorPriorityMap, $continueNativeHandler) {
+            function ($level, $message, $file, $line) use ($logger, $errorLevelMap, $continueNativeHandler) {
                 $iniLevel = error_reporting();
 
                 if ($iniLevel & $level) {
-                    if (isset($errorPriorityMap[$level])) {
-                        $priority = $errorPriorityMap[$level];
+                    if (isset($errorLevelMap[$level])) {
+                        $level = $errorLevelMap[$level];
                     } else {
-                        $priority = Logger::INFO;
+                        $level = Logger::INFO;
                     }
-                    $logger->log($priority, $message, [
+                    $logger->log($level, $message, [
                         'errno' => $level,
                         'file'  => $file,
                         'line'  => $line,
@@ -492,9 +475,9 @@ class Logger implements LoggerInterface
             return false;
         }
 
-        $errorPriorityMap = static::$errorPriorityMap;
+        $errorLevelMap = static::$errorLevelMap;
 
-        register_shutdown_function(function () use ($logger, $errorPriorityMap) {
+        register_shutdown_function(function () use ($logger, $errorLevelMap) {
             $error = error_get_last();
 
             if (
@@ -516,7 +499,7 @@ class Logger implements LoggerInterface
             }
 
             $logger->log(
-                $errorPriorityMap[$error['type']],
+                $errorLevelMap[$error['type']],
                 $error['message'],
                 [
                     'file' => $error['file'],
@@ -542,15 +525,15 @@ class Logger implements LoggerInterface
             return false;
         }
 
-        $errorPriorityMap = static::$errorPriorityMap;
+        $errorLevelMap = static::$errorLevelMap;
 
-        set_exception_handler(function ($exception) use ($logger, $errorPriorityMap) {
+        set_exception_handler(function ($exception) use ($logger, $errorLevelMap) {
             $logMessages = [];
 
             do {
-                $priority = Logger::ERR;
-                if ($exception instanceof ErrorException && isset($errorPriorityMap[$exception->getSeverity()])) {
-                    $priority = $errorPriorityMap[$exception->getSeverity()];
+                $level = Logger::ERR;
+                if ($exception instanceof ErrorException && isset($errorLevelMap[$exception->getSeverity()])) {
+                    $level = $errorLevelMap[$exception->getSeverity()];
                 }
 
                 $extra = [
@@ -560,15 +543,15 @@ class Logger implements LoggerInterface
                 ];
 
                 $logMessages[] = [
-                    'priority' => $priority,
-                    'message'  => $exception->getMessage(),
-                    'extra'    => $extra,
+                    'level'   => $level,
+                    'message' => $exception->getMessage(),
+                    'extra'   => $extra,
                 ];
                 $exception     = $exception->getPrevious();
             } while ($exception);
 
             foreach (array_reverse($logMessages) as $logMessage) {
-                $logger->log($logMessage['priority'], $logMessage['message'], $logMessage['extra']);
+                $logger->log($logMessage['level'], $logMessage['message'], $logMessage['extra']);
             }
         });
 

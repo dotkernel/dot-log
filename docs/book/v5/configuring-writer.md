@@ -19,8 +19,8 @@ return [
             'my_logger' => [
                 'writers' => [
                      'FileWriter' => [
-                        'name' => 'FileWriter',
-                        'priority' => \Dot\Log\Logger::ALERT, // this is equal to 1
+                        'name'    => 'FileWriter',
+                        'level'   => \Dot\Log\Logger::ALERT, // this is equal to 1
                         'options' => [
                             'stream' => __DIR__ . '/../../log/dk.log',
                         ],
@@ -35,9 +35,9 @@ return [
 * The `FileWriter` key is optional, otherwise the writers array would be enumerative instead of associative.
 * The `name` key is a developer-provided name for that writer, the writer name key is **mandatory**.
 
-The `priority` key does not affect the errors that are written.
+The `level` key does not affect the errors that are written.
 It is a way to organize writers.
 
-The `priority` key is optional.
+The `level` key is optional.
 
 The key `stream` is required only if writing into streams/files.

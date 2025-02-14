@@ -2,12 +2,22 @@ docs_dir: docs/book
 site_dir: docs/html
 extra:
   project: Packages
-  current_version: v4
+  current_version: v5
   versions:
+    - v5
     - v4
     - v3
 nav:
   - Home: index.md
+  - v5:
+      - "Overview": v5/overview.md
+      -   "Adding The Config Provider": v5/adding-config-provider.md
+      -   "Configuring the writer(s)": v5/configuring-writer.md
+      -   "Grouping log files by date": v5/grouping-log-files-by-date.md
+      -   "Filtering log messages": v5/filtering-log-messages.md
+      -   "Formatting Messages": v5/formatting-messages.md
+      -   "Example with formatter": v5/example-with-formatter.md
+      -   "Usage": v5/usage.md
   - v4:
       - "Overview": v4/overview.md
       - "Adding The Config Provider": v4/adding-config-provider.md

@@ -32,7 +32,7 @@ class SimpleTest extends TestCase
 
     public function testFormat(): void
     {
-        $input  = ['message' => 'Test Message', 'priorityName' => 'Critical'];
+        $input  = ['message' => 'Test Message', 'levelName' => 'Critical'];
         $result = $this->subject->format($input);
         $this->assertIsString($result);
     }

@@ -6,8 +6,8 @@ return [
             //define log services here
             'stream_logger' => [
                 'writers' => [
-                    'name' => 'stream',
-                    'priority' => \Dot\Log\Logger::DEBUG,
+                    'name'    => 'stream',
+                    'level'   => \Dot\Log\Logger::DEBUG,
                     'options' => [
                         'stream' => 'php://output',
                         'formatter' => [

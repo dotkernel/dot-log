@@ -5,7 +5,7 @@ Basic usage of the logger is illustrated below.
 The messages are written to see which logs are written and which are not written.
 
 ```php
-use Dot\Log\Manager\Logger;
+use Dot\Log\Logger;
 ```
 
 ...

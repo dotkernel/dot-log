@@ -77,7 +77,7 @@ class LoggerTest extends TestCase
     /**
      * @throws ContainerExceptionInterface
      */
-    public function testAddWriterWithPriority(): void
+    public function testAddWriterWithLevel(): void
     {
         $writer = $this->subject->writerPlugin('null');
         $this->subject->addWriter($writer, 3);
@@ -91,7 +91,7 @@ class LoggerTest extends TestCase
     /**
      * @throws ContainerExceptionInterface
      */
-    public function testAddWithSamePriority(): void
+    public function testAddWithSameLevel(): void
     {
         $writer1 = $this->subject->writerPlugin('null');
         $this->subject->addWriter($writer1, 1);
@@ -114,19 +114,92 @@ class LoggerTest extends TestCase
         $writer = new Mock();
         $this->subject->addWriter($writer);
         $this->subject->log(Logger::INFO, 'tottakai');
+        $this->subject->log(4, 'tottakai');
+        $this->subject->log('2', 'tottakai');
+
+        $this->assertEquals(3, count($writer->events));
+        foreach ($writer->events as $event) {
+            $this->assertStringContainsString('tottakai', $event['message']);
+        }
+    }
+
+    public static function provideTestPlaceholders(): array
+    {
+        $context = [
+            'placeholder1'  => 1,
+            '#placeholder2' => 'placeholder2',
+            'placeholder3'  => new class {
+            },
+        ];
+
+        return [
+            ["message with no placeholders", $context],
+            ["{placeholder1, {#placeholder2}, place_holder3} invalid placeholders", $context],
+            ["{placeholder1}, {#placeholder2}, {place_holder3}", []],
+        ];
+    }
+
+    /**
+     * @dataProvider provideTestPlaceholders
+     */
+    public function testLoggingWithoutValidPlaceholdersDoesNotModifyMessage(string $message, array $context): void
+    {
+        $writer = new Mock();
+        $this->subject->addWriter($writer);
+        $this->subject->log(Logger::INFO, $message, $context);
 
         $this->assertEquals(1, count($writer->events));
-        $this->assertStringContainsString('tottakai', $writer->events[0]['message']);
+
+        $this->assertEquals(
+            $message,
+            $writer->events[0]['message']
+        );
+    }
+
+    public function testLoggingWithValidPlaceholders(): void
+    {
+        $message =
+            "{placeholder1}, {place.holder2}, {place_holder3} and {placeholder4}. {placeholder5} test {placeholder6}";
+        $context = [
+            'placeholder1'  => 1,
+            'place.holder2' => 'placeholder2',
+            'place_holder3' => new class {
+                public function hello(): string
+                {
+                    return 'Hello world!';
+                }
+            },
+            'placeholder4'  => ['array' => 'placeholder4'],
+            'placeholder5'  => 5.5,
+            'placeholder6'  => fn($arg1, $arg2) => $arg1 + $arg2,
+        ];
+
+        $writer = new Mock();
+        $this->subject->addWriter($writer);
+        $this->subject->log(Logger::INFO, $message, $context);
+
+        $this->assertEquals(1, count($writer->events));
+        $this->assertEquals(
+            '1, placeholder2, object and array. 5.5 test object',
+            $writer->events[0]['message']
+        );
     }
 
     /**
      * @throws ContainerExceptionInterface
      */
-    public function testLoggingArray(): void
+    public function testLoggingStringable(): void
     {
+        $test = new class {
+            public function __toString(): string
+            {
+                return 'test';
+            }
+        };
+
         $writer = new Mock();
         $this->subject->addWriter($writer);
-        $this->subject->log(Logger::INFO, ['test']);
+        $this->subject->log(Logger::INFO, $test);
 
         $this->assertEquals(1, count($writer->events));
         $this->assertStringContainsString('test', $writer->events[0]['message']);
@@ -141,7 +214,7 @@ class LoggerTest extends TestCase
         $filter = new MockFilter();
         $writer->addFilter($filter);
         $this->subject->addWriter($writer);
-        $this->subject->log(Logger::INFO, ['test']);
+        $this->subject->log(Logger::INFO, 'test');
 
         $this->assertEquals(1, count($filter->events));
         $this->assertStringContainsString('test', $filter->events[0]['message']);
@@ -150,7 +223,7 @@ class LoggerTest extends TestCase
     public static function provideTestFilters(): array
     {
         return [
-            ['priority', ['priority' => Logger::INFO]],
+            ['level', ['level' => Logger::INFO]],
             ['regex', ['regex' => '/[0-9]+/']],
         ];
     }
@@ -183,15 +256,15 @@ class LoggerTest extends TestCase
      * @dataProvider provideAttributes
      * @throws ContainerExceptionInterface
      */
-    public function testLoggingCustomAttributesForUserContext(array|ArrayObject $extra): void
+    public function testLoggingCustomAttributesForUserContext(array|ArrayObject $context): void
     {
         $writer = new Mock();
         $this->subject->addWriter($writer);
-        $this->subject->log(Logger::ERR, 'tottakai', $extra);
+        $this->subject->log(Logger::ERR, 'tottakai', $context);
 
         $this->assertEquals(1, count($writer->events));
-        $this->assertIsArray($writer->events[0]['extra']);
-        $this->assertEquals(count($writer->events[0]['extra']), count($extra));
+        $this->assertIsArray($writer->events[0]['context']);
+        $this->assertEquals(count($writer->events[0]['context']), count($context));
     }
 
     /**
@@ -225,8 +298,8 @@ class LoggerTest extends TestCase
         $options = [
             'writers' => [
                 'first_writer' => [
-                    'name'     => 'null',
-                    'priority' => 1,
+                    'name'  => 'null',
+                    'level' => 1,
                 ],
             ],
         ];
@@ -245,12 +318,12 @@ class LoggerTest extends TestCase
         $options = [
             'writers' => [
                 [
-                    'name'     => 'stream',
-                    'options'  => [
+                    'name'    => 'stream',
+                    'options' => [
                         'stream'        => 'php://output',
                         'log_separator' => 'foo',
                     ],
-                    'priority' => 1,
+                    'level'   => 1,
                 ],
             ],
         ];
@@ -270,14 +343,14 @@ class LoggerTest extends TestCase
         $options    = [
             'writers'    => [
                 'first_writer' => [
-                    'name'     => 'null',
-                    'priority' => 1,
+                    'name'  => 'null',
+                    'level' => 1,
                 ],
             ],
             'processors' => [
                 'first_processor' => [
-                    'name'     => 'requestid',
-                    'priority' => 1,
+                    'name'  => 'requestid',
+                    'level' => 1,
                 ],
             ],
         ];
@@ -341,17 +414,17 @@ class LoggerTest extends TestCase
 
         // check logged messages
         $expectedEvents = [
-            ['priority' => Logger::ERR,    'message' => 'previos',     'file' => __FILE__],
-            ['priority' => Logger::ERR,    'message' => 'error',       'file' => __FILE__],
-            ['priority' => Logger::NOTICE, 'message' => 'user notice', 'file' => __FILE__],
+            ['level' => Logger::ERR,    'message' => 'previos',     'file' => __FILE__],
+            ['level' => Logger::ERR,    'message' => 'error',       'file' => __FILE__],
+            ['level' => Logger::NOTICE, 'message' => 'user notice', 'file' => __FILE__],
         ];
         for ($i = 0; $i < count($expectedEvents); $i++) {
             $expectedEvent = $expectedEvents[$i];
             $event         = $writer->events[$i];
 
-            $this->assertEquals($expectedEvent['priority'], $event['priority'], 'Unexpected priority');
+            $this->assertEquals($expectedEvent['level'], $event['level'], 'Unexpected level');
             $this->assertEquals($expectedEvent['message'], $event['message'], 'Unexpected message');
-            $this->assertEquals($expectedEvent['file'], $event['extra']['file'], 'Unexpected file');
+            $this->assertEquals($expectedEvent['file'], $event['context']['file'], 'Unexpected file');
         }
     }
 
@@ -359,10 +432,10 @@ class LoggerTest extends TestCase
      * @group Laminas-7238
      * @throws ContainerExceptionInterface
      */
-    public function testCatchExceptionNotValidPriority(): void
+    public function testCatchExceptionNotValidLevel(): void
     {
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('$priority must be an integer >= 0 and < 8; received -1');
+        $this->expectExceptionMessage('$level must be an integer >= 0 and < 8; received -1');
         $writer = new Mock();
         $this->subject->addWriter($writer);
         $this->subject->log(-1, 'Foo');

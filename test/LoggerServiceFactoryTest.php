@@ -101,7 +101,7 @@ class LoggerServiceFactoryTest extends TestCase
                 'LogWriterManager' => $writers,
                 'config'           => [
                     'log' => [
-                        'writers' => [['name' => 'noop', 'priority' => 1]],
+                        'writers' => [['name' => 'noop', 'level' => 1]],
                     ],
                 ],
             ],
@@ -129,8 +129,8 @@ class LoggerServiceFactoryTest extends TestCase
                 'LogProcessorManager' => $processors,
                 'config'              => [
                     'log' => [
-                        'writers'    => [['name' => Noop::class, 'priority' => 1]],
-                        'processors' => [['name' => 'psrplaceholder', 'priority' => 1]],
+                        'writers'    => [['name' => Noop::class, 'level' => 1]],
+                        'processors' => [['name' => 'psrplaceholder', 'level' => 1]],
                     ],
                 ],
             ],
@@ -174,7 +174,7 @@ class LoggerServiceFactoryTest extends TestCase
             'number'         => [1e3, 0],
             'object'         => [new stdClass(), 0],
             'empty iterable' => [new ArrayObject(), 0],
-            'iterable'       => [new ArrayObject([['name' => Noop::class, 'priority' => 1]]), 1],
+            'iterable'       => [new ArrayObject([['name' => Noop::class, 'level' => 1]]), 1],
         ];
     }
 

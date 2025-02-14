@@ -24,7 +24,7 @@ class BackTraceTest extends TestCase
     public function testProcess(): void
     {
         $result = $this->subject->process([]);
-        $this->assertArrayHasKey('extra', $result);
+        $this->assertArrayHasKey('context', $result);
     }
 
     public function testGetIgnoredNamespaces(): void

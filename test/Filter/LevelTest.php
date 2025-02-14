@@ -5,44 +5,44 @@ declare(strict_types=1);
 namespace DotTest\Log\Filter;
 
 use Dot\Log\Exception\InvalidArgumentException;
-use Dot\Log\Filter\Priority;
+use Dot\Log\Filter\Level;
 use PHPUnit\Framework\TestCase;
 
-class PriorityTest extends TestCase
+class LevelTest extends TestCase
 {
-    private Priority $subject;
+    private Level $subject;
 
     public function setUp(): void
     {
-        $this->subject = new Priority(47);
+        $this->subject = new Level(47);
     }
 
     public function testWillInstantiateWithInt(): void
     {
-        $this->assertInstanceOf(Priority::class, $this->subject);
+        $this->assertInstanceOf(Level::class, $this->subject);
     }
 
     public function testWillInstantiateWithArray(): void
     {
-        $input = ['priority' => 47];
+        $input = ['level' => 47];
 
-        $result = new Priority($input);
+        $result = new Level($input);
 
-        $this->assertInstanceOf(Priority::class, $result);
+        $this->assertInstanceOf(Level::class, $result);
     }
 
     public function testWillNotInstantiateWithEmptyArray(): void
     {
         $input = [];
 
-        $this->expectExceptionMessage('Priority must be a number, received "NULL"');
+        $this->expectExceptionMessage('Level must be a number, received "NULL"');
         $this->expectException(InvalidArgumentException::class);
-        new Priority($input);
+        new Level($input);
     }
 
     public function testFilterWillAcceptMessage(): void
     {
-        $input = ['priority' => 47];
+        $input = ['level' => 47];
 
         $result = $this->subject->filter($input);
 
@@ -51,7 +51,7 @@ class PriorityTest extends TestCase
 
     public function testFilterWillNotAcceptMessage(): void
     {
-        $input = ['priority' => 244];
+        $input = ['level' => 244];
 
         $result = $this->subject->filter($input);
 

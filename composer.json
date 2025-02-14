@@ -1,16 +1,14 @@
 {
     "name": "dotkernel/dot-log",
     "type": "library",
-    "description": "Dotkernel log component extending and customizing laminas-log",
+    "description": "Dotkernel log component implementing PSR-3",
     "license": "MIT",
     "homepage": "https://github.com/dotkernel/dot-log",
     "keywords": [
       "log",
       "logging",
       "services",
-      "mezzio",
-      "laminas",
-      "laminas-log"
+      "PSR-3"
     ],
     "authors": [
         {
@@ -21,7 +19,8 @@
     "require": {
         "php": "~8.1.0 || ~8.2.0 || ~8.3.0 || ~8.4.0",
         "laminas/laminas-servicemanager": "^4.0",
-        "laminas/laminas-validator": "^3.0"
+        "laminas/laminas-validator": "^3.0",
+        "psr/log": "^3.0.2"
     },
     "require-dev": {
         "laminas/laminas-coding-standard": "^3.0",

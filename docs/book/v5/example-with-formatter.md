@@ -14,17 +14,17 @@ return [
             'my_logger' => [
                 'writers' => [
                     'FileWriter' => [
-                        'name' => 'FileWriter',
-                        'priority' => \Dot\Log\Logger::ALERT,
+                        'name'    => 'FileWriter',
+                        'level'   => \Dot\Log\Logger::ALERT,
                         'options' => [
                             'stream' => __DIR__ . '/../../log/dk.log',
                             // explicitly log all messages
                             'filters' => [
                                 'allMessages' => [
-                                    'name' => 'priority',
+                                    'name'    => 'level',
                                     'options' => [
                                         'operator' => '>=',
-                                        'priority' => \Dot\Log\Logger::EMERG,
+                                        'level' => \Dot\Log\Logger::EMERG,
                                     ],
                                 ],
                             ],

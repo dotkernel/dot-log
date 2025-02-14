@@ -59,11 +59,11 @@ class Backtrace implements ProcessorInterface
             'function' => $trace[$i]['function'] ?? null,
         ];
 
-        $extra = $origin;
-        if (isset($event['extra'])) {
-            $extra = array_merge($origin, $event['extra']);
+        $context = $origin;
+        if (isset($event['context'])) {
+            $context = array_merge($origin, $event['context']);
         }
-        $event['extra'] = $extra;
+        $event['context'] = $context;
 
         return $event;
     }

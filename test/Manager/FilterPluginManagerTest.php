@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace DotTest\Log\Manager;
 
-use Dot\Log\Filter\Priority;
+use Dot\Log\Filter\Level;
 use Dot\Log\Formatter\Json;
 use Dot\Log\Manager\FilterPluginManager;
 use Laminas\ServiceManager\Exception\InvalidServiceException;
@@ -27,7 +27,7 @@ class FilterPluginManagerTest extends TestCase
 
     public function testValidate(): void
     {
-        $this->assertNull($this->subject->validate(new Priority(47)));
+        $this->assertNull($this->subject->validate(new Level(47)));
     }
 
     public function testWillNotValidate(): void
