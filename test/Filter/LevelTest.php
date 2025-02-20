@@ -19,7 +19,7 @@ class LevelTest extends TestCase
 
     public function testWillInstantiateWithInt(): void
     {
-        $this->assertInstanceOf(Level::class, $this->subject);
+        $this->assertSame(Level::class, $this->subject::class);
     }
 
     public function testWillInstantiateWithArray(): void
@@ -28,7 +28,7 @@ class LevelTest extends TestCase
 
         $result = new Level($input);
 
-        $this->assertInstanceOf(Level::class, $result);
+        $this->assertSame(Level::class, $result::class);
     }
 
     public function testWillNotInstantiateWithEmptyArray(): void

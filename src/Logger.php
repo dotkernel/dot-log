@@ -147,7 +147,7 @@ class Logger extends AbstractLogger
         $this->processors = new SplPriorityQueue();
 
         if ($options instanceof Traversable) {
-            $options = ArrayUtils::iteratorToArray($options);
+            $options = ArrayUtils::iteratorToArray((array) $options);
         }
 
         if (! $options) {
@@ -255,13 +255,8 @@ class Logger extends AbstractLogger
     {
         if (is_string($writer)) {
             $writer = $this->writerPlugin($writer, $options);
-        } elseif (! $writer instanceof Writer\WriterInterface) {
-            throw new InvalidArgumentException(sprintf(
-                'Writer must implement %s\Writer\WriterInterface; received "%s"',
-                __NAMESPACE__,
-                $writer::class
-            ));
         }
+
         $this->writers->insert($writer, $level);
 
         return $this;
@@ -331,12 +326,8 @@ class Logger extends AbstractLogger
     ): static {
         if (is_string($processor)) {
             $processor = $this->processorPlugin($processor, $options);
-        } elseif (! $processor instanceof Processor\ProcessorInterface) {
-            throw new InvalidArgumentException(sprintf(
-                'Processor must implement Laminas\Log\ProcessorInterface; received "%s"',
-                $processor::class
-            ));
         }
+
         $this->processors->insert($processor, $level);
 
         return $this;
@@ -364,7 +355,7 @@ class Logger extends AbstractLogger
         }
 
         if ($context instanceof Traversable) {
-            $context = ArrayUtils::iteratorToArray($context);
+            $context = ArrayUtils::iteratorToArray((array) $context);
         }
 
         if ($this->writers->count() === 0) {

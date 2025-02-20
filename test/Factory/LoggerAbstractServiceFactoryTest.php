@@ -51,7 +51,7 @@ class LoggerAbstractServiceFactoryTest extends TestCase
 
         $factory = (new LoggerAbstractServiceFactory())($this->container, 'dot-log.test-log');
 
-        $this->assertInstanceOf(Logger::class, $factory);
+        $this->assertSame(Logger::class, $factory::class);
     }
 
     /**

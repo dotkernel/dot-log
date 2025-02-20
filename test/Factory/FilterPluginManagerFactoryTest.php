@@ -96,6 +96,6 @@ class FilterPluginManagerFactoryTest extends TestCase
 
         $factory = (new FilterPluginManagerFactory())($this->container);
 
-        $this->assertInstanceOf(FilterPluginManager::class, $factory);
+        $this->assertSame(FilterPluginManager::class, $factory::class);
     }
 }

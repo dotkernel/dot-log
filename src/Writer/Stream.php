@@ -8,6 +8,7 @@ use Dot\Log\Exception\InvalidArgumentException;
 use Dot\Log\Exception\RuntimeException;
 use ErrorException;
 use Laminas\Stdlib\ErrorHandler;
+use Psr\Container\ContainerExceptionInterface;
 use Traversable;
 
 use function chmod;
@@ -41,6 +42,7 @@ class Stream extends AbstractWriter
     protected mixed $stream;
 
     /**
+     * @throws ContainerExceptionInterface
      * @throws ErrorException
      */
     public function __construct(
@@ -73,6 +75,7 @@ class Stream extends AbstractWriter
             ));
         }
 
+        $error = null;
         if (is_resource($streamOrUrl)) {
             if ('stream' !== get_resource_type($streamOrUrl)) {
                 throw new InvalidArgumentException(sprintf(
@@ -95,7 +98,7 @@ class Stream extends AbstractWriter
                 touch($streamOrUrl);
                 chmod($streamOrUrl, $filePermissions);
             }
-            $this->stream = fopen($streamOrUrl, $mode, false);
+            $this->stream = fopen($streamOrUrl, $mode);
             $error        = ErrorHandler::stop();
         }
 

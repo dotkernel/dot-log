@@ -23,7 +23,7 @@ class RegexTest extends TestCase
 
     public function testWillInstantiate(): void
     {
-        $this->assertInstanceOf(Regex::class, $this->subject);
+        $this->assertSame(Regex::class, $this->subject::class);
     }
 
     /**

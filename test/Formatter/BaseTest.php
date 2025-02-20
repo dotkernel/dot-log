@@ -19,7 +19,7 @@ class BaseTest extends TestCase
 
     public function testWillInstantiate(): void
     {
-        $this->assertInstanceOf(Base::class, $this->subject);
+        $this->assertSame(Base::class, $this->subject::class);
     }
 
     public function testFormat(): void
@@ -38,6 +38,6 @@ class BaseTest extends TestCase
     public function testSetDatetimeFormat(): void
     {
         $result = $this->subject->setDateTimeFormat('Y-m-d H:i:s');
-        $this->assertInstanceOf(Base::class, $result);
+        $this->assertSame(Base::class, $result::class);
     }
 }

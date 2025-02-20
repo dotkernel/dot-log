@@ -18,7 +18,7 @@ class BackTraceTest extends TestCase
 
     public function testWillInstantiate(): void
     {
-        $this->assertInstanceOf(Backtrace::class, $this->subject);
+        $this->assertSame(Backtrace::class, $this->subject::class);
     }
 
     public function testProcess(): void

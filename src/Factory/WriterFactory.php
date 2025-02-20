@@ -15,7 +15,7 @@ class WriterFactory implements FactoryInterface
     /**
      * Options to pass to the constructor if any.
      */
-    private null|array $creationOptions;
+    private ?array $creationOptions = null;
 
     public function __construct(?array $creationOptions = null)
     {
