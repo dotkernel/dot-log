@@ -12,7 +12,6 @@ use Dot\Log\Filter\Validator;
 use Laminas\ServiceManager\AbstractPluginManager;
 use Laminas\ServiceManager\Exception\InvalidServiceException;
 use Laminas\ServiceManager\Factory\InvokableFactory;
-use Laminas\ServiceManager\ServiceManager;
 
 use function gettype;
 use function is_object;
@@ -21,7 +20,6 @@ use function sprintf;
 /**
  * @template F of FilterPluginManager
  * @extends AbstractPluginManager<F>
- * @psalm-import-type FactoriesConfiguration from ServiceManager
  */
 class FilterPluginManager extends AbstractPluginManager
 {
