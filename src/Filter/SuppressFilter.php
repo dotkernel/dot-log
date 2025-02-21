@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Dot\Log\Filter;
 
-use Psr\Log\InvalidArgumentException;
+use Dot\Log\Exception\InvalidArgumentException;
 use Traversable;
 
 use function gettype;

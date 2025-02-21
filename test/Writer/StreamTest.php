@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace DotTest\Log\Writer;
 
+use Dot\Log\Exception\InvalidArgumentException;
 use Dot\Log\Formatter\Json;
 use Dot\Log\Logger;
 use Dot\Log\Writer\Stream;
 use ErrorException;
 use PHPUnit\Framework\TestCase;
-use Psr\Log\InvalidArgumentException;
 use stdClass;
 
 use function fopen;

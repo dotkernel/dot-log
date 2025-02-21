@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace DotTest\Log\Filter;
 
+use Dot\Log\Exception\InvalidArgumentException;
 use Dot\Log\Filter\SuppressFilter;
 use PHPUnit\Framework\TestCase;
-use Psr\Log\InvalidArgumentException;
 
 class SuppressFilterTest extends TestCase
 {

@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Dot\Log\Writer;
 
+use Dot\Log\Exception\InvalidArgumentException;
 use Dot\Log\Exception\RuntimeException;
 use ErrorException;
 use Laminas\Stdlib\ErrorHandler;
 use Psr\Container\ContainerExceptionInterface;
-use Psr\Log\InvalidArgumentException;
 use Traversable;
 
 use function chmod;

@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Dot\Log\Filter;
 
+use Dot\Log\Exception\InvalidArgumentException;
 use Laminas\Validator\ValidatorInterface as LaminasValidator;
-use Psr\Log\InvalidArgumentException;
 use Traversable;
 
 use function gettype;

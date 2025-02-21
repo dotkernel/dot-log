@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Dot\Log\Writer;
 
+use Dot\Log\Exception\InvalidArgumentException;
 use Dot\Log\Exception\RuntimeException;
 use Dot\Log\Filter\FilterInterface;
 use Dot\Log\Filter\Level;
@@ -15,7 +16,6 @@ use Exception;
 use Laminas\ServiceManager\ServiceManager;
 use Laminas\Stdlib\ErrorHandler;
 use Psr\Container\ContainerExceptionInterface;
-use Psr\Log\InvalidArgumentException;
 use Traversable;
 
 use function class_exists;

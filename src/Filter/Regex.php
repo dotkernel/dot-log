@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Dot\Log\Filter;
 
+use Dot\Log\Exception\InvalidArgumentException;
 use ErrorException;
 use Laminas\Stdlib\ErrorHandler;
-use Psr\Log\InvalidArgumentException;
 use Traversable;
 
 use function is_array;

@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace DotTest\Log\Formatter;
 
 use DateTime;
+use Dot\Log\Exception\InvalidArgumentException;
 use Dot\Log\Formatter\Simple;
 use PHPUnit\Framework\TestCase;
-use Psr\Log\InvalidArgumentException;
 
 class SimpleTest extends TestCase
 {
