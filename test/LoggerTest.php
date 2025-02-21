@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace DotTest\Log;
 
 use ArrayObject;
-use Dot\Log\Exception\InvalidArgumentException;
 use Dot\Log\Exception\RuntimeException;
 use Dot\Log\Logger;
 use Dot\Log\Manager\WriterPluginManager;
@@ -19,6 +18,7 @@ use Laminas\ServiceManager\Exception\ServiceNotFoundException;
 use Laminas\Stdlib\SplPriorityQueue;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerExceptionInterface;
+use Psr\Log\InvalidArgumentException;
 
 use function count;
 use function set_exception_handler;
