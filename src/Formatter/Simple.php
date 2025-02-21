@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Dot\Log\Formatter;
 
-use Dot\Log\Exception\InvalidArgumentException;
+use Psr\Log\InvalidArgumentException;
 use Traversable;
 
 use function array_key_exists;

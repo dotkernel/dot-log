@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Dot\Log;
 
 use DateTime;
-use Dot\Log\Exception\InvalidArgumentException;
 use Dot\Log\Exception\RuntimeException;
 use Dot\Log\Manager\ProcessorPluginManager;
 use Dot\Log\Manager\WriterPluginManager;
@@ -19,6 +18,7 @@ use Laminas\Stdlib\ArrayUtils;
 use Laminas\Stdlib\SplPriorityQueue;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Log\AbstractLogger;
+use Psr\Log\InvalidArgumentException;
 use Psr\Log\LogLevel;
 use Stringable;
 use Traversable;

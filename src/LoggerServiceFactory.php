@@ -5,12 +5,12 @@ declare(strict_types=1);
 namespace Dot\Log;
 
 use ArrayAccess;
-use Dot\Log\Exception\InvalidArgumentException;
 use Laminas\ServiceManager\AbstractPluginManager;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Container\NotFoundExceptionInterface;
+use Psr\Log\InvalidArgumentException;
 
 use function gettype;
 use function is_array;
