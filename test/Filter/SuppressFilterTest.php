@@ -19,7 +19,7 @@ class SuppressFilterTest extends TestCase
 
     public function testWillInstantiate(): void
     {
-        $this->assertInstanceOf(SuppressFilter::class, $this->subject);
+        $this->assertSame(SuppressFilter::class, $this->subject::class);
     }
 
     public function testWillNotInstantiate(): void
@@ -40,6 +40,7 @@ class SuppressFilterTest extends TestCase
 
     public function testSuppress(): void
     {
-        $this->assertNull($this->subject->suppress(true));
+        $this->expectNotToPerformAssertions();
+        $this->subject->suppress(true);
     }
 }

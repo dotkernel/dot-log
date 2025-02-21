@@ -9,7 +9,7 @@ Documentation is available at: https://docs.dotkernel.org/dot-log/.
 ## Badges
 
 ![OSS Lifecycle](https://img.shields.io/osslifecycle/dotkernel/dot-log)
-![PHP from Packagist (specify version)](https://img.shields.io/packagist/php-v/dotkernel/dot-log/5.0.0)
+![PHP from Packagist (specify version)](https://img.shields.io/packagist/php-v/dotkernel/dot-log/5.1.0)
 
 [![GitHub issues](https://img.shields.io/github/issues/dotkernel/dot-log)](https://github.com/dotkernel/dot-log/issues)
 [![GitHub forks](https://img.shields.io/github/forks/dotkernel/dot-log)](https://github.com/dotkernel/dot-log/network)
@@ -18,6 +18,7 @@ Documentation is available at: https://docs.dotkernel.org/dot-log/.
 
 [![Build Static](https://github.com/dotkernel/dot-log/actions/workflows/continuous-integration.yml/badge.svg?branch=5.0)](https://github.com/dotkernel/dot-log/actions/workflows/continuous-integration.yml)
 [![codecov](https://codecov.io/gh/dotkernel/dot-log/graph/badge.svg?token=JX19KTBRCZ)](https://codecov.io/gh/dotkernel/dot-log)
+[![PHPStan](https://github.com/dotkernel/dot-log/actions/workflows/static-analysis.yml/badge.svg?branch=5.0)](https://github.com/dotkernel/dot-log/actions/workflows/static-analysis.yml)
 
 ## Adding The Config Provider
 

@@ -63,7 +63,7 @@ class WriterPluginManagerFactoryTest extends TestCase
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      */
-    public function testWillNotInstantiateWithoutWritterConfig(): void
+    public function testWillNotInstantiateWithoutWriterConfig(): void
     {
         $this->container->expects($this->once())
             ->method('has')
@@ -96,6 +96,6 @@ class WriterPluginManagerFactoryTest extends TestCase
 
         $factory = (new WriterPluginManagerFactory())($this->container);
 
-        $this->assertInstanceOf(WriterPluginManager::class, $factory);
+        $this->assertSame(WriterPluginManager::class, $factory::class);
     }
 }

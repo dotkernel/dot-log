@@ -42,6 +42,7 @@ class WriterFactoryTest extends TestCase
     {
         $input = [];
 
-        $this->assertNull($this->subject->setCreationOptions($input));
+        $this->expectNotToPerformAssertions();
+        $this->subject->setCreationOptions($input);
     }
 }

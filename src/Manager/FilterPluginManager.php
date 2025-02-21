@@ -32,7 +32,7 @@ class FilterPluginManager extends AbstractPluginManager
         'validator'      => Validator::class,
     ];
 
-    /** @var string[]|callable[] */
+    /** @inheritDoc */
     protected array $factories = [
         Level::class          => InvokableFactory::class,
         Regex::class          => InvokableFactory::class,

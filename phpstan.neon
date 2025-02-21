@@ -1,0 +1,21 @@
+includes:
+    - vendor/phpstan/phpstan-phpunit/extension.neon
+parameters:
+    level: 5
+    paths:
+        - src
+        - test
+    treatPhpDocTypesAsCertain: false
+    ignoreErrors:
+        -
+            message: '/Undefined variable: \$test/'
+            path: test/LoggerTest.php
+        -
+            message: '/Property Dot\\Log\\Factory\\WriterFactory::\$creationOptions is never read, only written./'
+            path: src/Factory/WriterFactory.php
+        -
+            message: '/Parameter #1 \$writerPlugins of method Dot\\Log\\Logger::setWriterPluginManager\(\) expects Dot\\Log\\Manager\\WriterPluginManager, Laminas\\ServiceManager\\AbstractPluginManager given./'
+            path: src/Logger.php
+        -
+            message: '/Parameter #1 \$plugins of method Dot\\Log\\Logger::setProcessorPluginManager\(\) expects class-string|Dot\\Log\\Manager\\ProcessorPluginManager, Laminas\\ServiceManager\\AbstractPluginManager given./'
+            path: src/Logger.php

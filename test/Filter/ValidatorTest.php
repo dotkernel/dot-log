@@ -20,7 +20,7 @@ class ValidatorTest extends TestCase
 
     public function testWillInstantiate(): void
     {
-        $this->assertInstanceOf(Validator::class, $this->subject);
+        $this->assertSame(Validator::class, $this->subject::class);
     }
 
     public function testWillNotInstantiateWithEmptyArray(): void

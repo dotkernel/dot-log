@@ -96,6 +96,6 @@ class ProcessorPluginManagerFactoryTest extends TestCase
 
         $factory = (new ProcessorPluginManagerFactory())($this->container);
 
-        $this->assertInstanceOf(ProcessorPluginManager::class, $factory);
+        $this->assertSame(ProcessorPluginManager::class, $factory::class);
     }
 }

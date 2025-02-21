@@ -34,6 +34,6 @@ class JsonTest extends TestCase
     public function testSetDatetimeFormat(): void
     {
         $result = $this->subject->setDateTimeFormat('Y-m-d H:i:s');
-        $this->assertInstanceOf(Json::class, $result);
+        $this->assertSame(Json::class, $result::class);
     }
 }
