@@ -4,6 +4,6 @@ declare(strict_types=1);
 
 namespace Dot\Log\Exception;
 
-class InvalidArgumentException extends \InvalidArgumentException
+class InvalidArgumentException extends \Psr\Log\InvalidArgumentException
 {
 }

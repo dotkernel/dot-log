@@ -19,7 +19,6 @@ use Laminas\Stdlib\ArrayUtils;
 use Laminas\Stdlib\SplPriorityQueue;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Log\AbstractLogger;
-use Psr\Log\InvalidArgumentException as PsrInvalidArgumentException;
 use Psr\Log\LogLevel;
 use Stringable;
 use Traversable;
@@ -348,7 +347,7 @@ class Logger extends AbstractLogger
         }
 
         if (($level < 0) || ($level >= count($this->levels))) {
-            throw new PsrInvalidArgumentException(sprintf(
+            throw new InvalidArgumentException(sprintf(
                 '$level must be an integer >= 0 and < %d; received %s',
                 count($this->levels),
                 var_export($level, true)
