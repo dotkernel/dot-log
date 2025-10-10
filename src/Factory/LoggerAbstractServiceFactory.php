@@ -15,6 +15,7 @@ use function count;
 use function date;
 use function explode;
 use function is_array;
+use function pathinfo;
 use function preg_match_all;
 use function str_replace;
 
@@ -103,7 +104,9 @@ class LoggerAbstractServiceFactory extends LoggerServiceFactory implements Abstr
         if (isset($config['writers'])) {
             foreach ($config['writers'] as $index => $writerConfig) {
                 if (! empty($writerConfig['options']['stream'])) {
-                    $config['writers'][$index]['options']['stream'] = self::parseVariables(
+                    $config['writers'][$index]['options']['stream_format'] =
+                        pathinfo($writerConfig['options']['stream'])['basename'];
+                    $config['writers'][$index]['options']['stream']        = self::parseVariables(
                         $writerConfig['options']['stream']
                     );
                 }

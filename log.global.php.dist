@@ -18,6 +18,7 @@ return [
                                 'name' => 'MyFilter',
                             ],
                         ],
+                        'log_lifetime' => null, // optional
                     ],
                 ],
             ],
