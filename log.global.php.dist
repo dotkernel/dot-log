@@ -18,7 +18,9 @@ return [
                                 'name' => 'MyFilter',
                             ],
                         ],
-                        'log_lifetime' => null, // optional
+                        // optional key that can be omitted or set to null to disable auto-deletion of logs
+                        // accepts an integer representing the number of days after which a log will be deleted
+                        'log_lifetime' => null,
                     ],
                 ],
             ],
