@@ -51,21 +51,16 @@ The `options.log_lifetime` key specifies a date after which the specific `writer
 
 The key can be omitted completely or set to `null` in order to skip this feature.
 
-To make use of automatic log file deletion, set the value to an acceptable `DateTimeImmutable` [date/time string](https://www.php.net/manual/en/datetime.formats.php)
-or an integer representing the number of **days**.
+To make use of automatic log file deletion, set the value to the number of **days** after which a log file should be deleted.
 
 > Future dates are ignored.
 
-Examples of date formats:
+Examples of values:
 
 ```php
 'log_lifetime' => null,             // feature disabled
 'log_lifetime' => 90,               // will be converted to `-90 days` so the date is set in the past
 'log_lifetime' => "-90",            // numeric strings are also accepted and will follow same rules as integers
-'log_lifetime' => "30 minutes ago", // valid date
-'log_lifetime' => "last monday",    // valid date
-'log_lifetime' => "monday",         // future date will be ignored
-'log_lifetime' => "next month",     // future date will be ignored
 ```
 
 > This feature will delete all relevant log files for the configured `writer`, take care not to misconfigure it in a production environment!

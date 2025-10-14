@@ -15,6 +15,7 @@ use Traversable;
 
 use function chmod;
 use function dirname;
+use function error_log;
 use function fclose;
 use function file_exists;
 use function filemtime;
@@ -23,6 +24,8 @@ use function fwrite;
 use function get_resource_type;
 use function gettype;
 use function is_array;
+use function is_dir;
+use function is_link;
 use function is_numeric;
 use function is_resource;
 use function is_string;
@@ -39,6 +42,7 @@ use function time;
 use function touch;
 use function unlink;
 
+use const PATHINFO_DIRNAME;
 use const PHP_EOL;
 
 class Stream extends AbstractWriter
@@ -65,10 +69,11 @@ class Stream extends AbstractWriter
         mixed $streamOrUrl,
         ?string $mode = null,
         ?string $logSeparator = null,
-        ?int $filePermissions = null,
-        ?string $logLifetime = null,
-        ?string $streamFormat = null,
+        ?int $filePermissions = null
     ) {
+        $logLifetime  = null;
+        $streamFormat = null;
+
         if ($streamOrUrl instanceof Traversable) {
             $streamOrUrl = iterator_to_array($streamOrUrl);
         }
@@ -133,10 +138,8 @@ class Stream extends AbstractWriter
             $this->setLogSeparator($logSeparator);
         }
 
-        if (null !== $logLifetime) {
-            if (is_numeric($logLifetime)) {
-                $logLifetime = ($logLifetime > 0 ? '-' . $logLifetime : $logLifetime) . ' days';
-            }
+        if (is_numeric($logLifetime)) {
+            $logLifetime = ($logLifetime > 0 ? '-' . $logLifetime : $logLifetime) . ' days';
 
             try {
                 $logLifetime = (new DateTimeImmutable($logLifetime))->getTimestamp();
@@ -208,21 +211,34 @@ class Stream extends AbstractWriter
         }
         $streamData = stream_get_meta_data($this->stream);
 
-        $path     = $streamData['uri'];
-        $uriParts = pathinfo($path);
+        $path      = $streamData['uri'];
+        $directory = pathinfo($path, PATHINFO_DIRNAME);
 
-        $files   = scandir($uriParts['dirname']);
-        $matches = preg_grep('/^' . $this->streamFormat . '$/', $files);
+        if (! is_dir($directory)) {
+            error_log("{$directory} is not a directory");
+            return;
+        }
+
+        $files   = scandir($directory) ?: [];
+        $matches = preg_grep('/^' . $this->streamFormat . '$/', $files) ?: [];
 
         foreach ($matches as $match) {
-            $match         = sprintf('%s/%s', $uriParts['dirname'], $match);
+            $match = sprintf('%s/%s', $directory, $match);
+
+            if (is_link($match)) {
+                continue;
+            }
+
             $fileTimestamp = filemtime($match);
 
             if (
                 $fileTimestamp !== false
                 && $fileTimestamp < $this->logLifetime
+                && is_writable($directory)
             ) {
-                unlink($match);
+                if (! @unlink($match)) {
+                    error_log("{$match} could not be deleted");
+                }
             }
         }
     }
