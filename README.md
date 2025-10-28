@@ -73,7 +73,7 @@ Examples:
 * `log/dk-{Y}-{m}-{d}.log` will write every day to a different file (eg: `log/dk-2021-01-01.log`)
 * `log/dk-{Y}-{W}.log` will write every week to a different file (eg: `log/dk-2021-10.log`)
 
-The full list of format specifiers is available [here](https://www.php.net/manual/en/datetime.format.php).
+The full list of format specifiers is available [on php.net in the `DateTimeInterface::format` documentation](https://www.php.net/manual/en/datetime.format.php).
 
 ## Filtering log messages
 
