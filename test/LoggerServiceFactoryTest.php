@@ -23,7 +23,6 @@ use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use stdClass;
 
-use function assert;
 use function count;
 
 class LoggerServiceFactoryTest extends TestCase
@@ -100,7 +99,6 @@ class LoggerServiceFactoryTest extends TestCase
     {
         $writers    = new WriterPluginManager(new ServiceManager());
         $mockWriter = $this->createMock(WriterInterface::class);
-        assert($mockWriter instanceof WriterPluginManager);
         $writers->setService('CustomWriter', $mockWriter);
 
         $config   = new Config([
@@ -135,7 +133,6 @@ class LoggerServiceFactoryTest extends TestCase
     {
         $processors    = new ProcessorPluginManager(new ServiceManager());
         $mockProcessor = $this->createMock(ProcessorInterface::class);
-        assert($mockProcessor instanceof ProcessorPluginManager);
         $processors->setService('CustomProcessor', $mockProcessor);
 
         $config   = new Config([
