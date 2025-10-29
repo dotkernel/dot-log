@@ -20,7 +20,7 @@ class SimpleTest extends TestCase
 
     public function testWillInstantiate(): void
     {
-        $this->assertInstanceOf(Simple::class, $this->subject);
+        $this->assertContainsOnlyInstancesOf(Simple::class, [$this->subject]);
     }
 
     public function testWillNotInstantiate(): void

@@ -31,7 +31,6 @@ class ProcessorPluginManager extends AbstractPluginManager
         'requestid'      => RequestId::class,
     ];
 
-    /** @var string[]|callable[] */
     protected array $factories = [
         Backtrace::class      => InvokableFactory::class,
         PsrPlaceholder::class => InvokableFactory::class,

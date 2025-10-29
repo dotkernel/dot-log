@@ -27,7 +27,8 @@ class ProcessorPluginManagerTest extends TestCase
 
     public function testValidate(): void
     {
-        $this->assertNull($this->subject->validate(new Backtrace()));
+        $this->expectNotToPerformAssertions();
+        $this->subject->validate(new Backtrace());
     }
 
     public function testWillNotValidate(): void

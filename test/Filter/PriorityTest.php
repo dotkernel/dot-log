@@ -19,7 +19,7 @@ class PriorityTest extends TestCase
 
     public function testWillInstantiateWithInt(): void
     {
-        $this->assertInstanceOf(Priority::class, $this->subject);
+        $this->assertContainsOnlyInstancesOf(Priority::class, [$this->subject]);
     }
 
     public function testWillInstantiateWithArray(): void
@@ -28,7 +28,7 @@ class PriorityTest extends TestCase
 
         $result = new Priority($input);
 
-        $this->assertInstanceOf(Priority::class, $result);
+        $this->assertContainsOnlyInstancesOf(Priority::class, [$result]);
     }
 
     public function testWillNotInstantiateWithEmptyArray(): void
