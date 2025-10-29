@@ -16,7 +16,7 @@ use function is_object;
 use function sprintf;
 
 /**
- * @template W of WriterPluginManager
+ * @template W of WriterInterface
  * @extends AbstractPluginManager<W>
  */
 class WriterPluginManager extends AbstractPluginManager
@@ -38,7 +38,7 @@ class WriterPluginManager extends AbstractPluginManager
         Stream::class => WriterFactory::class,
     ];
 
-    /** @var ?string */
+    /** @var class-string<W> */
     protected $instanceOf = WriterInterface::class;
 
     /**

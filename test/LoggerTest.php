@@ -62,7 +62,7 @@ class LoggerTest extends TestCase
         $this->subject->setWriters($writers);
 
         $writers = $this->subject->getWriters();
-        $this->assertInstanceOf(SplPriorityQueue::class, $writers);
+        $this->assertContainsOnlyInstancesOf(SplPriorityQueue::class, [$writers]);
         $writer = $writers->extract();
         $this->assertInstanceOf(Noop::class, $writer);
     }
@@ -73,7 +73,7 @@ class LoggerTest extends TestCase
         $this->subject->addWriter($writer, 3);
         $writers = $this->subject->getWriters();
 
-        $this->assertInstanceOf(SplPriorityQueue::class, $writers);
+        $this->assertContainsOnlyInstancesOf(SplPriorityQueue::class, [$writers]);
         $writer = $writers->extract();
         $this->assertInstanceOf(Noop::class, $writer);
     }
@@ -86,7 +86,7 @@ class LoggerTest extends TestCase
         $this->subject->addWriter($writer2, 1);
         $writers = $this->subject->getWriters();
 
-        $this->assertInstanceOf(SplPriorityQueue::class, $writers);
+        $this->assertContainsOnlyInstancesOf(SplPriorityQueue::class, [$writers]);
         $writer = $writers->extract();
         $this->assertInstanceOf(Noop::class, $writer);
         $writer = $writers->extract();

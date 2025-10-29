@@ -18,7 +18,7 @@ use function is_object;
 use function sprintf;
 
 /**
- * @template P of ProcessorPluginManager
+ * @template P of ProcessorInterface
  * @extends AbstractPluginManager<P>
  */
 class ProcessorPluginManager extends AbstractPluginManager
@@ -39,7 +39,7 @@ class ProcessorPluginManager extends AbstractPluginManager
         RequestId::class      => InvokableFactory::class,
     ];
 
-    /** @var ?string */
+    /** @var class-string<P> */
     protected $instanceOf = ProcessorInterface::class;
 
     /**

@@ -27,7 +27,8 @@ class WriterPluginManagerTest extends TestCase
 
     public function testValidate(): void
     {
-        $this->assertNull($this->subject->validate(new Noop()));
+        $this->expectNotToPerformAssertions();
+        $this->subject->validate(new Noop());
     }
 
     public function testWillNotValidate(): void
