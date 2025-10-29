@@ -1,5 +1,20 @@
 # dot-log
 
+Robust, composite logger with filtering and formatting.
+
+## Version History
+
+| Branch | Service Manager   | Log style implementation | PHP Version                                                                                             |
+|--------|-------------------|--------------------------|---------------------------------------------------------------------------------------------------------|
+| 3.0    | Service Manager 3 | Laminas Log              | ![PHP from Packagist (specify version)](https://img.shields.io/packagist/php-v/dotkernel/dot-log/3.5.4) |
+| 4.0    | Service Manager 3 | Laminas Log style        | ![PHP from Packagist (specify version)](https://img.shields.io/packagist/php-v/dotkernel/dot-log/4.0.5) |
+
+## Documentation
+
+Documentation is available at: https://docs.dotkernel.org/dot-log/v4/overview/.
+
+## Badges
+
 ![OSS Lifecycle](https://img.shields.io/osslifecycle/dotkernel/dot-log)
 ![PHP from Packagist (specify version)](https://img.shields.io/packagist/php-v/dotkernel/dot-log/4.0.5)
 
