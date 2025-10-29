@@ -2,6 +2,15 @@
 
 Robust, composite PSR-3 compliant logger with filtering and formatting.
 
+## Version History
+
+
+| Release | Service Manager   | Log style implementation | PHP Version |
+|---------|-------------------|--------------------------|-------------|
+| 4.0.x   | Service Manager 3 | Laminas Log style        | ![PHP from Packagist (specify version)](https://img.shields.io/packagist/php-v/dotkernel/dot-log/4.0.5) |
+| 4.1.x   | Service Manager 4 | Laminas Log style        | ![PHP from Packagist (specify version)](https://img.shields.io/packagist/php-v/dotkernel/dot-log/4.1.3) |
+| 5.0.x   | Service Manager 4 | PSR-Log                  | ![PHP from Packagist (specify version)](https://img.shields.io/packagist/php-v/dotkernel/dot-log/5.3.0) |
+
 ## Documentation
 
 Documentation is available at: https://docs.dotkernel.org/dot-log/.
