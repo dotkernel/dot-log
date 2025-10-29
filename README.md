@@ -6,8 +6,8 @@ Robust, composite logger with filtering and formatting.
 
 | Branch | Service Manager   | Log style implementation | PHP Version                                                                                             |
 |--------|-------------------|--------------------------|---------------------------------------------------------------------------------------------------------|
-| 3.0    | Service Manager 3 | Laminas Log              | ![PHP from Packagist (specify version)](https://img.shields.io/packagist/php-v/dotkernel/dot-log/3.5.4) |
 | 4.0    | Service Manager 3 | Laminas Log style        | ![PHP from Packagist (specify version)](https://img.shields.io/packagist/php-v/dotkernel/dot-log/4.0.5) |
+| 3.0    | Service Manager 3 | Laminas Log              | ![PHP from Packagist (specify version)](https://img.shields.io/packagist/php-v/dotkernel/dot-log/3.5.4) |
 
 ## Documentation
 
