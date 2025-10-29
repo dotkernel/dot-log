@@ -13,7 +13,6 @@ use Dot\Log\Processor\ProcessorInterface;
 use Dot\Log\Writer\WriterInterface;
 use ErrorException;
 use Exception;
-use Laminas\ServiceManager\AbstractPluginManager;
 use Laminas\ServiceManager\ServiceManager;
 use Laminas\Stdlib\ArrayUtils;
 use Laminas\Stdlib\SplPriorityQueue;
@@ -136,8 +135,8 @@ class Logger extends AbstractLogger
      *
      * Set options for a logger. Accepted options are:
      * - writers: array of writers to add to this logger
-     * - exceptionhandler: if true register this logger as exceptionhandler
-     * - errorhandler: if true register this logger as errorhandler
+     * - exceptionhandler: if true, register this logger as exceptionhandler
+     * - errorhandler: if true, register this logger as errorhandler
      *
      * @throws ContainerExceptionInterface
      */
@@ -157,7 +156,7 @@ class Logger extends AbstractLogger
         // Inject writer plugin manager, if available
         if (
             isset($options['writer_plugin_manager'])
-            && $options['writer_plugin_manager'] instanceof AbstractPluginManager
+            && $options['writer_plugin_manager'] instanceof WriterPluginManager
         ) {
             $this->setWriterPluginManager($options['writer_plugin_manager']);
         }
@@ -165,7 +164,7 @@ class Logger extends AbstractLogger
         // Inject processor plugin manager, if available
         if (
             isset($options['processor_plugin_manager'])
-            && $options['processor_plugin_manager'] instanceof AbstractPluginManager
+            && $options['processor_plugin_manager'] instanceof ProcessorPluginManager
         ) {
             $this->setProcessorPluginManager($options['processor_plugin_manager']);
         }
@@ -237,7 +236,7 @@ class Logger extends AbstractLogger
     }
 
     /**
-     * Get writer instance
+     * Get a writer instance
      *
      * @throws ContainerExceptionInterface
      */
@@ -505,7 +504,7 @@ class Logger extends AbstractLogger
     }
 
     /**
-     * Register logging system as an exception handler to log PHP exceptions
+     * Register a logging system as an exception handler to log PHP exceptions
      *
      * @link http://www.php.net/manual/en/function.set-exception-handler.php
      */

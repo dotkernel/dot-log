@@ -8,7 +8,7 @@ A writer's responsibility is to record log data to a storage backend.
 ## Writing to a file (stream)
 
 You can separate logs into multiple files using writers and filters.
-For example *warnings.log*, *errors.log*, *all_messages.log*.
+For example, *warnings.log*, *errors.log*, *all_messages.log*.
 
 The following is the simplest example to write all log messages to `/log/dk.log`:
 

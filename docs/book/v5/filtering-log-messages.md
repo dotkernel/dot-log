@@ -72,8 +72,8 @@ return [
                                 'importantMessages' => [
                                     'name'    => 'level',
                                     'options' => [
-                                        // note, the smaller the level, the more important is the message
-                                        // 0 - emergency, 1 - alert, 2- error, 3 - warn etc.
+                                        // note, the smaller the level, the more important the message
+                                        // 0 - emergency, 1 - alert, 2- error, 3 - warn, etc.
                                         'operator' => '<=',
                                         'level'    => \Dot\Log\Logger::WARN,
                                     ],

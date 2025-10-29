@@ -10,13 +10,12 @@ use Dot\Log\Writer\Stream;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
 
 class WriterFactoryTest extends TestCase
 {
     private ContainerInterface|MockObject $container;
-
-    private WriterFactory $subject;
 
     /**
      * @throws Exception
@@ -24,9 +23,11 @@ class WriterFactoryTest extends TestCase
     protected function setUp(): void
     {
         $this->container = $this->createMock(ContainerInterface::class);
-        $this->subject   = new WriterFactory();
     }
 
+    /**
+     * @throws ContainerExceptionInterface
+     */
     public function testWillInstantiate(): void
     {
         $factory = (new WriterFactory())(
@@ -36,13 +37,5 @@ class WriterFactoryTest extends TestCase
         );
 
         $this->assertInstanceOf(AbstractWriter::class, $factory);
-    }
-
-    public function testSetCreationOptions(): void
-    {
-        $input = [];
-
-        $this->expectNotToPerformAssertions();
-        $this->subject->setCreationOptions($input);
     }
 }

@@ -8,7 +8,7 @@ A writer's responsibility is to record log data to a storage backend. (from lami
 ## Writing to a file (stream)
 
 You can separate logs into multiple files using writers and filters.
-For example *warnings.log*, *errors.log*, *all_messages.log*.
+For example, *warnings.log*, *errors.log*, *all_messages.log*.
 
 The following is the simplest example to write all log messages to `/log/dk.log`:
 
@@ -38,11 +38,11 @@ return [
 The `priority` key does not affect the errors that are written.
 It is a way to organize writers, for example:
 
-* 1 - FILE
-* 2 - SQL
-* 3 - E-mail
+* 1: FILE
+* 2: SQL
+* 3: E-mail
 
-The most important things to write in the file, the sql or e-mail are usually fails because the servers can be external and offline, but the file is on the same server.
+The most important things to write in the file, the SQL or E-mail are usually fails because the servers can be external and offline, but the file is on the same server.
 
 The `priority` key is optional.
 

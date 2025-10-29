@@ -2,7 +2,7 @@
 
 By default, logs will be written to the same file: `log/dk.log`.
 
-Optionally, you can use date format specifiers wrapped between curly braces in your FileWriter's `stream` option to automatically group your logs by day, week, month, year etc.
+Optionally, you can use date format specifiers wrapped between curly braces in your FileWriter's `stream` option to automatically group your logs by day, week, month, year, etc.
 
 Examples:
 
