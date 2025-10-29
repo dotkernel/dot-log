@@ -338,11 +338,9 @@
     <h1 id="usage">Usage</h1>
 <p>Basic usage of the logger is illustrated below.</p>
 <p>The messages are written to see which logs are written and which are not written.</p>
-<pre class="highlight"><code class="language-php">use Dot\Log\Logger;</code></pre>
-<p>...</p>
-<pre class="highlight"><code class="language-php">$logger = $container-&gt;get('dot-log.my_logger');
+<pre class="highlight"><code class="language-php">/** @var \Dot\Log\Logger $logger */
+$logger = $container-&gt;get('dot-log.my_logger');
 
-/** @var Logger $logger */
 $logger-&gt;emergency('0 EMERG');
 $logger-&gt;alert('1 ALERT');
 $logger-&gt;critical('2 CRITICAL');

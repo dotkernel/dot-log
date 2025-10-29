@@ -342,10 +342,10 @@
 </li>
 </ul>
 </li>
-<li>Add the logger configuration in an autoload config file, e.g. you can create <code>config/autoload/logger.global.php</code>. Follow the <code>Configuring the writer(s)</code> chapter for a simple working example.</li>
+<li>Add the logger configuration in an autoload config file, e.g., you can create <code>config/autoload/logger.global.php</code>. Follow the <code>Configuring the writer(s)</code> chapter for a simple working example.</li>
 </ul>
 <blockquote>
-<p><code>Dot\Log\ConfigProvider</code> has an abstract factory <code>LoggerAbstractServiceFactory::class</code> which corresponds to the alias, not  the class name.
+<p><code>Dot\Log\ConfigProvider</code> has an abstract factory <code>LoggerAbstractServiceFactory::class</code> which corresponds to the alias, not the class name.
 Instead of requesting <code>Laminas\Log\Logger::class</code> from the container, use <code>dot-log.my_logger</code> (or just <code>my_logger</code> if using laminas-log).</p>
 </blockquote>
 

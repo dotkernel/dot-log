@@ -335,11 +335,11 @@
 <p>When using <code>dot-log</code> or <code>laminas-log</code>, the logged value is not limited to a string.
 Arrays can be logged as well.
 For better readability, these arrays can be serialized.
-Laminas Log provides String, XML, JSON and FirePHP formatting.</p>
-<p>The formatter accepts following parameters:</p>
+LaminasLog provides String, XML, JSON and FirePHP formatting.</p>
+<p>The formatter accepts the following parameters:</p>
 <ul>
-<li>name - the formatter class (it must implement <code>Laminas\Log\Formatter\FormatterInterface</code>)</li>
-<li>options - passed to the formatter constructor if required</li>
+<li><code>name</code>: the formatter class (it must implement <code>Laminas\Log\Formatter\FormatterInterface</code>)</li>
+<li><code>options</code>: passed to the formatter constructor if required</li>
 </ul>
 <p>The following snippet formats the message as JSON data:</p>
 <pre class="highlight"><code class="language-php">'formatter' =&gt; [
