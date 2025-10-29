@@ -190,8 +190,8 @@ Dot Log provides String formatting and JSON formatting.
 
 The formatter accepts the following parameters:
 
-- `name`: the formatter class (it must implement `Dot\Log\Formatter\FormatterInterface`)
-- `options`: options to pass to the formatter constructor if required
+* `name`: the formatter class (it must implement `Dot\Log\Formatter\FormatterInterface`)
+* `options`: options to pass to the formatter constructor if required
 
 The following formats the message as JSON data:
 
