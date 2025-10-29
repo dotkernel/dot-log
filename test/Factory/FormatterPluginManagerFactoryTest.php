@@ -96,6 +96,6 @@ class FormatterPluginManagerFactoryTest extends TestCase
 
         $factory = (new FormatterPluginManagerFactory())($this->container);
 
-        $this->assertInstanceOf(FormatterPluginManager::class, $factory);
+        $this->assertContainsOnlyInstancesOf(FormatterPluginManager::class, [$factory]);
     }
 }

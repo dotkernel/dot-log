@@ -27,7 +27,8 @@ class FormatterPluginManagerTest extends TestCase
 
     public function testValidate(): void
     {
-        $this->assertNull($this->subject->validate(new Json()));
+        $this->expectNotToPerformAssertions();
+        $this->subject->validate(new Json());
     }
 
     public function testWillNotValidate(): void

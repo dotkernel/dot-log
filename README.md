@@ -2,6 +2,14 @@
 
 Robust, composite logger with filtering and formatting.
 
+## Version History
+
+| Branch | Service Manager   | Log style implementation | PHP Version                                                                                             |
+|--------|-------------------|--------------------------|---------------------------------------------------------------------------------------------------------|
+| 4.1    | Service Manager 4 | Laminas Log style        | ![PHP from Packagist (specify version)](https://img.shields.io/packagist/php-v/dotkernel/dot-log/4.1.3) |
+| 4.0    | Service Manager 3 | Laminas Log style        | ![PHP from Packagist (specify version)](https://img.shields.io/packagist/php-v/dotkernel/dot-log/4.0.5) |
+| 3.0    | Service Manager 3 | Laminas Log              | ![PHP from Packagist (specify version)](https://img.shields.io/packagist/php-v/dotkernel/dot-log/3.5.4) |
+
 ## Documentation
 
 Documentation is available at: https://docs.dotkernel.org/dot-log/v4/overview/.
@@ -9,7 +17,7 @@ Documentation is available at: https://docs.dotkernel.org/dot-log/v4/overview/.
 ## Badges
 
 ![OSS Lifecycle](https://img.shields.io/osslifecycle/dotkernel/dot-log)
-![PHP from Packagist (specify version)](https://img.shields.io/packagist/php-v/dotkernel/dot-log/4.1.2)
+![PHP from Packagist (specify version)](https://img.shields.io/packagist/php-v/dotkernel/dot-log/4.1.3)
 
 [![GitHub issues](https://img.shields.io/github/issues/dotkernel/dot-log)](https://github.com/dotkernel/dot-log/issues)
 [![GitHub forks](https://img.shields.io/github/forks/dotkernel/dot-log)](https://github.com/dotkernel/dot-log/network)
@@ -18,6 +26,7 @@ Documentation is available at: https://docs.dotkernel.org/dot-log/v4/overview/.
 
 [![Build Static](https://github.com/dotkernel/dot-log/actions/workflows/continuous-integration.yml/badge.svg?branch=4.0)](https://github.com/dotkernel/dot-log/actions/workflows/continuous-integration.yml)
 [![codecov](https://codecov.io/gh/dotkernel/dot-log/graph/badge.svg?token=JX19KTBRCZ)](https://codecov.io/gh/dotkernel/dot-log)
+[![PHPStan](https://github.com/dotkernel/dot-log/actions/workflows/static-analysis.yml/badge.svg?branch=4.1)](https://github.com/dotkernel/dot-log/actions/workflows/static-analysis.yml)
 
 ## Adding The Config Provider
 
@@ -66,7 +75,7 @@ return [
 * The `FileWriter` key is optional, otherwise the writers array would be enumerative instead of associative.
 * The writer name key is a developer-provided name for that writer, the writer name key is **mandatory**.
 
-The writer priority key is not affecting the errors that are written, it is a way to organize writers.
+The writer priority key is not affecting the errors that are written; it is a way to organize writers.
 
 The writer priority key is optional.
 
@@ -81,7 +90,7 @@ Examples:
 * `log/dk-{Y}-{m}-{d}.log` will write every day to a different file (eg: `log/dk-2021-01-01.log`)
 * `log/dk-{Y}-{W}.log` will write every week to a different file (eg: `log/dk-2021-10.log`)
 
-The full list of format specifiers is available [here](https://www.php.net/manual/en/datetime.format.php).
+The full list of format specifiers is available [on php.net in the `DateTimeInterface::format` documentation](https://www.php.net/manual/en/datetime.format.php).
 
 ## Filtering log messages
 

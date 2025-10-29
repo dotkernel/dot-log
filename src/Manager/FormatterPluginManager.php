@@ -25,7 +25,6 @@ class FormatterPluginManager extends AbstractPluginManager
         'simple' => Simple::class,
     ];
 
-    /** @var string[]|callable[] */
     protected array $factories = [
         Simple::class => InvokableFactory::class,
     ];

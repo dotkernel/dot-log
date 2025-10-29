@@ -92,6 +92,7 @@ class StreamTest extends TestCase
 
     public function testShutDown(): void
     {
-        $this->assertNull($this->subject->shutdown());
+        $this->expectNotToPerformAssertions();
+        $this->subject->shutdown();
     }
 }

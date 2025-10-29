@@ -32,7 +32,6 @@ class WriterPluginManager extends AbstractPluginManager
         'laminaslogwriternull' => Noop::class,
     ];
 
-    /** @var string[]|callable[] */
     protected array $factories = [
         Noop::class   => WriterFactory::class,
         Stream::class => WriterFactory::class,
