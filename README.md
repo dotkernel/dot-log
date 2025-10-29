@@ -2,6 +2,15 @@
 
 Robust, composite PSR-3 compliant logger with filtering and formatting.
 
+## Version History
+
+| Branch | Service Manager   | Log style implementation | PHP Version                                                                                             |
+|--------|-------------------|--------------------------|---------------------------------------------------------------------------------------------------------|
+| 5.0    | Service Manager 4 | PSR-Log                  | ![PHP from Packagist (specify version)](https://img.shields.io/packagist/php-v/dotkernel/dot-log/5.3.0) |
+| 4.1    | Service Manager 4 | Laminas Log style        | ![PHP from Packagist (specify version)](https://img.shields.io/packagist/php-v/dotkernel/dot-log/4.1.3) |
+| 4.0    | Service Manager 3 | Laminas Log style        | ![PHP from Packagist (specify version)](https://img.shields.io/packagist/php-v/dotkernel/dot-log/4.0.5) |
+| 3.0    | Service Manager 3 | Laminas Log              | ![PHP from Packagist (specify version)](https://img.shields.io/packagist/php-v/dotkernel/dot-log/3.5.4) |
+
 ## Documentation
 
 Documentation is available at: https://docs.dotkernel.org/dot-log/.
@@ -9,7 +18,7 @@ Documentation is available at: https://docs.dotkernel.org/dot-log/.
 ## Badges
 
 ![OSS Lifecycle](https://img.shields.io/osslifecycle/dotkernel/dot-log)
-![PHP from Packagist (specify version)](https://img.shields.io/packagist/php-v/dotkernel/dot-log/5.1.0)
+![PHP from Packagist (specify version)](https://img.shields.io/packagist/php-v/dotkernel/dot-log/5.3.0)
 
 [![GitHub issues](https://img.shields.io/github/issues/dotkernel/dot-log)](https://github.com/dotkernel/dot-log/issues)
 [![GitHub forks](https://img.shields.io/github/forks/dotkernel/dot-log)](https://github.com/dotkernel/dot-log/network)
@@ -39,8 +48,8 @@ A writer is an object that inherits from `Dot\Log\Writer\AbstractWriter`. A writ
 
 ### Writing to a file (stream)
 
-It is possible separate logs into multiple files using writers and filters.
-For example *warnings.log*, *errors.log*, *all_messages.log*.
+It is possible to separate logs into multiple files using writers and filters.
+For example, *warnings.log*, *errors.log*, *all_messages.log*.
 
 The following is the simplest example to write all log messages to `/log/dk.log`
 
@@ -67,16 +76,16 @@ return [
 * The `FileWriter` key is optional, otherwise the writers array would be enumerative instead of associative.
 * The writer name key is a developer-provided name for that writer, the writer name key is **mandatory**.
 
-The writer level key is not affecting the errors that are written, it is a way to organize writers.
+The writer level key is not affecting the errors that are written; it is a way to organize writers.
 
 The writer level key is optional.
 
-To write into a file the key stream must be present in the writer options array. This is required only if writing into streams/files.
+To write into a file, the key stream must be present in the writer options array. This is required only if writing into streams/files.
 
 ## Grouping log files by date
 
 By default, logs will be written to the same file: `log/dk.log`.
-Optionally, you can use date format specifiers wrapped between curly braces in your FileWriter's `stream` option, automatically grouping your logs by day, week, month, year etc.
+Optionally, you can use date format specifiers wrapped between curly braces in your FileWriter's `stream` option, automatically grouping your logs by day, week, month, year, etc.
 Examples:
 
 * `log/dk-{Y}-{m}-{d}.log` will write every day to a different file (eg: `log/dk-2021-01-01.log`)
@@ -147,7 +156,7 @@ return [
                                 'importantMessages' => [
                                     'name'    => 'level',
                                     'options' => [
-                                        // note, the smaller the level, the more important is the message
+                                        // note, the smaller the level, the more important the message
                                         // 0 - emergency, 1 - alert, 2- error, 3 - warn. .etc
                                         'operator' => '<=',
                                         'level'    => \Dot\Log\Logger::WARN,
@@ -165,7 +174,7 @@ return [
 
 As in the writer configuration, the developer can optionally use keys for associating the filters with a name.
 
-IMPORTANT NOTE: the operator for more important messages is <=, this is because the number representation is smaller for a more important message type.
+IMPORTANT NOTE: the operator for more important messages is `<=`, this is because the number representation is smaller for a more important message type.
 
 The filter added on the first writer is equal to not setting a filter, but it has been added to illustrate how to explicitly allow all messages.
 
@@ -175,14 +184,14 @@ It was added opposite to the others just to demonstrate the other operator is al
 
 When using `dot-log`, the logged value is not limited to a string. Arrays can be logged as well.
 
-For a better readability, these arrays can be serialized.
+For better readability, these arrays can be serialized.
 
 Dot Log provides String formatting and JSON formatting.
 
-The formatter accepts following parameters:
+The formatter accepts the following parameters:
 
-name - the formatter class (it must implement `Dot\Log\Formatter\FormatterInterface`)
-options - options to pass to the formatter constructor if required
+* `name`: the formatter class (it must implement `Dot\Log\Formatter\FormatterInterface`)
+* `options`: options to pass to the formatter constructor if required
 
 The following formats the message as JSON data:
 
@@ -243,15 +252,9 @@ Basic usage of the logger is illustrated below.
 The messages are written to see which logs are written and which are not written.
 
 ```php
-use Dot\Log\Logger;
-```
-
-...
-
-```php
+/** @var \Dot\Log\Logger $logger */
 $logger = $container->get('dot-log.my_logger');
 
-/** @var Logger $logger */
 $logger->emergency('0 EMERG');
 $logger->alert('1 ALERT');
 $logger->critical('2 CRITICAL');

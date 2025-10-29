@@ -7,27 +7,11 @@ namespace Dot\Log\Factory;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Psr\Container\ContainerInterface;
 
-use function is_array;
 use function is_string;
 
 class WriterFactory implements FactoryInterface
 {
-    /**
-     * Options to pass to the constructor if any.
-     */
-    private ?array $creationOptions = null;
-
-    public function __construct(?array $creationOptions = null)
-    {
-        if (is_array($creationOptions)) {
-            $this->setCreationOptions($creationOptions);
-        }
-    }
-
-    /**
-     * @param string $requestedName
-     */
-    public function __invoke(ContainerInterface $container, $requestedName, ?array $options = null): object
+    public function __invoke(ContainerInterface $container, string $requestedName, ?array $options = null): object
     {
         $options = (array) $options;
 
@@ -57,10 +41,5 @@ class WriterFactory implements FactoryInterface
         }
 
         return $options;
-    }
-
-    public function setCreationOptions(array $creationOptions): void
-    {
-        $this->creationOptions = $creationOptions;
     }
 }

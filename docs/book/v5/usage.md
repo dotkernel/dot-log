@@ -5,15 +5,9 @@ Basic usage of the logger is illustrated below.
 The messages are written to see which logs are written and which are not written.
 
 ```php
-use Dot\Log\Logger;
-```
-
-...
-
-```php
+/** @var \Dot\Log\Logger $logger */
 $logger = $container->get('dot-log.my_logger');
 
-/** @var Logger $logger */
 $logger->emergency('0 EMERG');
 $logger->alert('1 ALERT');
 $logger->critical('2 CRITICAL');

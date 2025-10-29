@@ -1,7 +1,7 @@
 # Adding The Config Provider
 
 * In `config/config.php` add an entry for the config provider `\Dot\Log\ConfigProvider::class`
-    * Make sure it is added before with the Application-Specific components, eg.:
+    * Make sure it is added before with the Application-Specific components, e.g.:
         * `\Frontend\App\ConfigProvider.php`
         * `\Admin\App\ConfigProvider::class`
         * `\MyProject\ConfigProvider::class` etc.
