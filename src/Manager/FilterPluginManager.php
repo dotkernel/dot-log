@@ -18,7 +18,7 @@ use function is_object;
 use function sprintf;
 
 /**
- * @template F of FilterPluginManager
+ * @template F of FilterInterface
  * @extends AbstractPluginManager<F>
  */
 class FilterPluginManager extends AbstractPluginManager
@@ -40,7 +40,7 @@ class FilterPluginManager extends AbstractPluginManager
         Validator::class      => InvokableFactory::class,
     ];
 
-    /** @var ?string */
+    /** @var class-string<F> */
     protected $instanceOf = FilterInterface::class;
 
     /**

@@ -13,14 +13,14 @@ use function is_string;
 class WriterFactory implements FactoryInterface
 {
     /**
-     * Options to pass to the constructor if any.
+     * Options to pass to the constructor, if any.
      */
-    private null|array $creationOptions;
+    private ?array $creationOptions = null;
 
-    public function __construct(?array $creationOptions = null)
+    public function __construct(?array $options = null)
     {
-        if (is_array($creationOptions)) {
-            $this->setCreationOptions($creationOptions);
+        if (is_array($options)) {
+            $this->setCreationOptions($options);
         }
     }
 

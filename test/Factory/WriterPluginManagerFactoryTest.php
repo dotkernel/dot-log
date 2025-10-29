@@ -96,6 +96,6 @@ class WriterPluginManagerFactoryTest extends TestCase
 
         $factory = (new WriterPluginManagerFactory())($this->container);
 
-        $this->assertInstanceOf(WriterPluginManager::class, $factory);
+        $this->assertContainsOnlyInstancesOf(WriterPluginManager::class, [$factory]);
     }
 }

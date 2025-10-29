@@ -27,7 +27,8 @@ class FilterPluginManagerTest extends TestCase
 
     public function testValidate(): void
     {
-        $this->assertNull($this->subject->validate(new Priority(47)));
+        $this->expectNotToPerformAssertions();
+        $this->subject->validate(new Priority(47));
     }
 
     public function testWillNotValidate(): void

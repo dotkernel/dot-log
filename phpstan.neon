@@ -1,0 +1,18 @@
+includes:
+    - vendor/phpstan/phpstan-phpunit/extension.neon
+parameters:
+    level: 5
+    paths:
+        - src
+        - test
+    treatPhpDocTypesAsCertain: false
+    ignoreErrors:
+        -
+            message: '/Undefined variable: \$test/'
+            path: test/LoggerTest.php
+        -
+            message: '/Instanceof between Dot\\Log\\Formatter\\FormatterInterface and Dot\\Log\\Formatter\\FormatterInterface will always evaluate to true./'
+            path: src/Writer/AbstractWriter.php
+        -
+            message: '/Property Dot\\Log\\Factory\\WriterFactory::\$creationOptions is never read, only written./'
+            path: src/Factory/WriterFactory.php

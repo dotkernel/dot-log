@@ -15,7 +15,7 @@ use function is_object;
 use function sprintf;
 
 /**
- * @template F of FormatterPluginManager
+ * @template F of FormatterInterface
  * @extends AbstractPluginManager<F>
  */
 class FormatterPluginManager extends AbstractPluginManager
@@ -30,7 +30,7 @@ class FormatterPluginManager extends AbstractPluginManager
         Simple::class => InvokableFactory::class,
     ];
 
-    /** @var ?string */
+    /** @var class-string<F> */
     protected $instanceOf = FormatterInterface::class;
 
     /**

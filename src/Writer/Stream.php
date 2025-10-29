@@ -73,6 +73,7 @@ class Stream extends AbstractWriter
             ));
         }
 
+        $error = null;
         if (is_resource($streamOrUrl)) {
             if ('stream' !== get_resource_type($streamOrUrl)) {
                 throw new InvalidArgumentException(sprintf(
