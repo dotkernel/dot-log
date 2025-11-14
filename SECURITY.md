@@ -2,14 +2,13 @@
 
 ## Supported Versions
 
-
-| Version | Supported          | PHP Version                                                                                             |
-|---------|--------------------|---------------------------------------------------------------------------------------------------------|
-| 5.x     | :white_check_mark: | ![PHP from Packagist (specify version)](https://img.shields.io/packagist/php-v/dotkernel/dot-log/5.0.0) |
-| 4.x     | :white_check_mark: | ![PHP from Packagist (specify version)](https://img.shields.io/packagist/php-v/dotkernel/dot-log/4.1.1) |
-| 3.x     | :white_check_mark: | ![PHP from Packagist (specify version)](https://img.shields.io/packagist/php-v/dotkernel/dot-log/3.4.7) |
-| <= 2.x  | :x:                |                                                                                                         |
-
+| Version | Supported                                                                                                                                | PHP Version                                                                                             |
+|---------|------------------------------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------|
+| 5.0     | ![OSS Lifecycle](https://img.shields.io/osslifecycle?file_url=https%3A%2F%2Fgithub.com%2Fdotkernel%2Fdot-log%2Fblob%2F5.0%2FOSSMETADATA) | ![PHP from Packagist (specify version)](https://img.shields.io/packagist/php-v/dotkernel/dot-log/5.3.0) |
+| 4.1     | ![OSS Lifecycle](https://img.shields.io/osslifecycle?file_url=https%3A%2F%2Fgithub.com%2Fdotkernel%2Fdot-log%2Fblob%2F4.1%2FOSSMETADATA) | ![PHP from Packagist (specify version)](https://img.shields.io/packagist/php-v/dotkernel/dot-log/4.1.3) |
+| 4.0     | ![OSS Lifecycle](https://img.shields.io/osslifecycle?file_url=https%3A%2F%2Fgithub.com%2Fdotkernel%2Fdot-log%2Fblob%2F4.0%2FOSSMETADATA) | ![PHP from Packagist (specify version)](https://img.shields.io/packagist/php-v/dotkernel/dot-log/4.0.5) |
+| 3.0     | ![OSS Lifecycle](https://img.shields.io/osslifecycle?file_url=https%3A%2F%2Fgithub.com%2Fdotkernel%2Fdot-log%2Fblob%2F3.0%2FOSSMETADATA) | ![PHP from Packagist (specify version)](https://img.shields.io/packagist/php-v/dotkernel/dot-log/3.5.4) |
+| <= 2.0  | :x:                                                                                                                                      |                                                                                                         |
 
 ## Reporting Potential Security Issues
 
@@ -29,7 +28,6 @@ release prior to any public exposure; this helps protect the project's
 users, and provides them with a chance to upgrade and/or update in order to
 protect their applications.
 
-
 ## Policy
 
 If we verify a reported security vulnerability, our policy is:
@@ -39,4 +37,3 @@ If we verify a reported security vulnerability, our policy is:
 
 - After patching the release branches, we will immediately issue new security
   fix releases for each patched release branch.
-
