@@ -47,6 +47,8 @@ use const PHP_EOL;
 
 class Stream extends AbstractWriter
 {
+    private const DEFAULT_PERMISSIONS = 0666;
+
     /**
      * Separator between log entries
      */
@@ -69,7 +71,7 @@ class Stream extends AbstractWriter
         mixed $streamOrUrl,
         ?string $mode = null,
         ?string $logSeparator = null,
-        ?int $filePermissions = null
+        ?int $filePermissions = self::DEFAULT_PERMISSIONS,
     ) {
         $logLifetime  = null;
         $streamFormat = null;
