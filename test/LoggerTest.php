@@ -168,7 +168,7 @@ class LoggerTest extends TestCase
             },
             'placeholder4'  => ['array' => 'placeholder4'],
             'placeholder5'  => 5.5,
-            'placeholder6'  => fn($arg1, $arg2) => $arg1 + $arg2,
+            'placeholder6'  => static fn($arg1, $arg2) => $arg1 + $arg2,
         ];
 
         $writer = new Mock();
@@ -398,7 +398,7 @@ class LoggerTest extends TestCase
         $this->assertFalse(Logger::registerExceptionHandler($this->subject));
 
         // get the internal exception handler
-        $exceptionHandler = set_exception_handler(function ($e) {
+        $exceptionHandler = set_exception_handler(static function ($e) {
         });
         set_exception_handler($exceptionHandler);
 

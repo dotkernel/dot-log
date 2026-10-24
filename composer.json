@@ -23,6 +23,7 @@
         "psr/log": "^3.0.2"
     },
     "require-dev": {
+        "boundwize/structarmed": "^0.19",
         "laminas/laminas-coding-standard": "^3.0",
         "phpstan/phpstan": "^2.1",
         "phpstan/phpstan-phpunit": "^2.0",
