@@ -423,7 +423,7 @@ class Logger extends AbstractLogger
         $errorLevelMap = static::$errorLevelMap;
 
         $previous = set_error_handler(
-            function ($level, $message, $file, $line) use ($logger, $errorLevelMap, $continueNativeHandler) {
+            static function ($level, $message, $file, $line) use ($logger, $errorLevelMap, $continueNativeHandler) {
                 $iniLevel = error_reporting();
 
                 if ($iniLevel & $level) {
@@ -467,7 +467,7 @@ class Logger extends AbstractLogger
 
         $errorLevelMap = static::$errorLevelMap;
 
-        register_shutdown_function(function () use ($logger, $errorLevelMap) {
+        register_shutdown_function(static function () use ($logger, $errorLevelMap) {
             $error = error_get_last();
 
             if (
@@ -517,7 +517,7 @@ class Logger extends AbstractLogger
 
         $errorLevelMap = static::$errorLevelMap;
 
-        set_exception_handler(function ($exception) use ($logger, $errorLevelMap) {
+        set_exception_handler(static function ($exception) use ($logger, $errorLevelMap) {
             $logMessages = [];
 
             do {
