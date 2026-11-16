@@ -4,12 +4,17 @@ declare(strict_types=1);
 
 namespace Dot\Log\Processor;
 
+use function is_array;
+
 class ReferenceId extends RequestId implements ProcessorInterface
 {
     /**
      * Adds an identifier for the request to the log.
      *
      * This enables to filter the log for messages belonging to a specific request
+     *
+     * @param array<string, mixed> $event
+     * @return array<string, mixed>
      */
     public function process(array $event): array
     {
@@ -17,7 +22,7 @@ class ReferenceId extends RequestId implements ProcessorInterface
             return $event;
         }
 
-        if (! isset($event['context'])) {
+        if (! isset($event['context']) || ! is_array($event['context'])) {
             $event['context'] = [];
         }
 

@@ -4,43 +4,34 @@ declare(strict_types=1);
 
 namespace DotTest\Log\Filter;
 
+use ArrayObject;
 use Dot\Log\Exception\InvalidArgumentException;
 use Dot\Log\Filter\SuppressFilter;
 use PHPUnit\Framework\TestCase;
 
 class SuppressFilterTest extends TestCase
 {
-    private SuppressFilter $subject;
-
-    public function setUp(): void
+    public function testAcceptsByDefault(): void
     {
-        $this->subject = new SuppressFilter();
-    }
-
-    public function testWillInstantiate(): void
-    {
-        $this->assertSame(SuppressFilter::class, $this->subject::class);
-    }
-
-    public function testWillNotInstantiate(): void
-    {
-        $this->expectExceptionMessage(
-            'Suppress must be a boolean; received "string"'
-        );
-        $this->expectException(InvalidArgumentException::class);
-        new SuppressFilter(['suppress' => 'oups']);
-    }
-
-    public function testFilter(): void
-    {
-        $result = $this->subject->filter([]);
-
-        $this->assertIsBool($result);
+        $this->assertTrue((new SuppressFilter())->filter([]));
     }
 
     public function testSuppress(): void
     {
-        $this->expectNotToPerformAssertions();
-        $this->subject->suppress(true);
+        $filter = new SuppressFilter(['suppress' => true]);
+        $this->assertFalse($filter->filter([]));
+
+        $filter->suppress(false);
+        $this->assertTrue($filter->filter([]));
+
+        $this->assertFalse((new SuppressFilter(new ArrayObject(['suppress' => true])))->filter([]));
+    }
+
+    public function testWillNotInstantiate(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Suppress must be a boolean; received "string"');
+
+        new SuppressFilter(['suppress' => 'oups']);
     }
 }

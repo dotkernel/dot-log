@@ -4,51 +4,25 @@ declare(strict_types=1);
 
 namespace Dot\Log;
 
-use Dot\Log\Factory\FilterPluginManagerFactory;
-use Dot\Log\Factory\FormatterPluginManagerFactory;
-use Dot\Log\Factory\LoggerAbstractServiceFactory;
-use Dot\Log\Factory\ProcessorPluginManagerFactory;
-use Dot\Log\Factory\WriterPluginManagerFactory;
-use Dot\Log\Manager\FilterPluginManager;
-use Dot\Log\Manager\FormatterPluginManager;
-use Dot\Log\Manager\ProcessorPluginManager;
-use Dot\Log\Manager\WriterPluginManager;
-
+/**
+ * Kept so that applications listing it keep working. dot-log registers no services: register a
+ * Dot\Log\Factory\LoggerFactory entry for each "dot-log.<name>" logger the application uses.
+ */
 class ConfigProvider
 {
+    /**
+     * @return array<string, mixed>
+     */
     public function __invoke(): array
     {
-        return [
-            'dependencies' => $this->getDependencies(),
-            'dot_log'      => [
-                'formatter_manager' => [],
-                'filter_manager'    => [],
-                'processor_manager' => [],
-                'writer_manager'    => [],
-                'loggers'           => [],
-            ],
-        ];
+        return [];
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function getDependencies(): array
     {
-        return [
-            'abstract_factories' => [
-                LoggerAbstractServiceFactory::class,
-            ],
-            'aliases'            => [
-                FilterPluginManager::class    => 'LogFilterManager',
-                FormatterPluginManager::class => 'LogFormatterManager',
-                ProcessorPluginManager::class => 'LogProcessorManager',
-                WriterPluginManager::class    => 'LogWriterManager',
-            ],
-            'factories'          => [
-                Logger::class         => LoggerServiceFactory::class,
-                'LogFilterManager'    => FilterPluginManagerFactory::class,
-                'LogFormatterManager' => FormatterPluginManagerFactory::class,
-                'LogProcessorManager' => ProcessorPluginManagerFactory::class,
-                'LogWriterManager'    => WriterPluginManagerFactory::class,
-            ],
-        ];
+        return [];
     }
 }

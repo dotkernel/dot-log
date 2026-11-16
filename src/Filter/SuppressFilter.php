@@ -19,6 +19,8 @@ class SuppressFilter implements FilterInterface
 
     /**
      * This is a simple boolean filter.
+     *
+     * @param bool|iterable<string, mixed> $suppress
      */
     public function __construct(bool|iterable $suppress = false)
     {
@@ -50,6 +52,8 @@ class SuppressFilter implements FilterInterface
 
     /**
      * Returns TRUE to accept the message, FALSE to block it.
+     *
+     * @param array<string, mixed> $event
      */
     public function filter(array $event): bool
     {

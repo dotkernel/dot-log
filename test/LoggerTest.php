@@ -5,49 +5,72 @@ declare(strict_types=1);
 namespace DotTest\Log;
 
 use ArrayObject;
+use DateTimeImmutable;
+use DateTimeInterface;
 use Dot\Log\Exception\InvalidArgumentException;
 use Dot\Log\Exception\RuntimeException;
+use Dot\Log\Exception\ServiceNotFoundException;
 use Dot\Log\Logger;
+use Dot\Log\Manager\ProcessorPluginManager;
 use Dot\Log\Manager\WriterPluginManager;
 use Dot\Log\Processor\Backtrace;
 use Dot\Log\Processor\RequestId;
 use Dot\Log\Writer\Noop;
 use Dot\Log\Writer\Stream;
+use DotTest\Log\Fixture\MemoryWriter;
+use DotTest\Log\Fixture\RecordingFilter;
 use ErrorException;
 use Exception;
-use Laminas\ServiceManager\Exception\ServiceNotFoundException;
 use Laminas\Stdlib\SplPriorityQueue;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
-use Psr\Container\ContainerExceptionInterface;
+use stdClass;
+use Stringable;
 
+use function array_column;
 use function count;
-use function set_exception_handler;
+use function error_reporting;
+use function trigger_error;
 
+use const E_ALL;
+use const E_USER_DEPRECATED;
 use const E_USER_NOTICE;
+use const E_USER_WARNING;
 
 class LoggerTest extends TestCase
 {
     private Logger $subject;
 
+    private MemoryWriter $writer;
+
     protected function setUp(): void
     {
         $this->subject = new Logger();
-    }
-
-    public function testUsesWriterPluginManagerByDefault(): void
-    {
-        $this->assertInstanceOf(WriterPluginManager::class, $this->subject->getWriterPluginManager());
+        $this->writer  = new MemoryWriter();
     }
 
     /**
-     * @throws ContainerExceptionInterface
+     * @return array<string, mixed>
      */
-    public function testPassingShortNameToPluginReturnsWriterByThatName(): void
+    private function lastEvent(): array
+    {
+        $this->assertNotEmpty($this->writer->events);
+
+        return $this->writer->events[0];
+    }
+
+    public function testDefaultPluginManagersAreCreatedOnce(): void
+    {
+        $this->assertSame($this->subject->getWriterPluginManager(), $this->subject->getWriterPluginManager());
+        $this->assertSame($this->subject->getProcessorPluginManager(), $this->subject->getProcessorPluginManager());
+    }
+
+    public function testUnknownWriterPlugin(): void
     {
         $this->expectException(ServiceNotFoundException::class);
-        $this->expectExceptionMessage(
-            'Unable to resolve service "mock" to a factory; are you certain you provided it during configuration?'
-        );
+        $this->expectExceptionMessage('Unable to resolve plugin "mock" in ' . WriterPluginManager::class);
+
         $this->subject->writerPlugin('mock');
     }
 
@@ -55,252 +78,315 @@ class LoggerTest extends TestCase
     {
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('No log writer specified');
+
         $this->subject->log(Logger::INFO, 'test');
     }
 
-    /**
-     * @throws ContainerExceptionInterface
-     */
     public function testSetWriters(): void
     {
-        $writer  = $this->subject->writerPlugin('null');
         $writers = new SplPriorityQueue();
-        $writers->insert($writer, 1);
+        $writers->insert($this->subject->writerPlugin('null'), 1);
+
         $this->subject->setWriters($writers);
 
-        $writers = $this->subject->getWriters();
-        $writer  = $writers->extract();
-        $this->assertInstanceOf(Noop::class, $writer);
+        $this->assertInstanceOf(Noop::class, $this->subject->getWriters()->extract());
     }
 
-    /**
-     * @throws ContainerExceptionInterface
-     */
-    public function testAddWriterWithLevel(): void
+    public function testSetWritersRejectsOtherObjects(): void
     {
-        $writer = $this->subject->writerPlugin('null');
-        $this->subject->addWriter($writer, 3);
-        $writers = $this->subject->getWriters();
+        $writers = new SplPriorityQueue();
+        $writers->insert(new stdClass(), 1);
 
-        $writer = $writers->extract();
-        $this->assertInstanceOf(Noop::class, $writer);
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Writers must be a SplPriorityQueue of Dot\Log\Writer\WriterInterface');
+
+        $this->subject->setWriters($writers);
     }
 
-    /**
-     * @throws ContainerExceptionInterface
-     */
-    public function testAddWithSameLevel(): void
+    public function testWritersRunByPriority(): void
     {
-        $writer1 = $this->subject->writerPlugin('null');
-        $this->subject->addWriter($writer1, 1);
-        $writer2 = $this->subject->writerPlugin('null');
-        $this->subject->addWriter($writer2, 1);
-        $writers = $this->subject->getWriters();
+        $low  = new MemoryWriter();
+        $high = new MemoryWriter();
+        $this->subject->addWriter($low, 1);
+        $this->subject->addWriter($high, 3);
 
-        $writer = $writers->extract();
-        $this->assertInstanceOf(Noop::class, $writer);
-        $writer = $writers->extract();
-        $this->assertInstanceOf(Noop::class, $writer);
+        $this->assertSame([$high, $low], $this->subject->getWriters()->toArray());
     }
 
-    /**
-     * @throws ContainerExceptionInterface
-     */
     public function testLogging(): void
     {
-        $writer = new Mock();
-        $this->subject->addWriter($writer);
+        $this->subject->addWriter($this->writer);
+
         $this->subject->log(Logger::INFO, 'tottakai');
         $this->subject->log(4, 'tottakai');
         $this->subject->log('2', 'tottakai');
+        $this->subject->log('debug', 'tottakai');
 
-        $this->assertEquals(3, count($writer->events));
-        foreach ($writer->events as $event) {
-            $this->assertStringContainsString('tottakai', $event['message']);
-        }
+        $this->assertCount(4, $this->writer->events);
+        $this->assertSame([6, 4, 2, 7], array_column($this->writer->events, 'level'));
+        $this->assertSame(
+            ['info', 'warning', 'critical', 'debug'],
+            array_column($this->writer->events, 'levelName')
+        );
+        $this->assertInstanceOf(DateTimeImmutable::class, $this->lastEvent()['timestamp']);
     }
 
-    public static function provideTestPlaceholders(): array
+    /**
+     * @return iterable<string, array{mixed}>
+     */
+    public static function provideInvalidLevels(): iterable
+    {
+        yield 'negative' => [-1];
+        yield 'too high' => [8];
+        yield 'unknown name' => ['verbose'];
+        yield 'fraction' => [2.5];
+        yield 'null' => [null];
+    }
+
+    #[DataProvider('provideInvalidLevels')]
+    #[Group('Laminas-7238')]
+    public function testRejectsInvalidLevels(mixed $level): void
+    {
+        $this->subject->addWriter($this->writer);
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('$level must be an integer >= 0 and < 8; received ');
+
+        $this->subject->log($level, 'Foo');
+    }
+
+    /**
+     * @return iterable<string, array{string, array<string, mixed>}>
+     */
+    public static function provideTestPlaceholders(): iterable
     {
         $context = [
             'placeholder1'  => 1,
             '#placeholder2' => 'placeholder2',
-            'placeholder3'  => new class {
-            },
+            'placeholder3'  => new stdClass(),
         ];
 
-        return [
-            ["message with no placeholders", $context],
-            ["{placeholder1, {#placeholder2}, place_holder3} invalid placeholders", $context],
-            ["{placeholder1}, {#placeholder2}, {place_holder3}", []],
+        yield 'no placeholders' => ['message with no placeholders', $context];
+        yield 'invalid placeholders' => [
+            '{placeholder1, {#placeholder2}, place_holder3} invalid placeholders',
+            $context,
         ];
+        yield 'no context' => ['{placeholder1}, {#placeholder2}, {place_holder3}', []];
+        yield 'null value' => ['{nothing}', ['nothing' => null]];
     }
 
     /**
-     * @dataProvider provideTestPlaceholders
+     * @param array<string, mixed> $context
      */
+    #[DataProvider('provideTestPlaceholders')]
     public function testLoggingWithoutValidPlaceholdersDoesNotModifyMessage(string $message, array $context): void
     {
-        $writer = new Mock();
-        $this->subject->addWriter($writer);
+        $this->subject->addWriter($this->writer);
+
         $this->subject->log(Logger::INFO, $message, $context);
 
-        $this->assertEquals(1, count($writer->events));
-
-        $this->assertEquals(
-            $message,
-            $writer->events[0]['message']
-        );
+        $this->assertSame($message, $this->lastEvent()['message']);
     }
 
     public function testLoggingWithValidPlaceholders(): void
     {
-        $message =
-            "{placeholder1}, {place.holder2}, {place_holder3} and {placeholder4}. {placeholder5} test {placeholder6}";
-        $context = [
-            'placeholder1'  => 1,
-            'place.holder2' => 'placeholder2',
-            'place_holder3' => new class {
-                public function hello(): string
-                {
-                    return 'Hello world!';
-                }
-            },
-            'placeholder4'  => ['array' => 'placeholder4'],
-            'placeholder5'  => 5.5,
-            'placeholder6'  => static fn($arg1, $arg2) => $arg1 + $arg2,
-        ];
+        $this->subject->addWriter($this->writer);
+        $stringable = new class implements Stringable {
+            public function __toString(): string
+            {
+                return 'ID-42';
+            }
+        };
 
-        $writer = new Mock();
-        $this->subject->addWriter($writer);
-        $this->subject->log(Logger::INFO, $message, $context);
+        $this->subject->log(
+            Logger::INFO,
+            '{p1}, {place.holder2}, {place_holder3}, {p4}, {p5}, {p6}, {p7}, {p8}, {p9}',
+            [
+                'p1'            => 1,
+                'place.holder2' => 'placeholder2',
+                'place_holder3' => new stdClass(),
+                'p4'            => ['array' => 'placeholder4'],
+                'p5'            => 5.5,
+                'p6'            => static fn (): int => 1,
+                'p7'            => $stringable,
+                'p8'            => new DateTimeImmutable('2026-01-02 03:04:05+00:00'),
+                'p9'            => false,
+            ]
+        );
 
-        $this->assertEquals(1, count($writer->events));
-        $this->assertEquals(
-            '1, placeholder2, object and array. 5.5 test object',
-            $writer->events[0]['message']
+        $this->assertSame(
+            '1, placeholder2, [object stdClass], [array], 5.5, [object Closure], ID-42, '
+            . '2026-01-02T03:04:05+00:00, false',
+            $this->lastEvent()['message']
         );
     }
 
-    /**
-     * @throws ContainerExceptionInterface
-     */
+    public function testPlaceholderValue(): void
+    {
+        $this->assertSame('true', Logger::placeholderValue(true));
+        $this->assertSame(
+            (new DateTimeImmutable('@0'))->format(DateTimeInterface::RFC3339),
+            Logger::placeholderValue(new DateTimeImmutable('@0'))
+        );
+    }
+
     public function testLoggingStringable(): void
     {
-        $test = new class {
+        $this->subject->addWriter($this->writer);
+
+        $this->subject->log(Logger::INFO, new class implements Stringable {
             public function __toString(): string
             {
                 return 'test';
             }
-        };
+        });
 
-        $writer = new Mock();
-        $this->subject->addWriter($writer);
-        $this->subject->log(Logger::INFO, $test);
-
-        $this->assertEquals(1, count($writer->events));
-        $this->assertStringContainsString('test', $writer->events[0]['message']);
+        $this->assertSame('test', $this->lastEvent()['message']);
     }
 
-    /**
-     * @throws ContainerExceptionInterface
-     */
     public function testAddFilter(): void
     {
-        $writer = new Mock();
-        $filter = new MockFilter();
-        $writer->addFilter($filter);
-        $this->subject->addWriter($writer);
+        $filter = new RecordingFilter();
+        $this->writer->addFilter($filter);
+        $this->subject->addWriter($this->writer);
+
         $this->subject->log(Logger::INFO, 'test');
 
-        $this->assertEquals(1, count($filter->events));
-        $this->assertStringContainsString('test', $filter->events[0]['message']);
-    }
-
-    public static function provideTestFilters(): array
-    {
-        return [
-            ['level', ['level' => Logger::INFO]],
-            ['regex', ['regex' => '/[0-9]+/']],
-        ];
+        $this->assertCount(1, $filter->events);
+        $this->assertSame('test', $filter->events[0]['message']);
     }
 
     /**
-     * @dataProvider provideTestFilters
-     * @throws ContainerExceptionInterface
+     * @return iterable<string, array{string, array<string, mixed>}>
      */
+    public static function provideTestFilters(): iterable
+    {
+        yield 'level' => ['level', ['level' => Logger::INFO]];
+        yield 'regex' => ['regex', ['regex' => '/[0-9]+/']];
+    }
+
+    /**
+     * @param array<string, mixed> $options
+     */
+    #[DataProvider('provideTestFilters')]
     public function testAddFilterByNameWithParams(string $filter, array $options): void
     {
-        $writer = new Mock();
-        $writer->addFilter($filter, $options);
-        $this->subject->addWriter($writer);
+        $this->writer->addFilter($filter, $options);
+        $this->subject->addWriter($this->writer);
 
         $this->subject->log(Logger::INFO, '123');
-        $this->assertEquals(1, count($writer->events));
-        $this->assertStringContainsString('123', $writer->events[0]['message']);
-    }
 
-    public static function provideAttributes(): array
-    {
-        return [
-            [[]],
-            [['user' => 'foo', 'ip' => '127.0.0.1']],
-            [new ArrayObject(['id' => 42])],
-        ];
+        $this->assertSame('123', $this->lastEvent()['message']);
     }
 
     /**
-     * @dataProvider provideAttributes
-     * @throws ContainerExceptionInterface
+     * @return iterable<string, array{array<string, mixed>|ArrayObject<string, mixed>}>
      */
+    public static function provideAttributes(): iterable
+    {
+        yield 'empty' => [[]];
+        yield 'array' => [['user' => 'foo', 'ip' => '127.0.0.1']];
+        yield 'traversable' => [new ArrayObject(['id' => 42])];
+    }
+
+    /**
+     * @param array<string, mixed>|ArrayObject<string, mixed> $context
+     */
+    #[DataProvider('provideAttributes')]
     public function testLoggingCustomAttributesForUserContext(array|ArrayObject $context): void
     {
-        $writer = new Mock();
-        $this->subject->addWriter($writer);
+        $this->subject->addWriter($this->writer);
+
         $this->subject->log(Logger::ERR, 'tottakai', $context);
 
-        $this->assertEquals(1, count($writer->events));
-        $this->assertIsArray($writer->events[0]['context']);
-        $this->assertEquals(count($writer->events[0]['context']), count($context));
+        $this->assertIsArray($this->lastEvent()['context']);
+        $this->assertCount(count($context), $this->lastEvent()['context']);
     }
 
     /**
-     * @throws ContainerExceptionInterface
+     * PHPUnit masks error_reporting() while a test runs, so it is raised to E_ALL around the trigger.
      */
     public function testRegisterErrorHandler(): void
     {
-        $writer = new Mock();
-        $this->subject->addWriter($writer);
+        $this->subject->addWriter($this->writer);
 
-        $previous = Logger::registerErrorHandler($this->subject);
-        $this->assertNotNull($previous);
-        $this->assertNotFalse($previous);
+        $previousLevel = error_reporting(E_ALL);
+        try {
+            $previous = Logger::registerErrorHandler($this->subject);
+            $this->assertNotFalse($previous);
+            $this->assertFalse(Logger::registerErrorHandler($this->subject), 'registers once');
 
-        // check for single error handler instance
-        $this->assertFalse(Logger::registerErrorHandler($this->subject));
+            trigger_error('dot-log test warning', E_USER_WARNING);
+        } finally {
+            Logger::unregisterErrorHandler();
+            error_reporting($previousLevel);
+        }
 
-        // generate a warning
-        echo $test; // $test is not defined
-
-        Logger::unregisterErrorHandler();
-
-        $this->assertEquals('Undefined variable $test', $writer->events[0]['message']);
+        $event = $this->lastEvent();
+        $this->assertSame('dot-log test warning', $event['message']);
+        $this->assertSame(Logger::WARN, $event['level']);
+        $this->assertIsArray($event['context']);
+        $this->assertSame(E_USER_WARNING, $event['context']['errno'], 'errno is the PHP error number');
+        $this->assertSame(__FILE__, $event['context']['file']);
     }
 
-    /**
-     * @throws ContainerExceptionInterface
-     */
-    public function testOptionsWithMock(): void
+    public function testErrorHandlerSkipsErrorsOutsideErrorReporting(): void
     {
-        $options = [
-            'writers' => [
-                'first_writer' => [
-                    'name'  => 'null',
-                    'level' => 1,
-                ],
-            ],
+        $this->subject->addWriter($this->writer);
+        $handler = Logger::createErrorHandler($this->subject, true);
+
+        $previousLevel = error_reporting(E_ALL & ~E_USER_DEPRECATED);
+        try {
+            $this->assertFalse($handler(E_USER_DEPRECATED, 'ignored', __FILE__, __LINE__));
+            $this->assertFalse($handler(E_USER_NOTICE, 'logged', __FILE__, __LINE__));
+        } finally {
+            error_reporting($previousLevel);
+        }
+
+        $this->assertCount(1, $this->writer->events);
+        $this->assertSame(Logger::NOTICE, $this->lastEvent()['level']);
+    }
+
+    public function testExceptionHandlerLogsTheChainInnermostFirst(): void
+    {
+        $this->subject->addWriter($this->writer);
+        $handler = Logger::createExceptionHandler($this->subject);
+
+        $handler(new Exception('error', 200, new Exception('previous', 100)));
+        $handler(new ErrorException('user notice', 1_000, E_USER_NOTICE, __FILE__, __LINE__));
+
+        $expectedEvents = [
+            ['level' => Logger::ERR, 'message' => 'previous'],
+            ['level' => Logger::ERR, 'message' => 'error'],
+            ['level' => Logger::NOTICE, 'message' => 'user notice'],
         ];
-        $logger  = new Logger($options);
+        $this->assertCount(3, $this->writer->events);
+        foreach ($expectedEvents as $i => $expected) {
+            $event = $this->writer->events[$i];
+            $this->assertSame($expected['level'], $event['level']);
+            $this->assertSame($expected['message'], $event['message']);
+            $this->assertIsArray($event['context']);
+            $this->assertSame(__FILE__, $event['context']['file']);
+        }
+    }
+
+    public function testRegisterExceptionHandlerOnlyOnce(): void
+    {
+        try {
+            $this->assertTrue(Logger::registerExceptionHandler($this->subject));
+            $this->assertFalse(Logger::registerExceptionHandler($this->subject));
+        } finally {
+            Logger::unregisterExceptionHandler();
+        }
+    }
+
+    public function testOptionsWithWriter(): void
+    {
+        $logger = new Logger([
+            'writers' => [
+                'first_writer' => ['name' => 'null', 'level' => 1],
+            ],
+        ]);
 
         $writers = $logger->getWriters()->toArray();
         $this->assertCount(1, $writers);
@@ -308,133 +394,172 @@ class LoggerTest extends TestCase
     }
 
     /**
-     * @throws ContainerExceptionInterface
+     * Regression test: "level" is documented as optional but omitting it threw a TypeError.
      */
+    public function testWriterAndProcessorLevelIsOptional(): void
+    {
+        $logger = new Logger([
+            'writers'    => [['name' => 'noop']],
+            'processors' => [['name' => 'requestid']],
+        ]);
+
+        $this->assertCount(1, $logger->getWriters());
+        $this->assertCount(1, $logger->getProcessors());
+    }
+
+    public function testPriorityIsAnAliasOfLevel(): void
+    {
+        $first   = new MemoryWriter();
+        $second  = new MemoryWriter();
+        $writers = new WriterPluginManager(null, [
+            'factories' => [
+                'first'  => static fn (): MemoryWriter => $first,
+                'second' => static fn (): MemoryWriter => $second,
+            ],
+        ]);
+
+        $logger = new Logger([
+            'writer_plugin_manager' => $writers,
+            'writers'               => [['name' => 'second', 'priority' => 1], ['name' => 'first', 'priority' => 5]],
+        ]);
+
+        $this->assertSame([$first, $second], $logger->getWriters()->toArray());
+    }
+
+    /**
+     * @return iterable<string, array{array<string, mixed>, string}>
+     */
+    public static function provideInvalidPluginSpecs(): iterable
+    {
+        yield 'writer without name' => [['writers' => [['level' => 1]]], 'Options must contain a name for the writer'];
+        yield 'writer not an array' => [['writers' => ['noop']], 'Options must contain a name for the writer'];
+        yield 'processor without name' => [
+            ['processors' => [['level' => 1]]],
+            'Options must contain a name for the processor',
+        ];
+        yield 'non-numeric level' => [
+            ['writers' => [['name' => 'noop', 'level' => 'high']]],
+            'The writer "noop" level must be an integer; received string',
+        ];
+    }
+
+    /**
+     * @param array<string, mixed> $options
+     */
+    #[DataProvider('provideInvalidPluginSpecs')]
+    public function testInvalidPluginSpecs(array $options, string $message): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage($message);
+
+        new Logger($options);
+    }
+
+    /**
+     * Regression test: options given as a generator were dropped.
+     */
+    public function testOptionsAsGenerator(): void
+    {
+        $options = (static function (): iterable {
+            yield 'writers' => [['name' => 'noop', 'options' => new ArrayObject([])]];
+        })();
+
+        $this->assertCount(1, (new Logger($options))->getWriters());
+    }
+
     public function testOptionsWithWriterOptions(): void
     {
-        $options = [
+        $logger = new Logger([
             'writers' => [
                 [
                     'name'    => 'stream',
-                    'options' => [
-                        'stream'        => 'php://output',
-                        'log_separator' => 'foo',
-                    ],
+                    'options' => ['stream' => 'php://memory', 'log_separator' => 'foo'],
                     'level'   => 1,
                 ],
             ],
-        ];
-        $logger  = new Logger($options);
+        ]);
 
         $writers = $logger->getWriters()->toArray();
         $this->assertCount(1, $writers);
         $this->assertInstanceOf(Stream::class, $writers[0]);
-        $this->assertEquals('foo', $writers[0]->getLogSeparator());
+        $this->assertSame('foo', $writers[0]->getLogSeparator());
     }
 
-    /**
-     * @throws ContainerExceptionInterface
-     */
-    public function testOptionsWithMockAndProcessor(): void
+    public function testOptionsWithWriterAndProcessor(): void
     {
-        $options    = [
-            'writers'    => [
-                'first_writer' => [
-                    'name'  => 'null',
-                    'level' => 1,
-                ],
-            ],
-            'processors' => [
-                'first_processor' => [
-                    'name'  => 'requestid',
-                    'level' => 1,
-                ],
-            ],
-        ];
-        $logger     = new Logger($options);
+        $logger = new Logger([
+            'writers'    => ['first_writer' => ['name' => 'null', 'level' => 1]],
+            'processors' => ['first_processor' => ['name' => 'requestid', 'level' => 1]],
+        ]);
+
         $processors = $logger->getProcessors()->toArray();
         $this->assertCount(1, $processors);
         $this->assertInstanceOf(RequestId::class, $processors[0]);
     }
 
-    /**
-     * @throws ContainerExceptionInterface
-     */
     public function testAddProcessor(): void
     {
         $processor = new Backtrace();
         $this->subject->addProcessor($processor);
 
-        $processors = $this->subject->getProcessors()->toArray();
-        $this->assertEquals($processor, $processors[0]);
+        $this->assertSame([$processor], $this->subject->getProcessors()->toArray());
     }
 
     /**
-     * @throws ContainerExceptionInterface
+     * Regression test: Backtrace ignored "Laminas\Log" and reported Dot\Log\Logger::log as the origin.
      */
-    public function testAddProcessorByName(): void
+    public function testBacktraceProcessorReportsTheCaller(): void
     {
         $this->subject->addProcessor('backtrace');
+        $this->subject->addWriter($this->writer);
 
-        $processors = $this->subject->getProcessors()->toArray();
-        $this->assertInstanceOf(Backtrace::class, $processors[0]);
+        $this->subject->error('foo');
+        $line = __LINE__ - 1;
 
-        $writer = new Mock();
-        $this->subject->addWriter($writer);
-        $this->subject->log(Logger::ERR, 'foo');
+        $context = $this->lastEvent()['context'];
+        $this->assertIsArray($context);
+        $this->assertSame(self::class, $context['class']);
+        $this->assertSame(__FUNCTION__, $context['function']);
+        $this->assertSame(__FILE__, $context['file']);
+        $this->assertSame($line, $context['line']);
     }
 
-    /**
-     * @throws ContainerExceptionInterface
-     */
-    public function testExceptionHandler(): void
+    public function testSetProcessorPluginManagerByClassName(): void
     {
-        $writer = new Mock();
-        $this->subject->addWriter($writer);
+        $default = $this->subject->getProcessorPluginManager();
 
-        $this->assertTrue(Logger::registerExceptionHandler($this->subject));
+        $this->subject->setProcessorPluginManager(ProcessorPluginManager::class);
 
-        // check for single error handler instance
-        $this->assertFalse(Logger::registerExceptionHandler($this->subject));
-
-        // get the internal exception handler
-        $exceptionHandler = set_exception_handler(static function ($e) {
-        });
-        set_exception_handler($exceptionHandler);
-
-        // reset the exception handler
-        Logger::unregisterExceptionHandler();
-
-        // call the exception handler
-        $exceptionHandler(new Exception('error', 200, new Exception('previos', 100)));
-        $exceptionHandler(new ErrorException('user notice', 1_000, E_USER_NOTICE, __FILE__, __LINE__));
-
-        // check logged messages
-        $expectedEvents = [
-            ['level' => Logger::ERR,    'message' => 'previos',     'file' => __FILE__],
-            ['level' => Logger::ERR,    'message' => 'error',       'file' => __FILE__],
-            ['level' => Logger::NOTICE, 'message' => 'user notice', 'file' => __FILE__],
-        ];
-        for ($i = 0; $i < count($expectedEvents); $i++) {
-            $expectedEvent = $expectedEvents[$i];
-            $event         = $writer->events[$i];
-
-            $this->assertEquals($expectedEvent['level'], $event['level'], 'Unexpected level');
-            $this->assertEquals($expectedEvent['message'], $event['message'], 'Unexpected message');
-            $this->assertEquals($expectedEvent['file'], $event['context']['file'], 'Unexpected file');
-        }
+        $this->assertNotSame($default, $this->subject->getProcessorPluginManager());
     }
 
-    /**
-     * @group Laminas-7238
-     * @throws ContainerExceptionInterface
-     */
-    public function testCatchExceptionNotValidLevel(): void
+    public function testSetProcessorPluginManagerRejectsOtherClasses(): void
     {
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('$level must be an integer >= 0 and < 8; received -1');
-        $writer = new Mock();
-        $this->subject->addWriter($writer);
-        $this->subject->log(-1, 'Foo');
+        $this->expectExceptionMessage('Processor plugin manager must extend ' . ProcessorPluginManager::class);
+
+        $this->subject->setProcessorPluginManager(stdClass::class);
+    }
+
+    /**
+     * Regression test: the destructor iterated the queue itself, which emptied the queue returned by getWriters().
+     */
+    public function testDestructorKeepsTheWritersQueue(): void
+    {
+        $logger = new Logger();
+        $logger->addWriter($this->writer);
+        $writers = $logger->getWriters();
+        unset($logger);
+
+        $this->assertCount(1, $writers);
+    }
+
+    public function testDestructorShutsWritersDown(): void
+    {
+        $logger = new Logger();
+        $logger->addWriter($this->writer);
+        unset($logger);
+
+        $this->assertTrue($this->writer->shutdown);
     }
 }

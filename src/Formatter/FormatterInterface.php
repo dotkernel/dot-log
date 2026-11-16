@@ -9,17 +9,16 @@ interface FormatterInterface
     /**
      * Default format specifier for DateTime objects is ISO 8601
      *
-     * @see http://php.net/manual/en/function.date.php
+     * @see https://www.php.net/manual/en/datetime.format.php
      */
     public const DEFAULT_DATETIME_FORMAT = 'c';
 
     /**
-     * Formats data into a single line to be written by the writer.
+     * Formats a log event into a single line to be written by the writer.
      *
-     * @return string|array Either a formatted line to write to the log, or the
-     *     updated event information to provide to the writer.
+     * @param array<string, mixed> $event
      */
-    public function format(iterable $event): iterable|string;
+    public function format(array $event): string;
 
     /**
      * Get the format specifier for DateTime objects
@@ -29,7 +28,7 @@ interface FormatterInterface
     /**
      * Set the format specifier for DateTime objects
      *
-     * @see http://php.net/manual/en/function.date.php
+     * @see https://www.php.net/manual/en/datetime.format.php
      */
     public function setDateTimeFormat(string $dateTimeFormat): static;
 }

@@ -1,7 +1,7 @@
 {
     "name": "dotkernel/dot-log",
     "type": "library",
-    "description": "Dotkernel log component implementing PSR-3",
+    "description": "Dotkernel PSR-3 logger with writers, filters, formatters and processors, usable with any PSR-11 container",
     "license": "MIT",
     "homepage": "https://github.com/dotkernel/dot-log",
     "keywords": [
@@ -17,9 +17,9 @@
         }
     ],
     "require": {
-        "php": "~8.2.0 || ~8.3.0 || ~8.4.0 || ~8.5.0",
-        "laminas/laminas-servicemanager": "^4.0",
-        "laminas/laminas-validator": "^3.0",
+        "php": "~8.3.0 || ~8.4.0 || ~8.5.0 || ~8.6.0",
+        "laminas/laminas-stdlib": "^3.19",
+        "psr/container": "^1.1 || ^2.0",
         "psr/log": "^3.0.2"
     },
     "require-dev": {
@@ -27,7 +27,13 @@
         "laminas/laminas-coding-standard": "^3.0",
         "phpstan/phpstan": "^2.1",
         "phpstan/phpstan-phpunit": "^2.0",
-        "phpunit/phpunit": "^10.2"
+        "phpunit/phpunit": "^12.5"
+    },
+    "provide": {
+        "psr/log-implementation": "3.0.0"
+    },
+    "suggest": {
+        "laminas/laminas-validator": "To use Laminas validators with the Dot\\Log\\Filter\\Validator filter"
     },
     "autoload": {
         "psr-4": {

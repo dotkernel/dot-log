@@ -9,21 +9,13 @@ use Dot\Log\Processor\ProcessorInterface;
 use Dot\Log\Processor\PsrPlaceholder;
 use Dot\Log\Processor\ReferenceId;
 use Dot\Log\Processor\RequestId;
-use Laminas\ServiceManager\AbstractPluginManager;
-use Laminas\ServiceManager\Exception\InvalidServiceException;
-use Laminas\ServiceManager\Factory\InvokableFactory;
-
-use function gettype;
-use function is_object;
-use function sprintf;
 
 /**
- * @template P of ProcessorPluginManager
- * @extends AbstractPluginManager<P>
+ * @extends AbstractPluginManager<ProcessorInterface>
  */
 class ProcessorPluginManager extends AbstractPluginManager
 {
-    /** @var string[] */
+    /** @var array<string, string> */
     protected array $aliases = [
         'backtrace'      => Backtrace::class,
         'psrplaceholder' => PsrPlaceholder::class,
@@ -31,35 +23,6 @@ class ProcessorPluginManager extends AbstractPluginManager
         'requestid'      => RequestId::class,
     ];
 
-    /** @inheritDoc */
-    protected array $factories = [
-        Backtrace::class      => InvokableFactory::class,
-        PsrPlaceholder::class => InvokableFactory::class,
-        ReferenceId::class    => InvokableFactory::class,
-        RequestId::class      => InvokableFactory::class,
-    ];
-
+    /** @var class-string<ProcessorInterface> */
     protected string $instanceOf = ProcessorInterface::class;
-
-    /**
-     * Allow many processors of the same type
-     */
-    protected bool $sharedByDefault = false;
-
-    /**
-     * Validate the plugin is of the expected type.
-     *
-     * Validates against `$instanceOf`.
-     */
-    public function validate(mixed $instance): void
-    {
-        if (! $instance instanceof $this->instanceOf) {
-            throw new InvalidServiceException(sprintf(
-                '%s can only create instances of %s; %s is invalid',
-                static::class,
-                $this->instanceOf,
-                is_object($instance) ? $instance::class : gettype($instance)
-            ));
-        }
-    }
 }

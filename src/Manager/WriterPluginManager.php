@@ -8,20 +8,14 @@ use Dot\Log\Factory\WriterFactory;
 use Dot\Log\Writer\Noop;
 use Dot\Log\Writer\Stream;
 use Dot\Log\Writer\WriterInterface;
-use Laminas\ServiceManager\AbstractPluginManager;
-use Laminas\ServiceManager\Exception\InvalidServiceException;
-
-use function gettype;
-use function is_object;
-use function sprintf;
+use Psr\Container\ContainerInterface;
 
 /**
- * @template W of WriterPluginManager
- * @extends AbstractPluginManager<W>
+ * @extends AbstractPluginManager<WriterInterface>
  */
 class WriterPluginManager extends AbstractPluginManager
 {
-    /** @var string[] */
+    /** @var array<string, string> */
     protected array $aliases = [
         'noop'   => Noop::class,
         'stream' => Stream::class,
@@ -32,33 +26,44 @@ class WriterPluginManager extends AbstractPluginManager
         'laminaslogwriternull' => Noop::class,
     ];
 
-    /** @inheritDoc */
+    /** @var array<string, callable|string> */
     protected array $factories = [
         Noop::class   => WriterFactory::class,
         Stream::class => WriterFactory::class,
     ];
 
+    /** @var class-string<WriterInterface> */
     protected string $instanceOf = WriterInterface::class;
 
     /**
-     * Allow many writers of the same type
+     * @param array<array-key, mixed> $config
      */
-    protected bool $sharedByDefault = false;
+    public function __construct(
+        ?ContainerInterface $container = null,
+        array $config = [],
+        protected ?FilterPluginManager $filterPluginManager = null,
+        protected ?FormatterPluginManager $formatterPluginManager = null,
+    ) {
+        parent::__construct($container, $config);
+    }
 
     /**
-     * Validate the plugin is of the expected type.
+     * Writers built by this manager share its filter and formatter managers, unless the options name others.
      *
-     * Validates against `$instanceOf`.
+     * @param array<array-key, mixed>|null $options
      */
-    public function validate(mixed $instance): void
+    public function build(string $name, ?array $options = null): WriterInterface
     {
-        if (! $instance instanceof $this->instanceOf) {
-            throw new InvalidServiceException(sprintf(
-                '%s can only create instances of %s; %s is invalid',
-                static::class,
-                $this->instanceOf,
-                is_object($instance) ? $instance::class : gettype($instance)
-            ));
+        if ($this->filterPluginManager !== null && ! isset($options['filter_manager'])) {
+            $options                   = (array) $options;
+            $options['filter_manager'] = $this->filterPluginManager;
         }
+
+        if ($this->formatterPluginManager !== null && ! isset($options['formatter_manager'])) {
+            $options                      = (array) $options;
+            $options['formatter_manager'] = $this->formatterPluginManager;
+        }
+
+        return parent::build($name, $options);
     }
 }

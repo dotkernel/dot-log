@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace Dot\Log;
 
-use DateTime;
+use Closure;
+use DateTimeImmutable;
+use DateTimeInterface;
 use Dot\Log\Exception\InvalidArgumentException;
 use Dot\Log\Exception\RuntimeException;
 use Dot\Log\Manager\ProcessorPluginManager;
@@ -13,25 +15,31 @@ use Dot\Log\Processor\ProcessorInterface;
 use Dot\Log\Writer\WriterInterface;
 use ErrorException;
 use Exception;
-use Laminas\ServiceManager\ServiceManager;
-use Laminas\Stdlib\ArrayUtils;
 use Laminas\Stdlib\SplPriorityQueue;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Log\AbstractLogger;
 use Psr\Log\LogLevel;
 use Stringable;
+use Throwable;
 use Traversable;
 
 use function array_reverse;
 use function array_search;
+use function class_exists;
 use function count;
 use function error_get_last;
 use function error_reporting;
-use function gettype;
+use function floor;
+use function get_debug_type;
 use function in_array;
 use function is_array;
+use function is_bool;
+use function is_int;
 use function is_numeric;
+use function is_object;
+use function is_scalar;
 use function is_string;
+use function iterator_to_array;
 use function preg_match_all;
 use function register_shutdown_function;
 use function restore_error_handler;
@@ -75,6 +83,8 @@ class Logger extends AbstractLogger
 
     /**
      * Map native PHP errors to level
+     *
+     * @var array<int, int>
      */
     public static array $errorLevelMap = [
         E_NOTICE            => self::NOTICE,
@@ -109,7 +119,9 @@ class Logger extends AbstractLogger
     protected static bool $registeredExceptionHandler = false;
 
     /**
-     * List of level code => level (short) name
+     * List of PSR-3 level name => level code
+     *
+     * @var array<string, int>
      */
     protected array $levels = [
         LogLevel::EMERGENCY => self::EMERG,
@@ -122,8 +134,10 @@ class Logger extends AbstractLogger
         LogLevel::DEBUG     => self::DEBUG,
     ];
 
+    /** @var SplPriorityQueue<WriterInterface, int> */
     protected SplPriorityQueue $writers;
 
+    /** @var SplPriorityQueue<ProcessorInterface, int> */
     protected SplPriorityQueue $processors;
 
     protected ?WriterPluginManager $writerPlugins = null;
@@ -134,10 +148,14 @@ class Logger extends AbstractLogger
      * Constructor
      *
      * Set options for a logger. Accepted options are:
-     * - writers: array of writers to add to this logger
-     * - exceptionhandler: if true, register this logger as exceptionhandler
-     * - errorhandler: if true, register this logger as errorhandler
+     * - writers: list of writers, each [name, level|priority, options]; level/priority defaults to 1
+     * - processors: list of processors, each [name, level|priority, options]; level/priority defaults to 1
+     * - writer_plugin_manager / processor_plugin_manager: plugin manager instances
+     * - exceptionhandler: if true, register this logger as exception handler
+     * - errorhandler: if true, register this logger as error handler
+     * - fatal_error_shutdownfunction: if true, register a shutdown function logging fatal errors
      *
+     * @param iterable<string, mixed>|null $options
      * @throws ContainerExceptionInterface
      */
     public function __construct(?iterable $options = null)
@@ -146,10 +164,10 @@ class Logger extends AbstractLogger
         $this->processors = new SplPriorityQueue();
 
         if ($options instanceof Traversable) {
-            $options = ArrayUtils::iteratorToArray((array) $options);
+            $options = iterator_to_array($options);
         }
 
-        if (! $options) {
+        if ($options === null || $options === []) {
             return;
         }
 
@@ -171,27 +189,15 @@ class Logger extends AbstractLogger
 
         if (isset($options['writers']) && is_array($options['writers'])) {
             foreach ($options['writers'] as $writer) {
-                if (! isset($writer['name'])) {
-                    throw new InvalidArgumentException('Options must contain a name for the writer');
-                }
-
-                $level         = $writer['level'] ?? null;
-                $writerOptions = $writer['options'] ?? null;
-
-                $this->addWriter($writer['name'], $level, $writerOptions);
+                [$name, $level, $writerOptions] = $this->readPluginSpec($writer, 'writer');
+                $this->addWriter($name, $level, $writerOptions);
             }
         }
 
         if (isset($options['processors']) && is_array($options['processors'])) {
             foreach ($options['processors'] as $processor) {
-                if (! isset($processor['name'])) {
-                    throw new InvalidArgumentException('Options must contain a name for the processor');
-                }
-
-                $level            = $processor['level'] ?? null;
-                $processorOptions = $processor['options'] ?? null;
-
-                $this->addProcessor($processor['name'], $level, $processorOptions);
+                [$name, $level, $processorOptions] = $this->readPluginSpec($processor, 'processor');
+                $this->addProcessor($name, $level, $processorOptions);
             }
         }
 
@@ -209,11 +215,11 @@ class Logger extends AbstractLogger
     }
 
     /**
-     * Shutdown all writers
+     * Shutdown all writers. Iterates a copy: iterating an SplPriorityQueue removes its elements.
      */
     public function __destruct()
     {
-        foreach ($this->writers as $writer) {
+        foreach ($this->writers->toArray() as $writer) {
             try {
                 $writer->shutdown();
             } catch (Exception) {
@@ -221,10 +227,10 @@ class Logger extends AbstractLogger
         }
     }
 
-    public function getWriterPluginManager(): ?WriterPluginManager
+    public function getWriterPluginManager(): WriterPluginManager
     {
         if (null === $this->writerPlugins) {
-            $this->setWriterPluginManager(new WriterPluginManager(new ServiceManager()));
+            $this->writerPlugins = new WriterPluginManager();
         }
         return $this->writerPlugins;
     }
@@ -238,16 +244,19 @@ class Logger extends AbstractLogger
     /**
      * Get a writer instance
      *
+     * @param array<array-key, mixed>|null $options
      * @throws ContainerExceptionInterface
      */
-    public function writerPlugin(string $name, ?array $options = null): ?WriterInterface
+    public function writerPlugin(string $name, ?array $options = null): WriterInterface
     {
-        return $this->getWriterPluginManager()?->build($name, $options);
+        return $this->getWriterPluginManager()->build($name, $options);
     }
 
     /**
      * Add a writer to a logger
      *
+     * @param int $level the writer priority: writers with a higher value run first
+     * @param array<array-key, mixed>|null $options
      * @throws ContainerExceptionInterface
      */
     public function addWriter(WriterInterface|string $writer, int $level = 1, ?array $options = null): static
@@ -261,17 +270,23 @@ class Logger extends AbstractLogger
         return $this;
     }
 
+    /**
+     * @return SplPriorityQueue<WriterInterface, int>
+     */
     public function getWriters(): SplPriorityQueue
     {
         return $this->writers;
     }
 
+    /**
+     * @param SplPriorityQueue<WriterInterface, int> $writers
+     */
     public function setWriters(SplPriorityQueue $writers): static
     {
         foreach ($writers->toArray() as $writer) {
-            if (! $writer instanceof Writer\WriterInterface) {
+            if (! $writer instanceof WriterInterface) {
                 throw new InvalidArgumentException(
-                    'Writers must be a SplPriorityQueue of Laminas\Log\Writer'
+                    'Writers must be a SplPriorityQueue of ' . WriterInterface::class
                 );
             }
         }
@@ -279,27 +294,27 @@ class Logger extends AbstractLogger
         return $this;
     }
 
-    public function getProcessorPluginManager(): ?ProcessorPluginManager
+    public function getProcessorPluginManager(): ProcessorPluginManager
     {
         if (null === $this->processorPlugins) {
-            $this->setProcessorPluginManager(new ProcessorPluginManager(new ServiceManager()));
+            $this->processorPlugins = new ProcessorPluginManager();
         }
         return $this->processorPlugins;
     }
 
     /**
-     * @param class-string|ProcessorPluginManager $plugins
+     * @param string|ProcessorPluginManager $plugins a ProcessorPluginManager instance or class name
      */
     public function setProcessorPluginManager(string|ProcessorPluginManager $plugins): static
     {
-        if (is_string($plugins)) {
+        if (is_string($plugins) && class_exists($plugins)) {
             $plugins = new $plugins();
         }
         if (! $plugins instanceof ProcessorPluginManager) {
             throw new InvalidArgumentException(sprintf(
-                'processor plugin manager must extend %s\ProcessorPluginManager; received %s',
-                __NAMESPACE__,
-                $plugins::class
+                'Processor plugin manager must extend %s; received %s',
+                ProcessorPluginManager::class,
+                get_debug_type($plugins)
             ));
         }
 
@@ -308,14 +323,17 @@ class Logger extends AbstractLogger
     }
 
     /**
+     * @param array<array-key, mixed>|null $options
      * @throws ContainerExceptionInterface
      */
-    public function processorPlugin(string $name, ?array $options = null): ?ProcessorInterface
+    public function processorPlugin(string $name, ?array $options = null): ProcessorInterface
     {
-        return $this->getProcessorPluginManager()?->build($name, $options);
+        return $this->getProcessorPluginManager()->build($name, $options);
     }
 
     /**
+     * @param int $level the processor priority: processors with a higher value run first
+     * @param array<array-key, mixed>|null $options
      * @throws ContainerExceptionInterface
      */
     public function addProcessor(
@@ -332,20 +350,93 @@ class Logger extends AbstractLogger
         return $this;
     }
 
+    /**
+     * @return SplPriorityQueue<ProcessorInterface, int>
+     */
     public function getProcessors(): SplPriorityQueue
     {
         return $this->processors;
     }
 
+    /**
+     * @param int|string $level a level code (0 to 7) or a PSR-3 level name
+     * @param iterable<string, mixed> $context
+     */
     public function log(mixed $level, string|Stringable $message, iterable $context = []): void
     {
-        if (! is_numeric($level)) {
-            if (isset($this->levels[$level])) {
-                $level = $this->levels[$level];
-            }
+        $level = $this->normalizeLevel($level);
+
+        if ($context instanceof Traversable) {
+            $context = iterator_to_array($context);
         }
 
-        if (($level < 0) || ($level >= count($this->levels))) {
+        if ($this->writers->count() === 0) {
+            throw new RuntimeException('No log writer specified');
+        }
+
+        $event = [
+            'timestamp' => new DateTimeImmutable(),
+            'level'     => $level,
+            'levelName' => array_search($level, $this->levels, true),
+            'message'   => $this->handlePlaceholders((string) $message, $context),
+            'context'   => $context,
+        ];
+
+        foreach ($this->processors->toArray() as $processor) {
+            $event = $processor->process($event);
+        }
+
+        foreach ($this->writers->toArray() as $writer) {
+            $writer->write($event);
+        }
+    }
+
+    /**
+     * Replaces {placeholder} with the matching context value. Null and missing values are left in place.
+     *
+     * @param array<array-key, mixed> $context
+     */
+    protected function handlePlaceholders(string $message, array $context): string
+    {
+        if (! preg_match_all('/\{([\w.]+)}/', $message, $matches)) {
+            return $message;
+        }
+
+        $replacements = [];
+        foreach ($matches[1] as $match) {
+            if (! isset($context[$match])) {
+                continue;
+            }
+
+            $replacements['{' . $match . '}'] = self::placeholderValue($context[$match]);
+        }
+
+        return strtr($message, $replacements);
+    }
+
+    /**
+     * String representation of a context value used in a placeholder.
+     */
+    public static function placeholderValue(mixed $value): string
+    {
+        return match (true) {
+            is_bool($value) => $value ? 'true' : 'false',
+            is_scalar($value), $value instanceof Stringable => (string) $value,
+            $value instanceof DateTimeInterface => $value->format(DateTimeInterface::RFC3339),
+            is_object($value) => '[object ' . $value::class . ']',
+            default => '[' . get_debug_type($value) . ']',
+        };
+    }
+
+    protected function normalizeLevel(mixed $level): int
+    {
+        if (is_string($level) && isset($this->levels[$level])) {
+            $level = $this->levels[$level];
+        } elseif (is_numeric($level) && floor((float) $level) === (float) $level) {
+            $level = (int) $level;
+        }
+
+        if (! is_int($level) || $level < 0 || $level >= count($this->levels)) {
             throw new InvalidArgumentException(sprintf(
                 '$level must be an integer >= 0 and < %d; received %s',
                 count($this->levels),
@@ -353,65 +444,48 @@ class Logger extends AbstractLogger
             ));
         }
 
-        if ($context instanceof Traversable) {
-            $context = ArrayUtils::iteratorToArray((array) $context);
-        }
-
-        if ($this->writers->count() === 0) {
-            throw new RuntimeException('No log writer specified');
-        }
-
-        $timestamp = new DateTime();
-
-        $message = $this->handlePlaceholders((string) $message, $context);
-
-        $event = [
-            'timestamp' => $timestamp,
-            'level'     => $level,
-            'levelName' => array_search((int) $level, $this->levels, true),
-            'message'   => $message,
-            'context'   => $context,
-        ];
-
-        /** @var ProcessorInterface $processor */
-        foreach ($this->processors->toArray() as $processor) {
-            $event = $processor->process($event);
-        }
-
-        /** @var WriterInterface $writer */
-        foreach ($this->writers->toArray() as $writer) {
-            $writer->write($event);
-        }
+        return $level;
     }
 
-    protected function handlePlaceholders(string $message, array $context): string
+    /**
+     * Reads [name, level|priority, options] of a writer or processor from the logger options.
+     *
+     * @return array{0: string, 1: int, 2: array<array-key, mixed>|null}
+     */
+    private function readPluginSpec(mixed $spec, string $type): array
     {
-        if (preg_match_all('/\{([\w.]+)}/', $message, $matches)) {
-            $replacements = [];
-            foreach ($matches[1] as $match) {
-                if (! isset($context[$match])) {
-                    continue;
-                }
-
-                $placeholderValue = $context[$match];
-
-                if (is_string($placeholderValue) || is_numeric($placeholderValue)) {
-                    $replacements["{{$match}}"] = (string) $placeholderValue;
-                } else {
-                    $replacements["{{$match}}"] = gettype($placeholderValue);
-                }
-            }
-
-            $message = strtr($message, $replacements);
+        if ($spec instanceof Traversable) {
+            $spec = iterator_to_array($spec);
         }
 
-        return $message;
+        if (! is_array($spec) || ! isset($spec['name']) || ! is_string($spec['name'])) {
+            throw new InvalidArgumentException('Options must contain a name for the ' . $type);
+        }
+
+        $level = $spec['level'] ?? $spec['priority'] ?? 1;
+        if (! is_numeric($level)) {
+            throw new InvalidArgumentException(sprintf(
+                'The %s "%s" level must be an integer; received %s',
+                $type,
+                $spec['name'],
+                get_debug_type($level)
+            ));
+        }
+
+        $options = $spec['options'] ?? null;
+        if ($options instanceof Traversable) {
+            $options = iterator_to_array($options);
+        }
+
+        return [$spec['name'], (int) $level, is_array($options) ? $options : null];
     }
 
     /**
      * Register logging system as an error handler to log PHP errors
      *
-     * @link http://www.php.net/manual/function.set-error-handler.php
+     * Returns the previous error handler (null when there was none), or false when already registered.
+     *
+     * @link https://www.php.net/manual/function.set-error-handler.php
      */
     public static function registerErrorHandler(Logger $logger, bool $continueNativeHandler = false): bool|null|callable
     {
@@ -420,31 +494,41 @@ class Logger extends AbstractLogger
             return false;
         }
 
-        $errorLevelMap = static::$errorLevelMap;
-
-        $previous = set_error_handler(
-            static function ($level, $message, $file, $line) use ($logger, $errorLevelMap, $continueNativeHandler) {
-                $iniLevel = error_reporting();
-
-                if ($iniLevel & $level) {
-                    if (isset($errorLevelMap[$level])) {
-                        $level = $errorLevelMap[$level];
-                    } else {
-                        $level = Logger::INFO;
-                    }
-                    $logger->log($level, $message, [
-                        'errno' => $level,
-                        'file'  => $file,
-                        'line'  => $line,
-                    ]);
-                }
-
-                return ! $continueNativeHandler;
-            }
-        );
+        $previous = set_error_handler(static::createErrorHandler($logger, $continueNativeHandler));
 
         static::$registeredErrorHandler = true;
         return $previous;
+    }
+
+    /**
+     * The error handler registered by registerErrorHandler(). It logs errors included in error_reporting().
+     *
+     * @return Closure(int, string, string, int): bool
+     */
+    public static function createErrorHandler(Logger $logger, bool $continueNativeHandler = false): Closure
+    {
+        $errorLevelMap = static::$errorLevelMap;
+
+        return static function (
+            int $errno,
+            string $message,
+            string $file,
+            int $line
+        ) use (
+            $logger,
+            $errorLevelMap,
+            $continueNativeHandler
+        ): bool {
+            if (error_reporting() & $errno) {
+                $logger->log($errorLevelMap[$errno] ?? self::INFO, $message, [
+                    'errno' => $errno,
+                    'file'  => $file,
+                    'line'  => $line,
+                ]);
+            }
+
+            return ! $continueNativeHandler;
+        };
     }
 
     public static function unregisterErrorHandler(): void
@@ -489,7 +573,7 @@ class Logger extends AbstractLogger
             }
 
             $logger->log(
-                $errorLevelMap[$error['type']],
+                $errorLevelMap[$error['type']] ?? self::ERR,
                 $error['message'],
                 [
                     'file' => $error['file'],
@@ -506,7 +590,7 @@ class Logger extends AbstractLogger
     /**
      * Register a logging system as an exception handler to log PHP exceptions
      *
-     * @link http://www.php.net/manual/en/function.set-exception-handler.php
+     * @link https://www.php.net/manual/en/function.set-exception-handler.php
      */
     public static function registerExceptionHandler(Logger $logger): bool
     {
@@ -515,38 +599,47 @@ class Logger extends AbstractLogger
             return false;
         }
 
+        set_exception_handler(static::createExceptionHandler($logger));
+
+        static::$registeredExceptionHandler = true;
+        return true;
+    }
+
+    /**
+     * The exception handler registered by registerExceptionHandler(). It logs the exception and every previous
+     * exception, the innermost first.
+     *
+     * @return Closure(Throwable): void
+     */
+    public static function createExceptionHandler(Logger $logger): Closure
+    {
         $errorLevelMap = static::$errorLevelMap;
 
-        set_exception_handler(static function ($exception) use ($logger, $errorLevelMap) {
+        return static function (Throwable $exception) use ($logger, $errorLevelMap): void {
             $logMessages = [];
 
             do {
-                $level = Logger::ERR;
+                $level = self::ERR;
                 if ($exception instanceof ErrorException && isset($errorLevelMap[$exception->getSeverity()])) {
                     $level = $errorLevelMap[$exception->getSeverity()];
                 }
 
-                $extra = [
-                    'file'  => $exception->getFile(),
-                    'line'  => $exception->getLine(),
-                    'trace' => $exception->getTrace(),
-                ];
-
                 $logMessages[] = [
                     'level'   => $level,
                     'message' => $exception->getMessage(),
-                    'extra'   => $extra,
+                    'extra'   => [
+                        'file'  => $exception->getFile(),
+                        'line'  => $exception->getLine(),
+                        'trace' => $exception->getTrace(),
+                    ],
                 ];
                 $exception     = $exception->getPrevious();
-            } while ($exception);
+            } while ($exception !== null);
 
             foreach (array_reverse($logMessages) as $logMessage) {
                 $logger->log($logMessage['level'], $logMessage['message'], $logMessage['extra']);
             }
-        });
-
-        static::$registeredExceptionHandler = true;
-        return true;
+        };
     }
 
     public static function unregisterExceptionHandler(): void

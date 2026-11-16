@@ -2,19 +2,20 @@
 
 declare(strict_types=1);
 
-namespace DotTest\Log;
+namespace DotTest\Log\Fixture;
 
 use Dot\Log\Filter\FilterInterface;
 
-class MockFilter implements FilterInterface
+/**
+ * Accepts every event and records it.
+ */
+class RecordingFilter implements FilterInterface
 {
-    /**
-     * array of log events
-     */
+    /** @var list<array<string, mixed>> */
     public array $events = [];
 
     /**
-     * Returns TRUE to accept the message
+     * @param array<string, mixed> $event
      */
     public function filter(array $event): bool
     {

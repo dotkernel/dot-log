@@ -6,36 +6,42 @@ namespace DotTest\Log\Processor;
 
 use Dot\Log\Processor\PsrPlaceholder;
 use PHPUnit\Framework\TestCase;
+use stdClass;
 
 class PsrPlaceholderTest extends TestCase
 {
-    private PsrPlaceholder $subject;
-
-    protected function setUp(): void
+    public function testMessageWithoutPlaceholdersIsUnchanged(): void
     {
-        $this->subject = new PsrPlaceholder();
+        $input = ['message' => 'this is a message', 'context' => ['a' => 1]];
+
+        $this->assertSame($input, (new PsrPlaceholder())->process($input));
     }
 
-    public function testProcessMessageWithNoCurlyBrackets(): void
+    public function testEventWithoutContextIsUnchanged(): void
     {
-        $input = ["message" => "this is a message"];
+        $input = ['message' => '{a}'];
 
-        $result = $this->subject->process($input);
-        $this->assertSame($input, $result);
+        $this->assertSame($input, (new PsrPlaceholder())->process($input));
     }
 
     public function testProcess(): void
     {
-        $input = [
-            "message" => '{nullvalue} of {objectvalue} is in fact a {stringvalue}',
-            "context" => [
-                "nullvalue"   => null,
-                "objectvalue" => $this->subject,
-                "stringvalue" => "this is a message",
+        $result = (new PsrPlaceholder())->process([
+            'message' => '{null}|{object}|{string}|{array}|{stringable}',
+            'context' => [
+                'null'       => null,
+                'object'     => new stdClass(),
+                'string'     => 'text',
+                'array'      => [1],
+                'stringable' => new class {
+                    public function __toString(): string
+                    {
+                        return 'cast';
+                    }
+                },
             ],
-        ];
+        ]);
 
-        $result = $this->subject->process($input);
-        $this->assertNotSame($input['message'], $result['message']);
+        $this->assertSame('|[object stdClass]|text|[array]|cast', $result['message']);
     }
 }

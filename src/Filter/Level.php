@@ -8,14 +8,18 @@ use Dot\Log\Exception\InvalidArgumentException;
 use Traversable;
 
 use function gettype;
+use function implode;
+use function in_array;
 use function is_array;
 use function is_int;
+use function is_numeric;
 use function iterator_to_array;
 use function sprintf;
-use function version_compare;
 
 class Level implements FilterInterface
 {
+    public const OPERATORS = ['<', 'lt', '<=', 'le', '>', 'gt', '>=', 'ge', '==', '=', 'eq', '!=', '<>', 'ne'];
+
     protected int $level;
 
     protected string $operator;
@@ -23,6 +27,8 @@ class Level implements FilterInterface
     /**
      * Filter logging by $level. By default, it will accept any log
      * event whose level is less than or equal to $level.
+     *
+     * @param int|iterable<string, mixed> $level
      */
     public function __construct(iterable|int $level, ?string $operator = null)
     {
@@ -40,15 +46,39 @@ class Level implements FilterInterface
             ));
         }
 
+        $operator ??= '<=';
+        if (! in_array($operator, self::OPERATORS, true)) {
+            throw new InvalidArgumentException(sprintf(
+                'Operator must be one of "%s", received "%s"',
+                implode('", "', self::OPERATORS),
+                $operator
+            ));
+        }
+
         $this->level    = $level;
-        $this->operator = $operator ?? '<=';
+        $this->operator = $operator;
     }
 
     /**
      * Returns TRUE to accept the message, FALSE to block it.
+     *
+     * @param array<string, mixed> $event
      */
-    public function filter(array $event): bool|int|null
+    public function filter(array $event): bool
     {
-        return version_compare((string) $event['level'], (string) $this->level, $this->operator);
+        if (! isset($event['level']) || ! is_numeric($event['level'])) {
+            return false;
+        }
+
+        $level = (int) $event['level'];
+
+        return match ($this->operator) {
+            '<', 'lt'        => $level < $this->level,
+            '<=', 'le'       => $level <= $this->level,
+            '>', 'gt'        => $level > $this->level,
+            '>=', 'ge'       => $level >= $this->level,
+            '==', '=', 'eq'  => $level === $this->level,
+            default          => $level !== $this->level,
+        };
     }
 }

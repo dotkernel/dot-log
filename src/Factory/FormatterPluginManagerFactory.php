@@ -4,39 +4,36 @@ declare(strict_types=1);
 
 namespace Dot\Log\Factory;
 
+use Dot\Log\Exception\RuntimeException;
 use Dot\Log\Manager\FormatterPluginManager;
-use Exception;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Container\NotFoundExceptionInterface;
 
 use function is_array;
 
+/**
+ * Optional: creates a FormatterPluginManager from config['dot_log']['formatter_manager'],
+ * for applications that want the manager as a container service.
+ */
 class FormatterPluginManagerFactory
 {
     /**
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
-     * @throws Exception
      */
     public function __invoke(ContainerInterface $container): FormatterPluginManager
     {
-        if (! $container->has('config')) {
-            throw new Exception('Unable to find config');
+        $config = $container->has('config') ? $container->get('config') : [];
+        if (! is_array($config)) {
+            throw new RuntimeException('Unable to find config');
         }
 
-        $config = $container->get('config');
-
-        if (! isset($config['dot_log']) || ! is_array($config['dot_log'])) {
-            throw new Exception('Unable to find dot_log config');
+        $managerConfig = $config['dot_log']['formatter_manager'] ?? [];
+        if (! is_array($managerConfig)) {
+            throw new RuntimeException('The dot_log.formatter_manager config must be an array');
         }
 
-        $config = $config['dot_log'];
-
-        if (! isset($config['formatter_manager']) || ! is_array($config['formatter_manager'])) {
-            throw new Exception('Unable to find formatter_manager config');
-        }
-
-        return new FormatterPluginManager($container, $config);
+        return new FormatterPluginManager($container, $managerConfig);
     }
 }

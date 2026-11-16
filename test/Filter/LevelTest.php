@@ -4,57 +4,92 @@ declare(strict_types=1);
 
 namespace DotTest\Log\Filter;
 
+use ArrayObject;
 use Dot\Log\Exception\InvalidArgumentException;
 use Dot\Log\Filter\Level;
+use Dot\Log\Logger;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 class LevelTest extends TestCase
 {
-    private Level $subject;
-
-    public function setUp(): void
+    public function testDefaultOperatorAcceptsLevelsUpToTheLimit(): void
     {
-        $this->subject = new Level(47);
+        $filter = new Level(Logger::WARN);
+
+        $this->assertTrue($filter->filter(['level' => Logger::ERR]));
+        $this->assertTrue($filter->filter(['level' => Logger::WARN]));
+        $this->assertFalse($filter->filter(['level' => Logger::INFO]));
     }
 
-    public function testWillInstantiateWithInt(): void
+    public function testAcceptsOptions(): void
     {
-        $this->assertSame(Level::class, $this->subject::class);
+        $this->assertTrue((new Level(['level' => 4, 'operator' => '==']))->filter(['level' => 4]));
+        $this->assertTrue((new Level(new ArrayObject(['level' => 4, 'operator' => 'ne'])))->filter(['level' => 3]));
     }
 
-    public function testWillInstantiateWithArray(): void
+    /**
+     * @return iterable<string, array{string, int, bool}>
+     */
+    public static function provideOperators(): iterable
     {
-        $input = ['level' => 47];
+        foreach (['<', 'lt'] as $op) {
+            yield $op . ' lower' => [$op, 3, true];
+            yield $op . ' equal' => [$op, 4, false];
+        }
+        foreach (['<=', 'le'] as $op) {
+            yield $op . ' equal' => [$op, 4, true];
+            yield $op . ' higher' => [$op, 5, false];
+        }
+        foreach (['>', 'gt'] as $op) {
+            yield $op . ' higher' => [$op, 5, true];
+            yield $op . ' equal' => [$op, 4, false];
+        }
+        foreach (['>=', 'ge'] as $op) {
+            yield $op . ' equal' => [$op, 4, true];
+            yield $op . ' lower' => [$op, 3, false];
+        }
+        foreach (['==', '=', 'eq'] as $op) {
+            yield $op . ' equal' => [$op, 4, true];
+            yield $op . ' other' => [$op, 3, false];
+        }
+        foreach (['!=', '<>', 'ne'] as $op) {
+            yield $op . ' other' => [$op, 3, true];
+            yield $op . ' equal' => [$op, 4, false];
+        }
+    }
 
-        $result = new Level($input);
+    #[DataProvider('provideOperators')]
+    public function testOperators(string $operator, int $eventLevel, bool $accepted): void
+    {
+        $this->assertSame($accepted, (new Level(4, $operator))->filter(['level' => $eventLevel]));
+    }
 
-        $this->assertSame(Level::class, $result::class);
+    public function testRejectsEventsWithoutANumericLevel(): void
+    {
+        $this->assertFalse((new Level(7))->filter([]));
+        $this->assertFalse((new Level(7))->filter(['level' => 'debug']));
     }
 
     public function testWillNotInstantiateWithEmptyArray(): void
     {
-        $input = [];
-
-        $this->expectExceptionMessage('Level must be a number, received "NULL"');
         $this->expectException(InvalidArgumentException::class);
-        new Level($input);
+        $this->expectExceptionMessage('Level must be a number, received "NULL"');
+
+        new Level([]);
     }
 
-    public function testFilterWillAcceptMessage(): void
+    /**
+     * Regression test: an invalid operator was accepted and failed with ValueError on the first log call.
+     */
+    public function testRejectsAnInvalidOperator(): void
     {
-        $input = ['level' => 47];
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage(
+            'Operator must be one of "<", "lt", "<=", "le", ">", "gt", ">=", "ge", "==", "=", "eq", "!=", "<>", "ne",'
+            . ' received "=<"'
+        );
 
-        $result = $this->subject->filter($input);
-
-        $this->assertTrue($result);
-    }
-
-    public function testFilterWillNotAcceptMessage(): void
-    {
-        $input = ['level' => 244];
-
-        $result = $this->subject->filter($input);
-
-        $this->assertFalse($result);
+        new Level(['level' => 3, 'operator' => '=<']);
     }
 }

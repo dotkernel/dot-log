@@ -7,35 +7,48 @@ namespace Dot\Log\Processor;
 use function array_merge;
 use function array_shift;
 use function debug_backtrace;
-use function strpos;
+use function is_array;
+use function is_string;
+use function rtrim;
+use function str_starts_with;
 
 use const DEBUG_BACKTRACE_IGNORE_ARGS;
 
 class Backtrace implements ProcessorInterface
 {
     /**
-     * Maximum stack level of backtrace (PHP > 5.4.0)
+     * Maximum stack level of backtrace
      */
     protected int $traceLimit = 10;
 
     /**
      * Classes within these namespaces in the stack are ignored
+     *
+     * @var list<string>
      */
-    protected array $ignoredNamespaces = ['Laminas\\Log'];
+    protected array $ignoredNamespaces = ['Dot\\Log', 'Psr\\Log'];
 
     /**
      * Set options for a backtrace processor. Accepted options are:
      * - ignoredNamespaces: array of namespaces to be excluded from the logged backtrace
+     *
+     * @param array<string, mixed>|null $options
      */
     public function __construct(?array $options = null)
     {
-        if (! empty($options['ignoredNamespaces'])) {
-            $this->ignoredNamespaces = array_merge($this->ignoredNamespaces, (array) $options['ignoredNamespaces']);
+        $ignored = $options['ignoredNamespaces'] ?? [];
+        foreach (is_array($ignored) ? $ignored : [$ignored] as $namespace) {
+            if (is_string($namespace) && $namespace !== '') {
+                $this->ignoredNamespaces[] = $namespace;
+            }
         }
     }
 
     /**
-     * Adds the origin of the log() call to the event extras
+     * Adds the origin of the log() call to the event context
+     *
+     * @param array<string, mixed> $event
+     * @return array<string, mixed>
      */
     public function process(array $event): array
     {
@@ -60,7 +73,7 @@ class Backtrace implements ProcessorInterface
         ];
 
         $context = $origin;
-        if (isset($event['context'])) {
+        if (isset($event['context']) && is_array($event['context'])) {
             $context = array_merge($origin, $event['context']);
         }
         $event['context'] = $context;
@@ -68,6 +81,9 @@ class Backtrace implements ProcessorInterface
         return $event;
     }
 
+    /**
+     * @return list<string>
+     */
     public function getIgnoredNamespaces(): array
     {
         return $this->ignoredNamespaces;
@@ -75,6 +91,8 @@ class Backtrace implements ProcessorInterface
 
     /**
      * Provide backtrace as slim as possible
+     *
+     * @return list<array{function: string, line?: int, file?: string, class?: class-string, type?: '->'|'::'}>
      */
     protected function getBacktrace(): array
     {
@@ -87,7 +105,8 @@ class Backtrace implements ProcessorInterface
     protected function shouldIgnoreFrame(string $class): bool
     {
         foreach ($this->ignoredNamespaces as $ignoredNamespace) {
-            if (false !== strpos($class, $ignoredNamespace)) {
+            $ignoredNamespace = rtrim($ignoredNamespace, '\\');
+            if ($class === $ignoredNamespace || str_starts_with($class, $ignoredNamespace . '\\')) {
                 return true;
             }
         }

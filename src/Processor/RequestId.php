@@ -4,7 +4,11 @@ declare(strict_types=1);
 
 namespace Dot\Log\Processor;
 
+use function is_array;
+use function is_scalar;
+use function is_string;
 use function md5;
+use function microtime;
 
 class RequestId implements ProcessorInterface
 {
@@ -14,6 +18,9 @@ class RequestId implements ProcessorInterface
      * Adds an identifier for the request to the log, unless one has already been set.
      *
      * This enables to filter the log for messages belonging to a specific request
+     *
+     * @param array<string, mixed> $event
+     * @return array<string, mixed>
      */
     public function process(array $event): array
     {
@@ -21,7 +28,7 @@ class RequestId implements ProcessorInterface
             return $event;
         }
 
-        if (! isset($event['context'])) {
+        if (! isset($event['context']) || ! is_array($event['context'])) {
             $event['context'] = [];
         }
 
@@ -34,16 +41,16 @@ class RequestId implements ProcessorInterface
      */
     protected function getIdentifier(): string
     {
-        if ($this->identifier) {
+        if ($this->identifier !== null && $this->identifier !== '') {
             return $this->identifier;
         }
 
-        $identifier = (string) $_SERVER['REQUEST_TIME_FLOAT'];
+        $requestTime = $_SERVER['REQUEST_TIME_FLOAT'] ?? null;
+        $identifier  = is_scalar($requestTime) ? (string) $requestTime : (string) microtime(true);
 
-        if (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
-            $identifier .= $_SERVER['HTTP_X_FORWARDED_FOR'];
-        } elseif (isset($_SERVER['REMOTE_ADDR'])) {
-            $identifier .= $_SERVER['REMOTE_ADDR'];
+        $client = $_SERVER['HTTP_X_FORWARDED_FOR'] ?? $_SERVER['REMOTE_ADDR'] ?? '';
+        if (is_string($client)) {
+            $identifier .= $client;
         }
 
         $this->identifier = md5($identifier);
