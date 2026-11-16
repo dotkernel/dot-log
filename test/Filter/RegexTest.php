@@ -4,55 +4,77 @@ declare(strict_types=1);
 
 namespace DotTest\Log\Filter;
 
+use ArrayObject;
+use Dot\Log\Exception\InvalidArgumentException;
 use Dot\Log\Filter\Regex;
-use ErrorException;
+use Laminas\Stdlib\ErrorHandler;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
-use TypeError;
 
 class RegexTest extends TestCase
 {
-    private Regex $subject;
+    public function testFiltersByPattern(): void
+    {
+        $filter = new Regex(['regex' => '/(a)(b)*(c)/']);
+
+        $this->assertTrue($filter->filter(['message' => 'ac']));
+        $this->assertFalse($filter->filter(['message' => 'bc']));
+    }
+
+    public function testAcceptsAPatternString(): void
+    {
+        $this->assertTrue((new Regex('/^x/'))->filter(['message' => 'xyz']));
+        $this->assertTrue((new Regex(new ArrayObject(['regex' => '/^x/'])))->filter(['message' => 'xyz']));
+    }
+
+    public function testArrayMessagesAreExported(): void
+    {
+        $this->assertTrue((new Regex('/needle/'))->filter(['message' => ['key' => 'needle']]));
+    }
+
+    public function testMissingMessageDoesNotMatch(): void
+    {
+        $this->assertFalse((new Regex('/./'))->filter([]));
+    }
 
     /**
-     * @throws ErrorException
+     * @return iterable<string, array{array<string, mixed>|string}>
      */
-    public function setUp(): void
+    public static function provideMissingPatterns(): iterable
     {
-        $this->subject = new Regex(['regex' => '/(a)(b)*(c)/']);
-    }
-
-    public function testWillInstantiate(): void
-    {
-        $this->assertSame(Regex::class, $this->subject::class);
+        yield 'empty array' => [[]];
+        yield 'empty string' => [''];
+        yield 'not a string' => [['regex' => 1]];
     }
 
     /**
-     * @throws ErrorException
+     * Regression test: an empty pattern threw a TypeError and left an error handler active.
+     *
+     * @param array<string, mixed>|string $regex
      */
-    public function testWillNotInstantiateWithEmptyArray(): void
+    #[DataProvider('provideMissingPatterns')]
+    public function testRejectsAMissingPattern(array|string $regex): void
     {
-        $this->expectExceptionMessage(
-            'preg_match(): Argument #1 ($pattern) must be of type string, null given'
-        );
-        $this->expectException(TypeError::class);
-        new Regex([]);
+        try {
+            new Regex($regex);
+            $this->fail('Expected InvalidArgumentException');
+        } catch (InvalidArgumentException $exception) {
+            $this->assertSame('Option "regex" must be a non-empty string', $exception->getMessage());
+        }
+
+        $this->assertFalse(ErrorHandler::started());
     }
 
-    public function testFilterWillAcceptMessage(): void
+    public function testRejectsAnInvalidPattern(): void
     {
-        $input = ['message' => 'ac'];
+        try {
+            new Regex(['regex' => '/(unclosed/']);
+            $this->fail('Expected InvalidArgumentException');
+        } catch (InvalidArgumentException $exception) {
+            $this->assertSame('Invalid regular expression "/(unclosed/"', $exception->getMessage());
+            $this->assertNotNull($exception->getPrevious());
+        }
 
-        $result = $this->subject->filter($input);
-
-        $this->assertTrue($result);
-    }
-
-    public function testFilterWillNotAcceptMessage(): void
-    {
-        $input = ['message' => 'What a wonderful day to write tests'];
-
-        $result = $this->subject->filter($input);
-
-        $this->assertFalse($result);
+        $this->assertFalse(ErrorHandler::started());
     }
 }

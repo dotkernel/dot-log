@@ -9,30 +9,23 @@ use PHPUnit\Framework\TestCase;
 
 class RequestIdTest extends TestCase
 {
-    private RequestId $subject;
-
-    protected function setUp(): void
+    public function testKeepsAnExistingRequestId(): void
     {
-        $this->subject = new RequestId();
+        $input = ['context' => ['requestId' => 'something']];
+
+        $this->assertSame($input, (new RequestId())->process($input));
     }
 
-    public function testProcessWithRequestId(): void
+    public function testAddsTheSameIdToEveryEvent(): void
     {
-        $input = [
-            "context" => [
-                "requestId" => "something",
-            ],
-        ];
+        $processor = new RequestId();
 
-        $result = $this->subject->process($input);
-        $this->assertSame($input, $result);
-    }
+        $first  = $processor->process([]);
+        $second = $processor->process(['context' => 'not an array']);
 
-    public function testProcess(): void
-    {
-        $input = [];
-
-        $result = $this->subject->process($input);
-        $this->assertArrayHasKey("context", $result);
+        $this->assertIsArray($first['context']);
+        $this->assertIsArray($second['context']);
+        $this->assertMatchesRegularExpression('/^[a-f0-9]{32}$/', $first['context']['requestId']);
+        $this->assertSame($first['context']['requestId'], $second['context']['requestId']);
     }
 }

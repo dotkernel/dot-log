@@ -2,33 +2,28 @@
 
 declare(strict_types=1);
 
-namespace DotTest\Log;
+namespace DotTest\Log\Fixture;
 
 use Dot\Log\Writer\AbstractWriter;
 
-class Mock extends AbstractWriter
+/**
+ * Keeps every written event in memory.
+ */
+class MemoryWriter extends AbstractWriter
 {
-    /**
-     * array of log events
-     */
+    /** @var list<array<string, mixed>> */
     public array $events = [];
 
-    /**
-     * shutdown called?
-     */
     public bool $shutdown = false;
 
     /**
-     * Write a message to the log.
+     * @param array<string, mixed> $event
      */
     public function doWrite(array $event): void
     {
         $this->events[] = $event;
     }
 
-    /**
-     * Record shutdown
-     */
     public function shutdown(): void
     {
         $this->shutdown = true;

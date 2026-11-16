@@ -9,43 +9,23 @@ use PHPUnit\Framework\TestCase;
 
 class ReferenceIdTest extends TestCase
 {
-    private ReferenceId $subject;
-
-    protected function setUp(): void
+    public function testKeepsAnExistingReferenceId(): void
     {
-        $this->subject = new ReferenceId();
+        $input = ['context' => ['referenceId' => 'something']];
+
+        $this->assertSame($input, (new ReferenceId())->process($input));
     }
 
-    public function testProcessWithReferenceId(): void
+    public function testAddsTheReferenceId(): void
     {
-        $input = [
-            "context" => [
-                "referenceId" => "something",
-            ],
-        ];
+        $processor = (new ReferenceId())->setReferenceId('ref-1');
 
-        $result = $this->subject->process($input);
-        $this->assertSame($input, $result);
+        $this->assertSame('ref-1', $processor->getReferenceId());
+        $this->assertSame(['context' => ['referenceId' => 'ref-1']], $processor->process([]));
     }
 
-    public function testProcess(): void
+    public function testGeneratesAReferenceId(): void
     {
-        $input = [];
-
-        $result = $this->subject->process($input);
-        $this->assertArrayHasKey("context", $result);
-    }
-
-    public function testGetReferenceId(): void
-    {
-        $result = $this->subject->getReferenceId();
-        $this->assertIsString($result);
-    }
-
-    public function testSetReferenceId(): void
-    {
-        $input  = "something";
-        $result = $this->subject->setReferenceId($input);
-        $this->assertSame($input, $result->getReferenceId());
+        $this->assertMatchesRegularExpression('/^[a-f0-9]{32}$/', (new ReferenceId())->getReferenceId());
     }
 }

@@ -7,16 +7,14 @@ namespace Dot\Log\Formatter;
 use Dot\Log\Exception\InvalidArgumentException;
 use Traversable;
 
-use function array_key_exists;
-use function count;
 use function is_array;
 use function is_string;
 use function iterator_to_array;
 use function rtrim;
+use function str_contains;
 use function str_replace;
-use function strpos;
 
-class Simple extends Base
+class Simple extends AbstractFormatter
 {
     public const DEFAULT_FORMAT = '%timestamp% %levelName% (%level%): %message% %extra%';
 
@@ -25,6 +23,11 @@ class Simple extends Base
      */
     protected string $format;
 
+    /**
+     * @param string|iterable<string, mixed>|null $format         a format, or options with the keys "format" and
+     *                                                            "dateTimeFormat"
+     * @param string|iterable<string, mixed>|null $dateTimeFormat
+     */
     public function __construct(iterable|string|null $format = null, string|iterable|null $dateTimeFormat = null)
     {
         if ($format instanceof Traversable) {
@@ -47,14 +50,18 @@ class Simple extends Base
 
     /**
      * Formats data into a single line to be written by the writer.
+     *
+     * @param array<string, mixed> $event
      */
-    public function format(iterable $event): array|string
+    public function format(array $event): string
     {
         $output = $this->format;
 
-        $event = parent::format($event);
+        // Events from Dot\Log\Logger carry no "extra" key: print nothing rather than a literal "%extra%"
+        $event += ['extra' => []];
+        $event  = $this->normalizeEvent($event);
         foreach ($event as $name => $value) {
-            if ('extra' === $name && is_array($value) && count($value)) {
+            if ('extra' === $name && is_array($value) && $value !== []) {
                 $value = $this->normalize($value);
             } elseif ('extra' === $name) {
                 // Don't print an empty array
@@ -63,12 +70,10 @@ class Simple extends Base
             $output = str_replace("%$name%", (string) $value, $output);
         }
 
-        if (
-            array_key_exists('extra', $event) && empty($event['extra'])
-            && false !== strpos($this->format, '%extra%')
-        ) {
+        if ($event['extra'] === [] && str_contains($this->format, '%extra%')) {
             $output = rtrim($output, ' ');
         }
+
         return $output;
     }
 }

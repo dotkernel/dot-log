@@ -4,39 +4,36 @@ declare(strict_types=1);
 
 namespace Dot\Log\Factory;
 
+use Dot\Log\Exception\RuntimeException;
 use Dot\Log\Manager\FilterPluginManager;
-use Exception;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Container\NotFoundExceptionInterface;
 
 use function is_array;
 
+/**
+ * Optional: creates a FilterPluginManager from config['dot_log']['filter_manager'],
+ * for applications that want the manager as a container service.
+ */
 class FilterPluginManagerFactory
 {
     /**
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
-     * @throws Exception
      */
     public function __invoke(ContainerInterface $container): FilterPluginManager
     {
-        if (! $container->has('config')) {
-            throw new Exception('Unable to find config');
+        $config = $container->has('config') ? $container->get('config') : [];
+        if (! is_array($config)) {
+            throw new RuntimeException('Unable to find config');
         }
 
-        $config = $container->get('config');
-
-        if (! isset($config['dot_log']) || ! is_array($config['dot_log'])) {
-            throw new Exception('Unable to find dot_log config');
+        $managerConfig = $config['dot_log']['filter_manager'] ?? [];
+        if (! is_array($managerConfig)) {
+            throw new RuntimeException('The dot_log.filter_manager config must be an array');
         }
 
-        $config = $config['dot_log'];
-
-        if (! isset($config['filter_manager']) || ! is_array($config['filter_manager'])) {
-            throw new Exception('Unable to find filter_manager config');
-        }
-
-        return new FilterPluginManager($container, $config);
+        return new FilterPluginManager($container, $managerConfig);
     }
 }

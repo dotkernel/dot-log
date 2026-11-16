@@ -9,27 +9,37 @@ use PHPUnit\Framework\TestCase;
 
 class BackTraceTest extends TestCase
 {
-    private Backtrace $subject;
-
-    protected function setUp(): void
+    public function testProcessAddsTheOriginToTheContext(): void
     {
-        $this->subject = new Backtrace();
+        $result = (new Backtrace())->process(['context' => ['user' => 'x']]);
+
+        $this->assertIsArray($result['context']);
+        $this->assertSame('x', $result['context']['user']);
+        $this->assertArrayHasKey('file', $result['context']);
+        $this->assertArrayHasKey('line', $result['context']);
+        $this->assertArrayHasKey('class', $result['context']);
+        $this->assertArrayHasKey('function', $result['context']);
     }
 
-    public function testWillInstantiate(): void
+    public function testIgnoredNamespaces(): void
     {
-        $this->assertSame(Backtrace::class, $this->subject::class);
+        $this->assertSame(['Dot\\Log', 'Psr\\Log'], (new Backtrace())->getIgnoredNamespaces());
+        $this->assertSame(
+            ['Dot\\Log', 'Psr\\Log', 'App\\Logging', 'Other'],
+            (new Backtrace(['ignoredNamespaces' => ['App\\Logging', '', 'Other']]))->getIgnoredNamespaces()
+        );
+        $this->assertSame(
+            ['Dot\\Log', 'Psr\\Log', 'App'],
+            (new Backtrace(['ignoredNamespaces' => 'App']))->getIgnoredNamespaces()
+        );
     }
 
-    public function testProcess(): void
+    public function testIgnoredNamespaceMatchesWholeSegments(): void
     {
-        $result = $this->subject->process([]);
-        $this->assertArrayHasKey('context', $result);
-    }
+        $result = (new Backtrace(['ignoredNamespaces' => ['DotTest\\Log\\Processor\\BackTrace']]))->process([]);
 
-    public function testGetIgnoredNamespaces(): void
-    {
-        $result = $this->subject->getIgnoredNamespaces();
-        $this->assertIsArray($result);
+        // "BackTraceTest" is not inside the namespace "BackTrace", so this test is the origin.
+        $this->assertIsArray($result['context']);
+        $this->assertSame(self::class, $result['context']['class']);
     }
 }

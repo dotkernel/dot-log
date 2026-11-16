@@ -4,52 +4,54 @@ declare(strict_types=1);
 
 namespace Dot\Log\Formatter;
 
-use DateTime;
+use DateTimeInterface;
 
+use function array_walk_recursive;
 use function json_encode;
 
-use const JSON_NUMERIC_CHECK;
+use const JSON_INVALID_UTF8_SUBSTITUTE;
+use const JSON_PARTIAL_OUTPUT_ON_ERROR;
 use const JSON_PRESERVE_ZERO_FRACTION;
 use const JSON_UNESCAPED_SLASHES;
 use const JSON_UNESCAPED_UNICODE;
 
 class Json implements FormatterInterface
 {
+    public const JSON_FLAGS = JSON_UNESCAPED_SLASHES
+        | JSON_UNESCAPED_UNICODE
+        | JSON_PRESERVE_ZERO_FRACTION
+        | JSON_INVALID_UTF8_SUBSTITUTE
+        | JSON_PARTIAL_OUTPUT_ON_ERROR;
+
     /**
      * Format specifier for DateTime objects in event data (default: ISO 8601)
      *
-     * @see http://php.net/manual/en/function.date.php
+     * @see https://www.php.net/manual/en/datetime.format.php
      */
     protected string $dateTimeFormat = self::DEFAULT_DATETIME_FORMAT;
 
     /**
-     * Formats data into a single line to be written by the writer.
+     * Formats data into a single line of JSON. Dates anywhere in the event use the configured date format.
      *
-     * @psalm-suppress InvalidArrayAccess
+     * @param array<string, mixed> $event
      */
-    public function format(iterable $event): string
+    public function format(array $event): string
     {
-        if (isset($event['timestamp']) && $event['timestamp'] instanceof DateTime) {
-            $event['timestamp'] = $event['timestamp']->format($this->getDateTimeFormat());
-        }
+        $dateTimeFormat = $this->getDateTimeFormat();
+        array_walk_recursive($event, static function (mixed &$value) use ($dateTimeFormat): void {
+            if ($value instanceof DateTimeInterface) {
+                $value = $value->format($dateTimeFormat);
+            }
+        });
 
-        return (string) json_encode(
-            $event,
-            JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_NUMERIC_CHECK | JSON_PRESERVE_ZERO_FRACTION
-        );
+        return (string) json_encode($event, self::JSON_FLAGS);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function getDateTimeFormat(): string
     {
         return $this->dateTimeFormat;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function setDateTimeFormat(string $dateTimeFormat): static
     {
         $this->dateTimeFormat = $dateTimeFormat;

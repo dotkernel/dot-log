@@ -8,6 +8,9 @@ interface ProcessorInterface
 {
     /**
      * Processes a log message before it is given to the writers
+     *
+     * @param array<string, mixed> $event
+     * @return array<string, mixed>
      */
     public function process(array $event): array;
 }
