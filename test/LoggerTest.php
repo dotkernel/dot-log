@@ -17,12 +17,16 @@ use ErrorException;
 use Exception;
 use Laminas\ServiceManager\Exception\ServiceNotFoundException;
 use Laminas\Stdlib\SplPriorityQueue;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerExceptionInterface;
 
 use function count;
+use function error_reporting;
 use function set_exception_handler;
 
+use const E_ALL;
 use const E_USER_NOTICE;
 
 class LoggerTest extends TestCase
@@ -136,9 +140,7 @@ class LoggerTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider provideTestPlaceholders
-     */
+    #[DataProvider('provideTestPlaceholders')]
     public function testLoggingWithoutValidPlaceholdersDoesNotModifyMessage(string $message, array $context): void
     {
         $writer = new Mock();
@@ -226,9 +228,9 @@ class LoggerTest extends TestCase
     }
 
     /**
-     * @dataProvider provideTestFilters
      * @throws ContainerExceptionInterface
      */
+    #[DataProvider('provideTestFilters')]
     public function testAddFilterByNameWithParams(string $filter, array $options): void
     {
         $writer = new Mock();
@@ -250,9 +252,9 @@ class LoggerTest extends TestCase
     }
 
     /**
-     * @dataProvider provideAttributes
      * @throws ContainerExceptionInterface
      */
+    #[DataProvider('provideAttributes')]
     public function testLoggingCustomAttributesForUserContext(array|ArrayObject $context): void
     {
         $writer = new Mock();
@@ -280,7 +282,11 @@ class LoggerTest extends TestCase
         $this->assertFalse(Logger::registerErrorHandler($this->subject));
 
         // generate a warning
+        // PHPUnit 12 removes E_WARNING from error_reporting. The handler of the
+        // logger tests error_reporting, so the test must restore E_ALL.
+        $errorReporting = error_reporting(E_ALL);
         echo $test; // $test is not defined
+        error_reporting($errorReporting);
 
         Logger::unregisterErrorHandler();
 
@@ -426,9 +432,9 @@ class LoggerTest extends TestCase
     }
 
     /**
-     * @group Laminas-7238
      * @throws ContainerExceptionInterface
      */
+    #[Group('Laminas-7238')]
     public function testCatchExceptionNotValidLevel(): void
     {
         $this->expectException(InvalidArgumentException::class);

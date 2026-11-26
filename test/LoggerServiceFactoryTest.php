@@ -15,6 +15,7 @@ use Laminas\ServiceManager\Exception\ServiceNotFoundException;
 use Laminas\ServiceManager\ServiceLocatorInterface;
 use Laminas\ServiceManager\ServiceManager;
 use Laminas\Stdlib\ArrayObject;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
@@ -66,8 +67,8 @@ class LoggerServiceFactoryTest extends TestCase
     /**
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
-     * @dataProvider providerValidLoggerService
      */
+    #[DataProvider('providerValidLoggerService')]
     public function testValidLoggerService(string $service): void
     {
         $actual = $this->serviceManager->get($service);
@@ -75,10 +76,10 @@ class LoggerServiceFactoryTest extends TestCase
     }
 
     /**
-     * @dataProvider providerInvalidLoggerService
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      */
+    #[DataProvider('providerInvalidLoggerService')]
     public function testInvalidLoggerService(string $service): void
     {
         $this->expectException(ServiceNotFoundException::class);
@@ -143,10 +144,10 @@ class LoggerServiceFactoryTest extends TestCase
     }
 
     /**
-     * @dataProvider dataWritersValues()
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      */
+    #[DataProvider('dataWritersValues')]
     public function testWritersValue(mixed $writers, int $count): void
     {
         $services = new ServiceManager([
@@ -179,10 +180,10 @@ class LoggerServiceFactoryTest extends TestCase
     }
 
     /**
-     * @dataProvider dataInvalidWriterConfig()
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      */
+    #[DataProvider('dataInvalidWriterConfig')]
     public function testInvalidWriterConfig(mixed $value, string $type): void
     {
         $services = new ServiceManager([
