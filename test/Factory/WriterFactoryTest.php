@@ -8,21 +8,21 @@ use Dot\Log\Factory\WriterFactory;
 use Dot\Log\Writer\AbstractWriter;
 use Dot\Log\Writer\Stream;
 use PHPUnit\Framework\MockObject\Exception;
-use PHPUnit\Framework\MockObject\MockObject;
+use PHPUnit\Framework\MockObject\Stub;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
 
 class WriterFactoryTest extends TestCase
 {
-    private ContainerInterface|MockObject $container;
+    private ContainerInterface|Stub $container;
 
     /**
      * @throws Exception
      */
     protected function setUp(): void
     {
-        $this->container = $this->createMock(ContainerInterface::class);
+        $this->container = $this->createStub(ContainerInterface::class);
     }
 
     /**

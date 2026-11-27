@@ -21,7 +21,7 @@ class FormatterPluginManagerTest extends TestCase
      */
     protected function setUp(): void
     {
-        $container     = $this->createMock(ContainerInterface::class);
+        $container     = $this->createStub(ContainerInterface::class);
         $this->subject = new FormatterPluginManager($container);
     }
 
