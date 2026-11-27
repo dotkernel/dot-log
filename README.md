@@ -25,9 +25,9 @@ Documentation is available at: https://docs.dotkernel.org/dot-log/.
 [![GitHub stars](https://img.shields.io/github/stars/dotkernel/dot-log)](https://github.com/dotkernel/dot-log/stargazers)
 [![GitHub license](https://img.shields.io/github/license/dotkernel/dot-log)](https://github.com/dotkernel/dot-log/blob/5.0/LICENSE.md)
 
-[![Build Static](https://github.com/dotkernel/dot-log/actions/workflows/continuous-integration.yml/badge.svg?branch=5.0)](https://github.com/dotkernel/dot-log/actions/workflows/continuous-integration.yml)
+[![Build Static](https://github.com/dotkernel/dot-log/actions/workflows/continuous-integration.yml/badge.svg?branch=5.x)](https://github.com/dotkernel/dot-log/actions/workflows/continuous-integration.yml)
 [![codecov](https://codecov.io/gh/dotkernel/dot-log/graph/badge.svg?token=JX19KTBRCZ)](https://codecov.io/gh/dotkernel/dot-log)
-[![PHPStan](https://github.com/dotkernel/dot-log/actions/workflows/static-analysis.yml/badge.svg?branch=5.0)](https://github.com/dotkernel/dot-log/actions/workflows/static-analysis.yml)
+[![PHPStan](https://github.com/dotkernel/dot-log/actions/workflows/static-analysis.yml/badge.svg?branch=5.x)](https://github.com/dotkernel/dot-log/actions/workflows/static-analysis.yml)
 
 ## Adding The Config Provider
 
